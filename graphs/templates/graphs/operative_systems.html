@@ -1,0 +1,63 @@
+{% extends "graphs/base.html" %}
+{%  load staticfiles %}
+
+{% block scripts %}
+<script src="{% static "js/highcharts.js" %}"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script>
+$(function () {
+    $('#container').highcharts({
+        chart: {
+            type: 'bar'
+        },
+        title: {
+            text: '{{ bars.title }}'
+        },
+        xAxis: {
+            title: {
+                text: '{{ bars.xaxis }}'
+            },
+            categories: [{% for n in bars.xvalues %}'{{ n }}',{% endfor %}]
+        },
+        yAxis: {
+            title: {
+                text: '{{ bars.yaxis }}'
+            }
+        },
+        series: [
+            {% for elem in bars.values %}
+            {
+            name: '{{ elem.name }}',
+            data: [{% for v in elem.yvalue %}{{ v }},{% endfor %}]
+            },
+            {% endfor %}
+        ],
+    });
+});
+
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <h1>Operative Systems</h1>
+    <div class="col-lg-10">
+        <div class="panel panel-info">
+            <div class="panel-heading">Web Server</div>
+            <div class="panel-body"><div id="container" style="height: 700px"></div></div>
+        </div>
+    </div>
+    <div class="col-lg-2">
+        <div class="panel panel-info">
+            <div class="panel-heading">Operative Systems Options</div>
+            <div class="panel-body">
+                <ul class="nav nav-pills nav-stacked">
+                    <li role="presentation" {% if port == '80' %}class="active"{% endif %}><a href="{% url "graphs/os" 80 %}">Port 80</a></li>
+                    <li role="presentation" {% if port == '8000' %}class="active"{% endif %}><a href="{% url "graphs/os" 8000 %}">Port 8000</a></li>
+                    <li role="presentation" {% if port == 'all' %}class="active"{% endif %}><a href="{% url "graphs/os/all" %}">All</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
