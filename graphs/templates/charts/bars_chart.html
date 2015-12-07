@@ -1,0 +1,29 @@
+$(function () {
+    $('#container').highcharts({
+        chart: {
+            type: 'bar'
+        },
+        title: {
+            text: '{{ title }}'
+        },
+        xAxis: {
+            title: {
+                text: '{{ title_x_axis }}'
+            },
+            categories: [{% for label in x_label %}'{{ label }}',{% endfor %}]
+        },
+        yAxis: {
+            title: {
+                text: '{{ title_y_axis }}'
+            }
+        },
+        series: [
+            {% for elem in values %}
+            {
+            name: '{{ elem.name }}',
+            data: [{% for v in elem.yvalue %}{{ v }},{% endfor %}]
+            },
+            {% endfor %}
+        ],
+    });
+});
