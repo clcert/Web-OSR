@@ -69,7 +69,7 @@ def http_server(request, port=80, version=None):
                    'bars': {'title': 'Http Version', 'xaxis': 'Web Server', 'yaxis': 'Number of Server',
                             'xvalues': name,
                             'values': [{'name': 'port ' + port, 'yvalue': [i[1] for i in web_server80_frequency]}]},
-                   'pie1': {'name': version, 'data': version_web_server}})
+                   'pie': {'title': version, 'data': version_web_server}})
 
 
 def http_server_all(request, version=None):
@@ -120,7 +120,7 @@ def device_type(request, port=80):
                    'bars': {'title': 'Operative Systems of Web Server', 'xaxis': 'Operative Systems',
                             'yaxis': 'Number of Machine',
                             'xvalues': name,
-                            'values': [{'name': 'port 80', 'yvalue': [i[1] for i in frequency]}]}})
+                            'values': [{'name': 'port ' + str(port), 'yvalue': [i[1] for i in frequency]}]}})
 
 
 def device_type_all(request):

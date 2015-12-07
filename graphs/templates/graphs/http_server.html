@@ -8,93 +8,8 @@
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script>
     {% bar_chart 'container' bars %}
-
-$(function () {
-
-    $(document).ready(function () {
-
-        // Build the chart
-        $('#pie1').highcharts({
-            chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false,
-                type: 'pie'
-            },
-            title: {
-                text: '{{ pie1.name }} version'
-            },
-            tooltip: {
-                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: false
-                    },
-                    showInLegend: true
-                }
-            },
-            series: [{
-                name: 'Version',
-                colorByPoint: true,
-                data: [
-                {% for elem in pie1.data %}
-                    {
-                        name: '{{elem.0}}',
-                        y: {{ elem.1 }}
-                    },
-                {% endfor %}
-                ]
-            }]
-        });
-    });
-});
-
-$(function () {
-    $('#pie2').highcharts({
-        chart: {
-            plotBackgroundColor: null,
-            plotBorderWidth: null,
-            plotShadow: false,
-            type: 'pie'
-        },
-        title: {
-            text: '{{ pie1.name }} version'
-        },
-        tooltip: {
-            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-        },
-        plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: true,
-                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                    style: {
-                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                    }
-                }
-            }
-        },
-        series: [{
-            name: 'Brands',
-            colorByPoint: true,
-            data: [
-                {% for elem in pie1.data %}
-                    {
-                        name: '{{elem.0}}',
-                        y: {{ elem.1 }}
-                    },
-                {% endfor %}
-            ]
-        }]
-    });
-});
-
+    {% pie_chart_with_legend 'pie1' pie %}
+    {% pie_chart 'pie2' pie %}
 </script>
 {% endblock %}
 
@@ -134,7 +49,7 @@ $(function () {
     </div>
 </div>
 
-{% if port != 'all' and pie1.data != None %}
+{% if port != 'all' and pie.data != None %}
 <div class="row">
     <div class="col-lg-6">
         <div class="panel panel-info">

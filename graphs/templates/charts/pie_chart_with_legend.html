@@ -1,0 +1,40 @@
+ $(document).ready(function () {
+
+        // Build the chart
+        $('#{{ id }}').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: '{{ title }}'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                name: 'Version',
+                colorByPoint: true,
+                data: [
+                {% for elem in data %}
+                    {
+                        name: '{{elem.0}}',
+                        y: {{ elem.1 }}
+                    },
+                {% endfor %}
+                ]
+            }]
+        });
+    });
