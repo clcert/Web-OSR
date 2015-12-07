@@ -1,5 +1,120 @@
 {% extends "graphs/base.html" %}
+{% load staticfiles %}
+
+{% block scripts %}
+<link rel="stylesheet" href="{% static "css/dark.css" %}">
+<script src="{% static "js/highlight.min.js" %}"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+{% endblock %}
+
+
 {% block content %}
 <h1>Observatorio de Seguridad de la Red</h1>
- <img src="http://blyon.com/blyon-cdn/opte/maps/static/1069646562.LGL.2D.4000x4000.png"  height="800" width="1400">
+{# <img src="http://blyon.com/blyon-cdn/opte/maps/static/1069646562.LGL.2D.4000x4000.png"  height="800" width="1400">#}
+    <div class="row">
+        <div class="col-lg-12"></div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    Protocol HTTP Data Schema
+                </div>
+                <div class="panel-body">
+                    <pre><code class="json">
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Protocol HTTP",
+  "description": "HTTP information of a host",
+  "type": "object",
+  "properties": {
+    "ip": {
+      "description": "Host IP",
+      "type": "string"
+    },
+    "date": {
+      "description": "Date of scan",
+      "type": "string"
+    },
+    "error": {
+      "description": "Error message",
+      "type": "string"
+    },
+    "response": {
+      "description": "Response code of HTTP header",
+      "type": "string"
+    },
+    "server": {
+      "description": "Server information HTTP header",
+      "type": "string"
+    },
+    "content-type": {
+      "description": "Type of the content of index",
+      "type": "string"
+    },
+    "www-authenticate": {
+      "description": "Type of authentication",
+      "type": "string"
+    },
+    "header": {
+      "description": "Header information",
+      "type": "array"
+    },
+    "index": {
+      "description": "HTML index",
+      "type": "string"
+    },
+    "metadata": {
+      "description": "Information of the host",
+      "type": "object",
+      "properties": {
+        "device": {
+          "description": "Device information",
+          "type": "object",
+          "properties": {
+            "manufacturer": {
+              "description": "Device manufacturer",
+              "type": "string"
+            },
+            "product": {
+              "description": "Device product name",
+              "type": "string"
+            },
+            "os": {
+              "description": "Device operative system",
+              "type": "string"
+            },
+            "os_version": {
+              "description": "Device operative system version",
+              "type": "string"
+            },
+            "type": {
+              "description": "Device type",
+              "type": "string"
+            }
+          }
+        },
+        "service": {
+          "manufacturer": {
+            "description": "Service manufacturer",
+            "type": "string"
+          },
+          "product": {
+            "description": "Service product name",
+            "type": "string"
+          },
+          "version": {
+            "description": "Service product version",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
+                    </code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
