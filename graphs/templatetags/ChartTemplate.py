@@ -35,3 +35,12 @@ def basic_line(id, data):
             'yAxis': data['yAxis'],
             'categories': data['categories'],
             'series': data['series']}
+
+
+@register.inclusion_tag('charts/irregular_time_line.html')
+def irregular_time_line(id, data):
+    return {'id': id,
+            'title': data['title'],
+            'xAxis': data['xAxis'],
+            'yAxis': data['yAxis'],
+            'series': data['series']}

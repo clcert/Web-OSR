@@ -58,8 +58,9 @@ def index(request):
                       'title': 'machine',
                       'xAxis': 'Date of Scan',
                       'yAxis': 'Number of machines hit',
-                      'categories': [i.date for i in zmap],
-                      'series': [{'name': 'Zmap', 'data': [i.recv for i in zmap]}]
+                      # 'categories': [i.date for i in zmap],
+                      'series': [{'name': 'Zmap', 'data': [[i.date, i.recv] for i in zmap]}]
+                      # 'series': [{'name': 'Zmap', 'data': [i.recv for i in zmap]}]
                   }})
 
 
