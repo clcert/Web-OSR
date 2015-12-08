@@ -5,7 +5,7 @@ $(function () {
             x: -20 //center
         },
         xAxis: {
-            type: 'category',
+            type: 'datetime',
             title: {
                 text: '{{ xAxis }}'
             },
@@ -34,10 +34,9 @@ $(function () {
             {% for serie in series %}
             {
             name: '{{ serie.name }}',
-            data: [{% for data in serie.data %}['{{ data.0 }}', {{ data.1 }}],{% endfor %}]
+            data: [{% for data in serie.data %}[new Date('{{ data.0 }}').valueOf(), {{ data.1 }}],{% endfor %}]
             },
             {% endfor %}
-            {name: 'ble', data:[['2015-11-06', 158000]]}
         ],
         credits: {
             enabled: false

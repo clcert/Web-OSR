@@ -77,6 +77,7 @@ class Http80(Http):
     meta = {
         'collection': 'port-80',
         'strict': False,
+        'ordering': ['date']
     }
 
 
