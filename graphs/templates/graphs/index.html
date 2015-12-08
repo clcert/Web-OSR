@@ -1,10 +1,14 @@
 {% extends "graphs/base.html" %}
 {% load staticfiles %}
+{% load ChartTemplate %}
 
 {% block scripts %}
+<script src="{% static "js/highcharts.js" %}"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
 <link rel="stylesheet" href="{% static "css/dark.css" %}">
 <script src="{% static "js/highlight.min.js" %}"></script>
 <script>hljs.initHighlightingOnLoad();</script>
+<script>{% basic_line 'container' 'hola' %}</script>
 {% endblock %}
 
 
@@ -12,7 +16,12 @@
 <h1>Observatorio de Seguridad de la Red</h1>
 {# <img src="http://blyon.com/blyon-cdn/opte/maps/static/1069646562.LGL.2D.4000x4000.png"  height="800" width="1400">#}
     <div class="row">
-        <div class="col-lg-12"></div>
+        <div class="col-lg-12">
+            <div class="panel panel-info">
+                <div class="panel-heading">Hit rate</div>
+                <div id="container"></div>
+            </div>
+        </div>
     </div>
     <div class="row">
         <div class="col-lg-12">
