@@ -1,7 +1,8 @@
 from operator import itemgetter
-from django.http import HttpResponse
+
 from django.shortcuts import render
-from graphs.models import Http, Http80, Http8000, ZmapLog
+
+from graphs.models import Http80, Http8000, ZmapLog
 
 port_dict = {
     '80': Http80,
@@ -58,9 +59,7 @@ def index(request):
                       'title': 'machine',
                       'xAxis': 'Date of Scan',
                       'yAxis': 'Number of machines hit',
-                      # 'categories': [i.date for i in zmap],
                       'series': [{'name': 'Zmap', 'data': [[i.date, i.recv] for i in zmap]}]
-                      # 'series': [{'name': 'Zmap', 'data': [i.recv for i in zmap]}]
                   }})
 
 

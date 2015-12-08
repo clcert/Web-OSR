@@ -62,8 +62,7 @@ class Http(Document):
     metadata = EmbeddedDocumentField(Metadata)
 
     meta = {
-        'collection': 'port-80',
-        'strict': False,
+        'abstract': True
     }
 
     def __str__(self):
@@ -73,56 +72,20 @@ class Http(Document):
         })
 
 
-class Http80(Document):
-    ip = StringField()
-    date = StringField()
-    error = StringField()
-    response = StringField()
-    server = StringField()
-    content_type = StringField()
-    www_authenticate = StringField()
-    header = ListField()
-    index = StringField()
-    whois = DictField()
-    dns_reverse = StringField()
-    metadata = EmbeddedDocumentField(Metadata)
+class Http80(Http):
 
     meta = {
         'collection': 'port-80',
         'strict': False,
     }
 
-    def __str__(self):
-        return str({
-            'ip': self.ip,
-            'metadata': self.metadata.__str__()
-        })
 
-
-class Http8000(Document):
-    ip = StringField()
-    date = StringField()
-    error = StringField()
-    response = StringField()
-    server = StringField()
-    content_type = StringField()
-    www_authenticate = StringField()
-    header = ListField()
-    index = StringField()
-    whois = DictField()
-    dns_reverse = StringField()
-    metadata = EmbeddedDocumentField(Metadata)
+class Http8000(Http):
 
     meta = {
         'collection': 'port-8000',
         'strict': False,
     }
-
-    def __str__(self):
-        return str({
-            'ip': self.ip,
-            'metadata': self.metadata.__str__()
-        })
 
 
 class ZmapLog(Document):
