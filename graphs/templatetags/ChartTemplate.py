@@ -30,5 +30,8 @@ def pie_chart(id, data):
 @register.inclusion_tag('charts/basic_line.html')
 def basic_line(id, data):
     return {'id': id,
-            'title': 'Hola'}
-            # 'data': data['data']}
+            'title': data['title'],
+            'xAxis': data['xAxis'],
+            'yAxis': data['yAxis'],
+            'categories': data['categories'],
+            'series': data['series']}

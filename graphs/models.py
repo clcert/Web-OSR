@@ -1,5 +1,6 @@
 from django.db import models
-from mongoengine import connect, Document, StringField, DictField, ListField, EmbeddedDocument, EmbeddedDocumentField
+from mongoengine import connect, Document, StringField, DictField, ListField, EmbeddedDocument, EmbeddedDocumentField, \
+    DateTimeField
 from web.settings import MONGODB
 
 connect(MONGODB['NAME'], host=MONGODB['HOST'], port=MONGODB['PORT'])
@@ -122,3 +123,20 @@ class Http8000(Document):
             'ip': self.ip,
             'metadata': self.metadata.__str__()
         })
+
+
+class ZmapLog(Document):
+    port = StringField()
+    date = DateTimeField()
+    time = StringField()
+    send = StringField()
+    send_avg = StringField()
+    recv = StringField()
+    recv_avg = StringField()
+    hits = StringField
+
+    meta = {
+        'collection': 'zmap_logs',
+        'strict': False,
+        'ordering': ['date']
+    }

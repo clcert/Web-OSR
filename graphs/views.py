@@ -1,7 +1,7 @@
 from operator import itemgetter
 from django.http import HttpResponse
 from django.shortcuts import render
-from graphs.models import Http, Http80, Http8000
+from graphs.models import Http, Http80, Http8000, ZmapLog
 
 port_dict = {
     '80': Http80,
@@ -52,7 +52,15 @@ def accumulate(mongo_collections, query, with_none=True, percentage=False):
 
 
 def index(request):
-    return render(request, 'graphs/index.html')
+    zmap = ZmapLog.objects(port='80')
+    return render(request, 'graphs/index.html',
+                  {'line': {
+                      'title': 'machine',
+                      'xAxis': 'Date of Scan',
+                      'yAxis': 'Number of machines hit',
+                      'categories': [i.date for i in zmap],
+                      'series': [{'name': 'Zmap', 'data': [i.recv for i in zmap]}]
+                  }})
 
 
 def http_server(request, port=80, version=None):
