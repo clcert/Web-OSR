@@ -125,29 +125,38 @@ def http_server_all(request, scan):
                    })
 
 
-def os_server(request, port=80):
-    frequency = accumulate(port_dict[port].objects(date='2015-11-30'), 'metadata.device.os', with_none=False)[:10]
-    name = [i[0] for i in frequency]
+def os_server(request, port, scan):
+    zmap = ZmapLog.objects(port=port)
+    os = accumulate(port_dict[port].objects(date=scan), 'metadata.device.os', with_none=False)[:10]
     return render(request, 'graphs/operative_systems.html',
                   {'port': port,
+                   'scan_date': scan,
+                   'scan_list': [i.date for i in zmap],
                    'bars': {'title': 'Operative System of Server (HTTP)', 'xaxis': 'Operative Systems',
                             'yaxis': 'Number of Servers',
-                            'xvalues': name,
-                            'values': [{'name': 'port ' + str(port), 'yvalue': [i[1] for i in frequency]}]}})
+                            'xvalues': [i[0] for i in os],
+                            'values': [{'name': 'port ' + str(port), 'yvalue': [i[1] for i in os]}]}})
 
 
-def os_server_all(request):
-    frequency_80 = accumulate(Http80.objects(date='2015-11-30'), 'metadata.device.os', with_none=False)[:10]
-    name = [i[0] for i in frequency_80]
-    frequency_8000 = filter_by_name(accumulate(Http8000.objects, 'metadata.device.os', with_none=False)[:10], name)
+def os_server_all(request, scan):
+    zmap = ZmapLog.objects(port='80')
+    os80 = accumulate(Http80.objects(date=scan), 'metadata.device.os', with_none=False)[:10]
+    name = [i[0] for i in os80]
+    os443 = filter_by_name(accumulate(Http443.objects(date=scan), 'metadata.device.os', with_none=False)[:10], name)
+    os8000 = filter_by_name(accumulate(Http8000.objects(date=scan), 'metadata.device.os', with_none=False)[:10], name)
+    os8080 = filter_by_name(accumulate(Http8080.objects(date=scan), 'metadata.device.os', with_none=False)[:10], name)
 
     return render(request, 'graphs/operative_systems.html',
                   {'port': 'all',
+                   'scan_date': scan,
+                   'scan_list': [i.date for i in zmap],
                    'bars': {'title': 'Operative System of Server (HTTP)', 'xaxis': 'Operative Systems',
                             'yaxis': 'Number of Servers',
                             'xvalues': name,
-                            'values': [{'name': 'port 80', 'yvalue': [i[1] for i in frequency_80]},
-                                       {'name': 'port 8000', 'yvalue': [i[1] for i in frequency_8000]}]}})
+                            'values': [{'name': 'port 80', 'yvalue': [i[1] for i in os80]},
+                                       {'name': 'port 443', 'yvalue': [i[1] for i in os443]},
+                                       {'name': 'port 8000', 'yvalue': [i[1] for i in os8000]},
+                                       {'name': 'port 8080', 'yvalue': [i[1] for i in os8080]}]}})
 
 
 def device_type(request, port=80):
