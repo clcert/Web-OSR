@@ -105,19 +105,23 @@ def http_server(request, port, scan, version=None):
 
 
 def http_server_all(request, scan):
-    web_server80_frequency = accumulate(Http80.objects(date='2015-11-30'), 'metadata.service.product', with_none=False)[
-                             :10]
-    name = [i[0] for i in web_server80_frequency]
-    web_server8000_frequency = filter_by_name(
-        accumulate(Http8000.objects, 'metadata.service.product', with_none=False)[:10], name)
+    zmap = ZmapLog.objects(port='80')
+    http80 = accumulate(Http80.objects(date=scan), 'metadata.service.product', with_none=False)[:10]
+    name = [i[0] for i in http80]
+    http443 = filter_by_name(accumulate(Http443.objects(date=scan), 'metadata.service.product', with_none=False)[:10], name)
+    http8000 = filter_by_name(accumulate(Http8000.objects(date=scan), 'metadata.service.product', with_none=False)[:10], name)
+    http8080 = filter_by_name(accumulate(Http8080.objects(date=scan), 'metadata.service.product', with_none=False)[:10], name)
 
     return render(request, 'graphs/http_server.html',
                   {'port': 'all',
                    'scan_date': scan,
+                   'scan_list': [i.date for i in zmap],
                    'bars': {'title': 'Web Server Running (HTTP)', 'xaxis': 'Web Server', 'yaxis': 'Number of Servers',
                             'xvalues': name,
-                            'values': [{'name': 'port 80', 'yvalue': [i[1] for i in web_server80_frequency]},
-                                       {'name': 'port 8000', 'yvalue': [i[1] for i in web_server8000_frequency]}]}
+                            'values': [{'name': 'port 80', 'yvalue': [i[1] for i in http80]},
+                                       {'name': 'port 443', 'yvalue': [i[1] for i in http443]},
+                                       {'name': 'port 8000', 'yvalue': [i[1] for i in http8000]},
+                                       {'name': 'port 8080', 'yvalue': [i[1] for i in http8080]}]}
                    })
 
 
