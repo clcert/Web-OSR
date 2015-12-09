@@ -159,26 +159,36 @@ def os_server_all(request, scan):
                                        {'name': 'port 8080', 'yvalue': [i[1] for i in os8080]}]}})
 
 
-def device_type(request, port=80):
-    frequency = accumulate(port_dict[port].objects(date='2015-11-30'), 'metadata.device.type', with_none=False)[:10]
-    name = [i[0] for i in frequency]
+def device_type(request, port, scan):
+    zmap = ZmapLog.objects(port=port)
+    device = accumulate(port_dict[port].objects(date=scan), 'metadata.device.type', with_none=False)[:10]
+    name = [i[0] for i in device]
     return render(request, 'graphs/device_type.html',
                   {'port': port,
+                   'scan_date': scan,
+                   'scan_list': [i.date for i in zmap],
                    'bars': {'title': 'Device Type of Server (HTTP)', 'xaxis': 'Type of Device',
                             'yaxis': 'Number of Servers',
                             'xvalues': name,
-                            'values': [{'name': 'port ' + str(port), 'yvalue': [i[1] for i in frequency]}]}})
+                            'values': [{'name': 'port ' + str(port), 'yvalue': [i[1] for i in device]}]}})
 
 
-def device_type_all(request):
-    frequency_80 = accumulate(Http80.objects(date='2015-11-30'), 'metadata.device.type', with_none=False)[:10]
-    name = [i[0] for i in frequency_80]
-    frequency_8000 = filter_by_name(accumulate(Http8000.objects, 'metadata.device.type', with_none=False)[:10], name)
+def device_type_all(request, scan):
+    zmap = ZmapLog.objects(port='80')
+    device80 = accumulate(Http80.objects(date=scan), 'metadata.device.type', with_none=False)[:10]
+    name = [i[0] for i in device80]
+    device443 = filter_by_name(accumulate(Http443.objects(date=scan), 'metadata.device.type', with_none=False)[:10], name)
+    device8000 = filter_by_name(accumulate(Http8000.objects(date=scan), 'metadata.device.type', with_none=False)[:10], name)
+    device8080 = filter_by_name(accumulate(Http8080.objects(date=scan), 'metadata.device.type', with_none=False)[:10], name)
 
     return render(request, 'graphs/device_type.html',
                   {'port': 'all',
+                   'scan_date': scan,
+                   'scan_list': [i.date for i in zmap],
                    'bars': {'title': 'Device Type of Server (HTTP)', 'xaxis': 'Type of Device',
                             'yaxis': 'Number of Servers',
                             'xvalues': name,
-                            'values': [{'name': 'port 80', 'yvalue': [i[1] for i in frequency_80]},
-                                       {'name': 'port 8000', 'yvalue': [i[1] for i in frequency_8000]}]}})
+                            'values': [{'name': 'port 80', 'yvalue': [i[1] for i in device80]},
+                                       {'name': 'port 443', 'yvalue': [i[1] for i in device443]},
+                                       {'name': 'port 8000', 'yvalue': [i[1] for i in device8000]},
+                                       {'name': 'port 8080', 'yvalue': [i[1] for i in device8080]}]}})
