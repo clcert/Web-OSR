@@ -2,11 +2,13 @@ from operator import itemgetter
 
 from django.shortcuts import render
 
-from graphs.models import Http80, Http8000, ZmapLog
+from graphs.models import Http80, Http8000, ZmapLog, Http443, Http8080
 
 port_dict = {
     '80': Http80,
-    '8000': Http8000
+    '443': Http443,
+    '8000': Http8000,
+    '8080': Http8080
 }
 
 
@@ -51,38 +53,58 @@ def accumulate(mongo_collections, query, sorted_by=1, reverse=True, with_none=Tr
     return sorted(freqs_dict.items(), key=itemgetter(sorted_by), reverse=reverse)
 
 
+def version_web_server(port, scan, version):
+    version_data = None
+    if version:
+        version_data = add_other(accumulate(port_dict[port].objects(date=scan, metadata__service__product=version),
+                                            'metadata.service.version', percentage=True)[:9])
+    return version_data
+
+
 def index(request):
     zmap80 = ZmapLog.objects(port='80')
+    zmap443 = ZmapLog.objects(port='443')
+    zmap8000 = ZmapLog.objects(port='8000')
+    zmap8080 = ZmapLog.objects(port='8080')
+
     http80 = accumulate(Http80.objects(header__exists=True).only('date'), 'date', sorted_by=0, reverse=False)
+    http443 = accumulate(Http443.objects(header__exists=True).only('date'), 'date', sorted_by=0, reverse=False)
+    http8000 = accumulate(Http8000.objects(header__exists=True).only('date'), 'date', sorted_by=0, reverse=False)
+    http8080 = accumulate(Http8080.objects(header__exists=True).only('date'), 'date', sorted_by=0, reverse=False)
+
     return render(request, 'graphs/index.html',
                   {'line': {
                       'title': 'Hosts Hit in Chilean Internet (HTTP)',
                       'xAxis': 'Date of Scan',
                       'yAxis': 'Hits',
                       'series': [{'name': 'Zmap, Port 80', 'data': [[i.date, i.recv] for i in zmap80]},
-                                 {'name': 'Grabber, Port 80', 'data': [[i[0], i[1]] for i in http80]}]
+                                 {'name': 'Zmap, Port 443', 'data': [[i.date, i.recv] for i in zmap443]},
+                                 {'name': 'Zmap, Port 8000', 'data': [[i.date, i.recv] for i in zmap8000]},
+                                 {'name': 'Zmap, Port 8080', 'data': [[i.date, i.recv] for i in zmap8080]},
+                                 {'name': 'Grabber, Port 80', 'data': [[i[0], i[1]] for i in http80]},
+                                 {'name': 'Grabber, Port 443', 'data': [[i[0], i[1]] for i in http443]},
+                                 {'name': 'Grabber, Port 8000', 'data': [[i[0], i[1]] for i in http8000]},
+                                 {'name': 'Grabber, Port 8080', 'data': [[i[0], i[1]] for i in http8080]}]
                   }})
 
 
-def http_server(request, port=80, version=None):
-    web_server80_frequency = accumulate(port_dict[port].objects(date='2015-11-30'), 'metadata.service.product',
-                                        with_none=False)[:10]
-    name = [i[0] for i in web_server80_frequency]
-
-    version_web_server = None
-    if version is not None:
-        version_web_server = add_other(accumulate(Http80.objects(metadata__service__product=version),
-                                                  'metadata.service.version', percentage=True)[:9])
+def http_server(request, port, scan, version=None):
+    # Database Query
+    zmap = ZmapLog.objects(port=port)
+    web_server_frequency = accumulate(port_dict[port].objects(date=scan), 'metadata.service.product', with_none=False)[
+                           :10]
 
     return render(request, 'graphs/http_server.html',
                   {'port': port,
+                   'scan_date': scan,
+                   'scan_list': [i.date for i in zmap],
                    'bars': {'title': 'Web Server Running (HTTP)', 'xaxis': 'Web Server', 'yaxis': 'Number of Servers',
-                            'xvalues': name,
-                            'values': [{'name': 'port ' + port, 'yvalue': [i[1] for i in web_server80_frequency]}]},
-                   'pie': {'title': version, 'data': version_web_server}})
+                            'xvalues': [i[0] for i in web_server_frequency],
+                            'values': [{'name': 'port ' + port, 'yvalue': [i[1] for i in web_server_frequency]}]},
+                   'pie': {'title': version, 'data': version_web_server(port, scan, version)}})
 
 
-def http_server_all(request, version=None):
+def http_server_all(request, scan):
     web_server80_frequency = accumulate(Http80.objects(date='2015-11-30'), 'metadata.service.product', with_none=False)[
                              :10]
     name = [i[0] for i in web_server80_frequency]
@@ -91,6 +113,7 @@ def http_server_all(request, version=None):
 
     return render(request, 'graphs/http_server.html',
                   {'port': 'all',
+                   'scan_date': scan,
                    'bars': {'title': 'Web Server Running (HTTP)', 'xaxis': 'Web Server', 'yaxis': 'Number of Servers',
                             'xvalues': name,
                             'values': [{'name': 'port 80', 'yvalue': [i[1] for i in web_server80_frequency]},

@@ -81,10 +81,27 @@ class Http80(Http):
     }
 
 
+class Http443(Http):
+
+    meta = {
+        'collection': 'port-443',
+        'strict': False,
+        'ordering': ['date']
+    }
+
+
 class Http8000(Http):
 
     meta = {
         'collection': 'port-8000',
+        'strict': False,
+    }
+
+
+class Http8080(Http):
+
+    meta = {
+        'collection': 'port-8080',
         'strict': False,
     }
 

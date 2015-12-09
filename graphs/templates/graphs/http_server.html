@@ -29,9 +29,9 @@
             <div class="panel-heading">Web Server Options</div>
             <div class="panel-body">
                 <ul class="nav nav-pills nav-stacked">
-                    <li role="presentation" {% if port == '80' %}class="active"{% endif %}><a href="{% url "graphs/server" 80 %}">Port 80</a></li>
-                    <li role="presentation" {% if port == '8000' %}class="active"{% endif %}><a href="{% url "graphs/server" 8000 %}">Port 8000</a></li>
-                    <li role="presentation" {% if port == 'all' %}class="active"{% endif %}><a href="{% url "graphs/server/all" %}">All</a></li>
+                    <li role="presentation" {% if port == '80' %}class="active"{% endif %}><a href="{% url "graphs/server" 80  scan_date %}">Port 80</a></li>
+                    <li role="presentation" {% if port == '8000' %}class="active"{% endif %}><a href="{% url "graphs/server" 8000 scan_date %}">Port 8000</a></li>
+                    <li role="presentation" {% if port == 'all' %}class="active"{% endif %}><a href="{% url "graphs/server/all" scan_date %}">All</a></li>
                 </ul>
                 {% ifnotequal port 'all' %}
                     <hr>
@@ -41,7 +41,18 @@
                             <span class="caret"></span></button>
                         <ul class="dropdown-menu">
                             {% for name in bars.xvalues %}
-                                <li><a href="{% url "graphs/server" port name %}">{{ name }}</a></li>
+                                <li><a href="{% url "graphs/server" port scan_date name %}">{{ name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <hr>
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                            Date of Scan
+                            <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            {% for scan in scan_list %}
+                                <li><a href="{% url "graphs/server" port scan %}">{{ scan }}</a></li>
                             {% endfor %}
                         </ul>
                     </div>
