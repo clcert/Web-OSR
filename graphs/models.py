@@ -73,36 +73,39 @@ class Http(Document):
 
 
 class Http80(Http):
-
     meta = {
         'collection': 'port-80',
         'strict': False,
-        'ordering': ['date']
+        'ordering': ['date'],
+        'indexes': ['#date']
     }
 
 
 class Http443(Http):
-
     meta = {
         'collection': 'port-443',
         'strict': False,
-        'ordering': ['date']
+        'ordering': ['date'],
+        'indexes': ['#date']
+
     }
 
 
 class Http8000(Http):
-
     meta = {
         'collection': 'port-8000',
         'strict': False,
+        'ordering': ['date'],
+        'indexes': ['#date']
     }
 
 
 class Http8080(Http):
-
     meta = {
         'collection': 'port-8080',
         'strict': False,
+        'ordering': ['date'],
+        'indexes': ['#date']
     }
 
 
@@ -119,5 +122,17 @@ class ZmapLog(Document):
     meta = {
         'collection': 'zmap_logs',
         'strict': False,
+        'ordering': ['date']
+    }
+
+
+class GrabberScan(Document):
+    port = StringField()
+    date = DateTimeField()
+    protocol = StringField()
+    amount = StringField()
+
+    meta = {
+        'collection': 'grabber_scan',
         'ordering': ['date']
     }
