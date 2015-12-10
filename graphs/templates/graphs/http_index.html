@@ -2,6 +2,8 @@
 {% load staticfiles %}
 {% load ChartTemplate %}
 
+
+
 {% block scripts %}
 <script src="{% static "js/highcharts.js" %}"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
@@ -11,9 +13,12 @@
 <script>{% irregular_time_line 'container' line %}</script>
 {% endblock %}
 
+{% block header %}
+    <h1>Observatorio de Seguridad de la Red</h1>
+{#    <small>Optional description</small>#}
+{% endblock %}
 
 {% block content %}
-<h1>Observatorio de Seguridad de la Red</h1>
 {# <img src="http://blyon.com/blyon-cdn/opte/maps/static/1069646562.LGL.2D.4000x4000.png"  height="800" width="1400">#}
     <div class="row">
         <div class="col-lg-12">
