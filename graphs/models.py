@@ -1,6 +1,7 @@
 from django.db import models
+
 from mongoengine import connect, Document, StringField, DictField, ListField, EmbeddedDocument, EmbeddedDocumentField, \
-    DateTimeField
+    DateTimeField, IntField, BooleanField
 from web.settings import MONGODB
 
 connect(MONGODB['NAME'], host=MONGODB['HOST'], port=MONGODB['PORT'])
@@ -136,3 +137,23 @@ class GrabberScan(Document):
         'collection': 'grabber_scan',
         'ordering': ['date']
     }
+
+
+# Todo complete the model
+class Https(Document):
+    ip = StringField()
+    date = StringField()
+    error = StringField()
+    tls_protocol = StringField()
+    cipher_suite = StringField()
+    certificate_authority = StringField()
+    signature_algorithm = StringField()
+    key_bits = IntField()
+    chain = ListField()
+    valid = BooleanField(db_field='validate')
+
+    meta = {
+        'collection': 'port_443_cert',
+        'strict': False
+    }
+

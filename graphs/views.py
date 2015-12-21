@@ -1,6 +1,6 @@
 from operator import itemgetter
 from django.shortcuts import render
-from graphs.models import Http80, Http8000, ZmapLog, Http443, Http8080, GrabberScan
+from graphs.models import Http80, Http8000, ZmapLog, Http443, Http8080, GrabberScan, Https
 
 port_dict = {
     '80': Http80,
@@ -21,6 +21,18 @@ def filter_by_name(data, names):
                 break
         filtered_list.append((name, total))
     return filtered_list
+
+
+def complete_bars_chart(value_name, value_list):
+    """
+    :type value_list: list
+    :type value_name: set
+    """
+    new_set = value_name - set([i[0] for i in value_list])
+    for elem in new_set:
+        value_list.append((elem, 0))
+
+    return value_list
 
 
 def add_other(data):
@@ -58,6 +70,7 @@ def version_web_server(port, scan, version):
                                             'metadata.service.version', percentage=True)[:9])
     return version_data
 
+
 def date_to_yyyy_mm_dd(date):
     return str(date.year) + '-' + str(date.month) + '-' + str(date.day)
 
@@ -86,10 +99,14 @@ def http_index(request):
                                  {'name': 'Zmap, Port 443', 'data': [[i.date, i.recv] for i in zmap443]},
                                  {'name': 'Zmap, Port 8000', 'data': [[i.date, i.recv] for i in zmap8000]},
                                  {'name': 'Zmap, Port 8080', 'data': [[i.date, i.recv] for i in zmap8080]},
-                                 {'name': 'Grabber, Port 80', 'data': [[date_to_yyyy_mm_dd(i.date), i.amount] for i in http80]},
-                                 {'name': 'Grabber, Port 443', 'data': [[date_to_yyyy_mm_dd(i.date), i.amount] for i in http443]},
-                                 {'name': 'Grabber, Port 8000', 'data': [[date_to_yyyy_mm_dd(i.date), i.amount] for i in http8000]},
-                                 {'name': 'Grabber, Port 8080', 'data': [[date_to_yyyy_mm_dd(i.date), i.amount] for i in http8080]}]
+                                 {'name': 'Grabber, Port 80',
+                                  'data': [[date_to_yyyy_mm_dd(i.date), i.amount] for i in http80]},
+                                 {'name': 'Grabber, Port 443',
+                                  'data': [[date_to_yyyy_mm_dd(i.date), i.amount] for i in http443]},
+                                 {'name': 'Grabber, Port 8000',
+                                  'data': [[date_to_yyyy_mm_dd(i.date), i.amount] for i in http8000]},
+                                 {'name': 'Grabber, Port 8080',
+                                  'data': [[date_to_yyyy_mm_dd(i.date), i.amount] for i in http8080]}]
                   }})
 
 
@@ -203,3 +220,30 @@ def device_type_all(request, scan):
                                        {'name': 'port 443', 'yvalue': [i[1] for i in device443]},
                                        {'name': 'port 8000', 'yvalue': [i[1] for i in device8000]},
                                        {'name': 'port 8080', 'yvalue': [i[1] for i in device8080]}]}})
+
+
+def certificate_key_bits(request):
+    key_bits_443_trusted = accumulate(Https.objects(valid=True), 'keyBits', with_none=False)[:10]
+    key_bits_443_untrusted = accumulate(Https.objects(valid=False), 'keyBits', with_none=False)[:10]
+
+    value_name = set([i[0] for i in key_bits_443_trusted]) | set([i[0] for i in key_bits_443_untrusted])
+    key_bits_443_trusted = complete_bars_chart(value_name, key_bits_443_trusted)
+    key_bits_443_untrusted = complete_bars_chart(value_name, key_bits_443_untrusted)
+
+    key_bits_443_trusted = sorted(key_bits_443_trusted, key=lambda tup: int(tup[0]))
+    key_bits_443_untrusted = sorted(key_bits_443_untrusted, key=lambda tup: int(tup[0]))
+
+    return render(request, 'graphs/cert_key_bits.html',
+                  {'bars': {'title': 'Key Bits (HTTPS)', 'xaxis': 'Bits', 'yaxis': 'Number of Certificates',
+                            'xvalues': [i[0] for i in key_bits_443_trusted],
+                            'values': [{'name': 'https trusted', 'yvalue': [i[1] for i in key_bits_443_trusted]},
+                                       {'name': 'https untrusted', 'yvalue': [i[1] for i in key_bits_443_untrusted]}]}})
+
+
+def certificate_validation(request):
+    key_bits_443 = accumulate(Https.objects(), 'validate', with_none=False)[:10]
+
+    return render(request, 'graphs/cert_key_bits.html',
+                  {'bars': {'title': 'Certificate Validation (HTTP)', 'xaxis': 'Validation', 'yaxis': 'Number of Certificates',
+                            'xvalues': [i[0] for i in key_bits_443],
+                            'values': [{'name': 'https', 'yvalue': [i[1] for i in key_bits_443]}]}})
