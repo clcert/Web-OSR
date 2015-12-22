@@ -1,6 +1,7 @@
 from operator import itemgetter
 from django.shortcuts import render
-from graphs.models import Http80, Http8000, ZmapLog, Http443, Http8080, GrabberScan, Https, HttpWebServer
+from graphs.models import Http80, Http8000, ZmapLog, Http443, Http8080, GrabberScan, Https, HttpWebServer, \
+    HttpOperativeSystem
 
 port_dict = {
     '80': Http80,
@@ -113,7 +114,8 @@ def http_index(request):
 def http_server(request, port, scan, version=None):
     # Database Query
     zmap = ZmapLog.objects(port=port)
-    web_server_frequency = accumulate(HttpWebServer.objects(port=port, scan=scan), 'product', sum_value='$count', with_none=False)[:10]
+    web_server_frequency = accumulate(HttpWebServer.objects(port=port, scan=scan), 'product', sum_value='$count',
+                                      with_none=False)[:10]
 
     return render(request, 'graphs/http_server.html',
                   {'port': port,
@@ -151,7 +153,9 @@ def http_server_all(request, scan):
 
 def os_server(request, port, scan):
     zmap = ZmapLog.objects(port=port)
-    os = accumulate(port_dict[port].objects(date=scan), 'metadata.device.os', with_none=False)[:10]
+    os = accumulate(HttpOperativeSystem.objects(port=port, scan=scan), 'operative_system', sum_value='$count',
+                    with_none=False)[:10]
+    # os = accumulate(port_dict[port].objects(date=scan), 'metadata.device.os', with_none=False)[:10]
     return render(request, 'graphs/operative_systems.html',
                   {'port': port,
                    'scan_date': scan,
@@ -243,7 +247,8 @@ def certificate_validation(request):
     key_bits_443 = accumulate(Https.objects(), 'validate', with_none=False)[:10]
 
     return render(request, 'graphs/cert_key_bits.html',
-                  {'bars': {'title': 'Certificate Validation (HTTP)', 'xaxis': 'Validation', 'yaxis': 'Number of Certificates',
+                  {'bars': {'title': 'Certificate Validation (HTTP)', 'xaxis': 'Validation',
+                            'yaxis': 'Number of Certificates',
                             'xvalues': [i[0] for i in key_bits_443],
                             'values': [{'name': 'https', 'yvalue': [i[1] for i in key_bits_443]}]}})
 

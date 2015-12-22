@@ -170,3 +170,16 @@ class HttpWebServer(Document):
            'strict': False
     }
 
+
+class HttpOperativeSystem(Document):
+    port = StringField()
+    scan = StringField()
+    operative_system = StringField()
+    version = StringField()
+    count = IntField()
+
+    meta = {
+           'collection': 'http_operative_system',
+           'strict': False
+    }
+
