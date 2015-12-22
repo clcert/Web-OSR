@@ -157,3 +157,16 @@ class Https(Document):
         'strict': False
     }
 
+
+class HttpWebServer(Document):
+    port = StringField()
+    scan = StringField()
+    product = StringField()
+    version = StringField()
+    count = IntField()
+
+    meta = {
+           'collection': 'http_web_server',
+           'strict': False
+    }
+

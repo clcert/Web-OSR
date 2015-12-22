@@ -1,6 +1,6 @@
 from operator import itemgetter
 from django.shortcuts import render
-from graphs.models import Http80, Http8000, ZmapLog, Http443, Http8080, GrabberScan, Https
+from graphs.models import Http80, Http8000, ZmapLog, Http443, Http8080, GrabberScan, Https, HttpWebServer
 
 port_dict = {
     '80': Http80,
@@ -44,8 +44,8 @@ def add_other(data):
     return data
 
 
-def accumulate(mongo_collections, query, sorted_by=1, reverse=True, with_none=True, percentage=False):
-    freqs = mongo_collections.aggregate({'$group': {'_id': '$' + query, 'total': {'$sum': 1}}})
+def accumulate(mongo_collections, query, sum_value=1, reverse=True, with_none=True, percentage=False):
+    freqs = mongo_collections.aggregate({'$group': {'_id': '$' + query, 'total': {'$sum': sum_value}}})
 
     freqs_dict = dict()
     for freq in freqs:
@@ -60,7 +60,7 @@ def accumulate(mongo_collections, query, sorted_by=1, reverse=True, with_none=Tr
         sum = float(sum)
         for key, value in freqs_dict.iteritems():
             freqs_dict[key] = value / sum
-    return sorted(freqs_dict.items(), key=itemgetter(sorted_by), reverse=reverse)
+    return sorted(freqs_dict.items(), key=itemgetter(1), reverse=reverse)
 
 
 def version_web_server(port, scan, version):
@@ -113,8 +113,7 @@ def http_index(request):
 def http_server(request, port, scan, version=None):
     # Database Query
     zmap = ZmapLog.objects(port=port)
-    web_server_frequency = accumulate(port_dict[port].objects(date=scan), 'metadata.service.product', with_none=False)[
-                           :10]
+    web_server_frequency = accumulate(HttpWebServer.objects(port=port, scan=scan), 'product', sum_value='$count', with_none=False)[:10]
 
     return render(request, 'graphs/http_server.html',
                   {'port': port,
@@ -247,3 +246,7 @@ def certificate_validation(request):
                   {'bars': {'title': 'Certificate Validation (HTTP)', 'xaxis': 'Validation', 'yaxis': 'Number of Certificates',
                             'xvalues': [i[0] for i in key_bits_443],
                             'values': [{'name': 'https', 'yvalue': [i[1] for i in key_bits_443]}]}})
+
+
+def certificate_signature(request):
+    signature = accumulate(Https.objects, 'signatureAlgorithm')
