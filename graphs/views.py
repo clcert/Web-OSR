@@ -1,7 +1,7 @@
 from operator import itemgetter
 from django.shortcuts import render
 from graphs.models import Http80, Http8000, ZmapLog, Http443, Http8080, GrabberScan, Https, HttpWebServer, \
-    HttpOperativeSystem
+    HttpOperativeSystem, HttpDeviceType
 
 port_dict = {
     '80': Http80,
@@ -155,7 +155,7 @@ def os_server(request, port, scan):
     zmap = ZmapLog.objects(port=port)
     os = accumulate(HttpOperativeSystem.objects(port=port, scan=scan), 'operative_system', sum_value='$count',
                     with_none=False)[:10]
-    # os = accumulate(port_dict[port].objects(date=scan), 'metadata.device.os', with_none=False)[:10]
+
     return render(request, 'graphs/operative_systems.html',
                   {'port': port,
                    'scan_date': scan,
@@ -189,15 +189,15 @@ def os_server_all(request, scan):
 
 def device_type(request, port, scan):
     zmap = ZmapLog.objects(port=port)
-    device = accumulate(port_dict[port].objects(date=scan), 'metadata.device.type', with_none=False)[:10]
-    name = [i[0] for i in device]
+    device = accumulate(HttpDeviceType.objects(port=port, scan=scan), 'device_type', sum_value='$count', with_none=False)[:10]
+
     return render(request, 'graphs/device_type.html',
                   {'port': port,
                    'scan_date': scan,
                    'scan_list': [i.date for i in zmap],
                    'bars': {'title': 'Device Type of Server (HTTP)', 'xaxis': 'Type of Device',
                             'yaxis': 'Number of Servers',
-                            'xvalues': name,
+                            'xvalues': [i[0] for i in device],
                             'values': [{'name': 'port ' + str(port), 'yvalue': [i[1] for i in device]}]}})
 
 

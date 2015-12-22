@@ -183,3 +183,16 @@ class HttpOperativeSystem(Document):
            'strict': False
     }
 
+
+class HttpDeviceType(Document):
+    port = StringField()
+    scan = StringField()
+    device_type = StringField()
+    count = IntField()
+
+    meta = {
+           'collection': 'http_device_type',
+           'strict': False
+    }
+
+
