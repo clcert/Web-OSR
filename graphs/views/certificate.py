@@ -32,7 +32,21 @@ def certificate_validation(request):
 
 
 def certificate_signature(request):
-    signature = accumulate(Https.objects, 'signatureAlgorithm')
+    signature_trusted = accumulate(Https.objects(valid=True), 'signatureAlgorithm', with_none=False)
+    signature_untrusted = accumulate(Https.objects(valid=False), 'signatureAlgorithm', with_none=False)
+
+    value_name = set([i[0] for i in signature_trusted]) | set([i[0] for i in signature_untrusted])
+    signature_trusted = complete_bars_chart(value_name, signature_trusted)
+    signature_untrusted = complete_bars_chart(value_name, signature_untrusted)
+
+    signature_trusted = sorted(signature_trusted, key=lambda tup: tup[0])
+    signature_untrusted = sorted(signature_untrusted, key=lambda tup: tup[0])
+
+    return render(request, 'graphs/cert_signature.html',
+                  {'bars': {'title': 'Signature', 'xaxis': 'Signature Algorithm', 'yaxis': 'Number of Handshake',
+                            'xvalues': [i[0] for i in signature_trusted],
+                            'values': [{'name': 'https trusted', 'yvalue': [i[1] for i in signature_trusted]},
+                                       {'name': 'https untrusted', 'yvalue': [i[1] for i in signature_untrusted]}]}})
 
 
 def certificate_cipher_suite(request):

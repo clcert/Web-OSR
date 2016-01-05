@@ -1,0 +1,67 @@
+{% extends "graphs/base.html" %}
+{% load staticfiles %}
+{% load ChartTemplate %}
+
+{% block scripts %}
+<script src="{% static "js/highcharts.js" %}"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script>
+    {% bar_chart 'container' bars %}
+</script>
+{% endblock %}
+
+{% block header %}
+    <h1>HTTPs Cipher Suites</h1>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-10">
+        <div class="panel panel-info">
+            <div class="panel-heading"></div>
+            <div class="panel-body">
+                <div id="container" style="height: 700px"></div>
+            </div>
+        </div>
+    </div>
+{#    <div class="col-lg-2">#}
+{#        <div class="panel panel-info">#}
+{#            <div class="panel-heading">Operative Systems Options</div>#}
+{#            <div class="panel-body">#}
+{#                <ul class="nav nav-pills nav-stacked">#}
+{#                    <li role="presentation" {% if port == '80' %}class="active"{% endif %}><a href="{% url "graphs/os" 80 scan_date %}">Port 80</a></li>#}
+{#                    <li role="presentation" {% if port == '443' %}class="active"{% endif %}><a href="{% url "graphs/os" 443 scan_date %}">Port 443</a></li>#}
+{#                    <li role="presentation" {% if port == '8000' %}class="active"{% endif %}><a href="{% url "graphs/os" 8000 scan_date %}">Port 8000</a></li>#}
+{#                    <li role="presentation" {% if port == '8080' %}class="active"{% endif %}><a href="{% url "graphs/os" 8080  scan_date %}">Port 8080</a></li>#}
+{#                    <li role="presentation" {% if port == 'all' %}class="active"{% endif %}><a href="{% url "graphs/os/all" scan_date %}">All</a></li>#}
+{#                </ul>#}
+{#            {% ifnotequal port 'all' %}#}
+{#                <hr>#}
+{#                <div class="dropdown">#}
+{#                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">#}
+{#                        Date of Scan#}
+{#                        <span class="caret"></span></button>#}
+{#                    <ul class="dropdown-menu">#}
+{#                        {% for scan in scan_list %}#}
+{#                            <li><a href="{% url "graphs/os" port scan %}">{{ scan }}</a></li>#}
+{#                        {% endfor %}#}
+{#                    </ul>#}
+{#                </div>#}
+{#            {% else %}#}
+{#                <hr>#}
+{#                <div class="dropdown">#}
+{#                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">#}
+{#                        Date of Scan#}
+{#                        <span class="caret"></span></button>#}
+{#                    <ul class="dropdown-menu">#}
+{#                        {% for scan in scan_list %}#}
+{#                            <li><a href="{% url "graphs/os/all" scan %}">{{ scan }}</a></li>#}
+{#                        {% endfor %}#}
+{#                    </ul>#}
+{#                </div>#}
+{#            {% endifnotequal %}#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+</div>
+{% endblock %}
