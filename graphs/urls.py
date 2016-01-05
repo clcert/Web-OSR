@@ -15,4 +15,6 @@ urlpatterns = [
     url(r'^device/(?P<port>[0-9]+)/(?P<scan>\d+-\d+-\d+)$', views.device_type, name='graphs/device'),
     url(r'^https/key-bits$', views.certificate_key_bits, name='graphs/https/key-bits'),
     url(r'^https/validation$', views.certificate_validation, name='graphs/https/validation'),
+    url(r'^https/cipher-suite$', views.certificate_cipher_suite, name='graphs/https/cipher-suite'),
+    url(r'^https/tls_version$', views.certificate_tls_version, name='graphs/https/tls-version'),
 ]
