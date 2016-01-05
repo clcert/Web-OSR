@@ -57,21 +57,17 @@ def http_server(request, port, scan, version=None):
 
 def http_server_all(request, scan):
     zmap = ZmapLog.objects(port='80')
-    http80 = accumulate(Http80.objects(date=scan), 'metadata.service.product', with_none=False)[:10]
-    name = [i[0] for i in http80]
-    http443 = filter_by_name(accumulate(Http443.objects(date=scan), 'metadata.service.product', with_none=False)[:10],
-                             name)
-    http8000 = filter_by_name(accumulate(Http8000.objects(date=scan), 'metadata.service.product', with_none=False)[:10],
-                              name)
-    http8080 = filter_by_name(accumulate(Http8080.objects(date=scan), 'metadata.service.product', with_none=False)[:10],
-                              name)
+    http80 = accumulate(HttpWebServer.objects(port='80', scan=scan), 'product', sum_value='$count', with_none=False)[:10]
+    http443 = filter_by_name(accumulate(HttpWebServer.objects(port='443', scan=scan), 'product', sum_value='$count', with_none=False)[:10], [i[0] for i in http80])
+    http8000 = filter_by_name(accumulate(HttpWebServer.objects(port='8000', scan=scan), 'product', sum_value='$count', with_none=False)[:10], [i[0] for i in http80])
+    http8080 = filter_by_name(accumulate(HttpWebServer.objects(port='8080', scan=scan), 'product', sum_value='$count', with_none=False)[:10], [i[0] for i in http80])
 
     return render(request, 'graphs/http_server.html',
                   {'port': 'all',
                    'scan_date': scan,
                    'scan_list': [i.date for i in zmap],
                    'bars': {'title': 'Web Server Running (HTTP)', 'xaxis': 'Web Server', 'yaxis': 'Number of Servers',
-                            'xvalues': name,
+                            'xvalues': [i[0] for i in http80],
                             'values': [{'name': 'port 80', 'yvalue': [i[1] for i in http80]},
                                        {'name': 'port 443', 'yvalue': [i[1] for i in http443]},
                                        {'name': 'port 8000', 'yvalue': [i[1] for i in http8000]},
@@ -96,11 +92,10 @@ def os_server(request, port, scan):
 
 def os_server_all(request, scan):
     zmap = ZmapLog.objects(port='80')
-    os80 = accumulate(Http80.objects(date=scan), 'metadata.device.os', with_none=False)[:10]
-    name = [i[0] for i in os80]
-    os443 = filter_by_name(accumulate(Http443.objects(date=scan), 'metadata.device.os', with_none=False)[:10], name)
-    os8000 = filter_by_name(accumulate(Http8000.objects(date=scan), 'metadata.device.os', with_none=False)[:10], name)
-    os8080 = filter_by_name(accumulate(Http8080.objects(date=scan), 'metadata.device.os', with_none=False)[:10], name)
+    os80 = accumulate(HttpOperativeSystem.objects(port='80', scan=scan), 'operative_system', sum_value='$count', with_none=False)[:10]
+    os443 = filter_by_name(accumulate(HttpOperativeSystem.objects(port='443', scan=scan), 'operative_system', sum_value='$count', with_none=False)[:10], [i[0] for i in os80])
+    os8000 = filter_by_name(accumulate(HttpOperativeSystem.objects(port='8000', scan=scan), 'operative_system', sum_value='$count', with_none=False)[:10], [i[0] for i in os80])
+    os8080 = filter_by_name(accumulate(HttpOperativeSystem.objects(port='8080', scan=scan), 'operative_system', sum_value='$count', with_none=False)[:10], [i[0] for i in os80])
 
     return render(request, 'graphs/operative_systems.html',
                   {'port': 'all',
@@ -108,7 +103,7 @@ def os_server_all(request, scan):
                    'scan_list': [i.date for i in zmap],
                    'bars': {'title': 'Operative System of Server (HTTP)', 'xaxis': 'Operative Systems',
                             'yaxis': 'Number of Servers',
-                            'xvalues': name,
+                            'xvalues': [i[0] for i in os80],
                             'values': [{'name': 'port 80', 'yvalue': [i[1] for i in os80]},
                                        {'name': 'port 443', 'yvalue': [i[1] for i in os443]},
                                        {'name': 'port 8000', 'yvalue': [i[1] for i in os8000]},
@@ -131,14 +126,10 @@ def device_type(request, port, scan):
 
 def device_type_all(request, scan):
     zmap = ZmapLog.objects(port='80')
-    device80 = accumulate(Http80.objects(date=scan), 'metadata.device.type', with_none=False)[:10]
-    name = [i[0] for i in device80]
-    device443 = filter_by_name(accumulate(Http443.objects(date=scan), 'metadata.device.type', with_none=False)[:10],
-                               name)
-    device8000 = filter_by_name(accumulate(Http8000.objects(date=scan), 'metadata.device.type', with_none=False)[:10],
-                                name)
-    device8080 = filter_by_name(accumulate(Http8080.objects(date=scan), 'metadata.device.type', with_none=False)[:10],
-                                name)
+    device80 = accumulate(HttpDeviceType.objects(port='80', scan=scan), 'device_type', sum_value='$count', with_none=False)[:10]
+    device443 = filter_by_name(accumulate(HttpDeviceType.objects(port='443', scan=scan), 'device_type', sum_value='$count', with_none=False)[:10], [i[0] for i in device80])
+    device8000 = filter_by_name(accumulate(HttpDeviceType.objects(port='8000', scan=scan), 'device_type', sum_value='$count', with_none=False)[:10], [i[0] for i in device80])
+    device8080 = filter_by_name(accumulate(HttpDeviceType.objects(port='8080', scan=scan), 'device_type', sum_value='$count', with_none=False)[:10], [i[0] for i in device80])
 
     return render(request, 'graphs/device_type.html',
                   {'port': 'all',
@@ -146,7 +137,7 @@ def device_type_all(request, scan):
                    'scan_list': [i.date for i in zmap],
                    'bars': {'title': 'Device Type of Server (HTTP)', 'xaxis': 'Type of Device',
                             'yaxis': 'Number of Servers',
-                            'xvalues': name,
+                            'xvalues': [i[0] for i in device80],
                             'values': [{'name': 'port 80', 'yvalue': [i[1] for i in device80]},
                                        {'name': 'port 443', 'yvalue': [i[1] for i in device443]},
                                        {'name': 'port 8000', 'yvalue': [i[1] for i in device8000]},
