@@ -32,8 +32,8 @@ def certificate_validation(request):
 
 
 def certificate_signature(request):
-    signature_trusted = accumulate(Https.objects(valid=True), 'signatureAlgorithm', with_none=False)
-    signature_untrusted = accumulate(Https.objects(valid=False), 'signatureAlgorithm', with_none=False)
+    signature_trusted = accumulate(Https.objects(valid=True), 'signature_algorithm', with_none=False)
+    signature_untrusted = accumulate(Https.objects(valid=False), 'signature_algorithm', with_none=False)
 
     value_name = set([i[0] for i in signature_trusted]) | set([i[0] for i in signature_untrusted])
     signature_trusted = complete_bars_chart(value_name, signature_trusted)
@@ -68,8 +68,8 @@ def certificate_cipher_suite(request):
 
 
 def certificate_tls_version(request):
-    tls_version_trusted = accumulate(Https.objects(valid=True), 'tlsProtocol', with_none=False)
-    tls_version_untrusted = accumulate(Https.objects(valid=False), 'tlsProtocol', with_none=False)
+    tls_version_trusted = accumulate(Https.objects(valid=True), 'tls_protocol', with_none=False)
+    tls_version_untrusted = accumulate(Https.objects(valid=False), 'tls_protocol', with_none=False)
 
     value_name = set([i[0] for i in tls_version_trusted]) | set([i[0] for i in tls_version_untrusted])
     tls_version_trusted = complete_bars_chart(value_name, tls_version_trusted)
