@@ -14,8 +14,9 @@ def certificate_key_bits(request):
     key_bits_443_trusted = sorted(key_bits_443_trusted, key=lambda tup: int(tup[0]))
     key_bits_443_untrusted = sorted(key_bits_443_untrusted, key=lambda tup: int(tup[0]))
 
-    return render(request, 'graphs/cert_key_bits.html',
-                  {'bars': {'title': 'Key Bits (HTTPS)', 'xaxis': 'Bits', 'yaxis': 'Number of Certificates',
+    return render(request, 'graphs/certificate.html',
+                  {'page_title': 'HTTPs Protocol Key Bits', 'panel_title': 'HTTPS Certificates Key Bits',
+                   'bars': {'title': 'Key Bits (HTTPS)', 'xaxis': 'Bits', 'yaxis': 'Number of Certificates',
                             'xvalues': [i[0] for i in key_bits_443_trusted],
                             'values': [{'name': 'https trusted', 'yvalue': [i[1] for i in key_bits_443_trusted]},
                                        {'name': 'https untrusted', 'yvalue': [i[1] for i in key_bits_443_untrusted]}]}})
@@ -24,8 +25,9 @@ def certificate_key_bits(request):
 def certificate_validation(request):
     key_bits_443 = accumulate(Https.objects(), 'validate', with_none=False)[:10]
 
-    return render(request, 'graphs/cert_key_bits.html',
-                  {'bars': {'title': 'Certificate Validation (HTTP)', 'xaxis': 'Validation',
+    return render(request, 'graphs/certificate.html',
+                  {'page_title': 'HTTPS Certificate Validation', 'panel_title': 'Scanned in 11/11/11',
+                   'bars': {'title': 'Certificate Validation (HTTP)', 'xaxis': 'Validation',
                             'yaxis': 'Number of Certificates',
                             'xvalues': [i[0] for i in key_bits_443],
                             'values': [{'name': 'https', 'yvalue': [i[1] for i in key_bits_443]}]}})
@@ -42,8 +44,9 @@ def certificate_signature(request):
     signature_trusted = sorted(signature_trusted, key=lambda tup: tup[0])
     signature_untrusted = sorted(signature_untrusted, key=lambda tup: tup[0])
 
-    return render(request, 'graphs/cert_signature.html',
-                  {'bars': {'title': 'Signature', 'xaxis': 'Signature Algorithm', 'yaxis': 'Number of Handshake',
+    return render(request, 'graphs/certificate.html',
+                  {'page_title': 'HTTPS Certificate Signature', 'panel_title': 'Scanned in 11/11/11',
+                   'bars': {'title': 'Signature', 'xaxis': 'Signature Algorithm', 'yaxis': 'Number of Handshake',
                             'xvalues': [i[0] for i in signature_trusted],
                             'values': [{'name': 'https trusted', 'yvalue': [i[1] for i in signature_trusted]},
                                        {'name': 'https untrusted', 'yvalue': [i[1] for i in signature_untrusted]}]}})
@@ -60,8 +63,9 @@ def certificate_cipher_suite(request):
     cipher_suite_trusted = sorted(cipher_suite_trusted, key=lambda tup: tup[0])
     cipher_suite_untrusted = sorted(cipher_suite_untrusted, key=lambda tup: tup[0])
 
-    return render(request, 'graphs/cert_cipher_suite.html',
-                  {'bars': {'title': 'Cipher Suites', 'xaxis': 'Cipher Suite', 'yaxis': 'Number of Handshake',
+    return render(request, 'graphs/certificate.html',
+                  {'page_title': 'HTTPS Certificate Cipher Suites', 'panel_title': 'Scanned in 11/11/11',
+                   'bars': {'title': 'Cipher Suites', 'xaxis': 'Cipher Suite', 'yaxis': 'Number of Handshake',
                             'xvalues': [i[0] for i in cipher_suite_trusted],
                             'values': [{'name': 'https trusted', 'yvalue': [i[1] for i in cipher_suite_trusted]},
                                        {'name': 'https untrusted', 'yvalue': [i[1] for i in cipher_suite_untrusted]}]}})
@@ -78,8 +82,9 @@ def certificate_tls_version(request):
     tls_version_trusted = sorted(tls_version_trusted, key=lambda tup: tup[0])
     tls_version_untrusted = sorted(tls_version_untrusted, key=lambda tup: tup[0])
 
-    return render(request, 'graphs/cert_tls_version.html',
-                  {'bars': {'title': 'Cipher Suites', 'xaxis': 'TLS Version', 'yaxis': 'Number of Handshake',
+    return render(request, 'graphs/certificate.html',
+                  {'page_title': 'HTTPS Certificate TLS Version', 'panel_title': 'Scanned in 11/11/11',
+                   'bars': {'title': 'Cipher Suites', 'xaxis': 'TLS Version', 'yaxis': 'Number of Handshake',
                             'xvalues': [i[0] for i in tls_version_trusted],
                             'values': [{'name': 'https trusted', 'yvalue': [i[1] for i in tls_version_trusted]},
                                        {'name': 'https untrusted', 'yvalue': [i[1] for i in tls_version_untrusted]}]}})
