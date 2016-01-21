@@ -1,0 +1,170 @@
+{% extends "graphs/base.html" %}
+{% load staticfiles %}
+
+{% block scripts %}
+    <script src="http://maps.googleapis.com/maps/api/js"></script>
+<script>
+function initialize() {
+  var mapProp = {
+    center:new google.maps.LatLng(51.508742,-0.120850),
+    zoom:5,
+    mapTypeId:google.maps.MapTypeId.ROADMAP
+  };
+  var map=new google.maps.Map(document.getElementById("map"),mapProp);
+}
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+</head>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <h1>Query: <small>192.80.24.6</small></h1>
+        <hr style="background-color: #3C8DBC; height: 2px">
+        <div class="row">
+            <div class="col-md-8">
+                <ul style="list-style-type: none">
+                    <li><b>IP:</b> 192.80.24.6</li>
+                    <li><b>DNS Name: </b> anakena.dcc.uchile.cl </li>
+                    <li><b>Manufacturer: </b> PC Factory </li>
+                    <li><b></b></li>
+                    <li><b>Operative System: </b> CentOS </li>
+                    <li><b>Operative System Version: </b> 14.3.5 </li>
+                    <li><b>Device Type: </b> Server </li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <div id="map" style="height: 200px"></div>
+            </div>
+         </div>
+        <div class="row">
+            <div class="col-md-8">
+                <hr style="background-color: #3C8DBC; height: 2px">
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading" style="background-color: #3C8DBC"><h4><b>HTTP</b> (port 80)</h4> </div>
+                    <table class="table table-hover">
+                        <tr>
+                            <td><b>Date:</b></td>
+                            <td>21/01/2016</td>
+                        </tr>
+                        <tr>
+                            <td><b>Error:</b></td>
+                            <td>Error</td>
+                        </tr>
+                        <tr>
+                            <td><b>Response:</b></td>
+                            <td>200 OK <span class="label label-success">Ok</span></td>
+                        </tr>
+                        <tr>
+                            <td><b>Server:</b></td>
+                            <td>Server server</td>
+                        </tr>
+                        <tr>
+                            <td><b>Content Type:</b></td>
+                            <td>Text</td>
+                        </tr>
+                        <tr>
+                            <td><b>WWW Authenticate:</b></td>
+                            <td>level 15</td>
+                        </tr>
+                        <tr>
+                            <td><b>Header:</b></td>
+                            <td>HEADER HEADER HEADER</td>
+                        </tr>
+                        <tr>
+                            <td><b>Index:</b></td>
+                            <td>njfjkhfdgahjfgdajhfgdhjkfgdhjkfgdadflgnkjaerhgui</td>
+                        </tr>
+                        <tr>
+                            <td><b>Service Metadata</b></td>
+                            <td>bla bla bla</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="panel panel-primary">
+                    <div class="panel-heading" style="background-color: #3C8DBC"><h4><b>HTTPS</b> (port 443)</h4> </div>
+                    <table class="table table-hover">
+                        <tr>
+                            <td><b>Date:</b></td>
+                            <td>21/01/2016</td>
+                        </tr>
+                        <tr>
+                            <td><b>Error:</b></td>
+                            <td>Error</td>
+                        </tr>
+                        <tr>
+                            <td><b>Response:</b></td>
+                            <td>200 OK <span class="label label-success">Ok</span></td>
+                        </tr>
+                        <tr>
+                            <td><b>Server:</b></td>
+                            <td>Server server</td>
+                        </tr>
+                        <tr>
+                            <td><b>Content Type:</b></td>
+                            <td>Text</td>
+                        </tr>
+                        <tr>
+                            <td><b>WWW Authenticate:</b></td>
+                            <td>level 15</td>
+                        </tr>
+                        <tr>
+                            <td><b>Header:</b></td>
+                            <td>HEADER HEADER HEADER</td>
+                        </tr>
+                        <tr>
+                            <td><b>Index:</b></td>
+                            <td>njfjkhfdgahjfgdajhfgdhjkfgdhjkfgdadflgnkjaerhgui</td>
+                        </tr>
+                        <tr>
+                            <td><b>Service Metadata</b></td>
+                            <td>bla bla bla</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <hr style="background-color: #3C8DBC; height: 2px">
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading" style="background-color: #3C8DBC"><h4><b>HTTPS  Certificate</b> (port 443)</h4> </div>
+                    <table class="table table-hover">
+                        <tr>
+                            <td><b>Date:</b></td>
+                            <td>21/01/2016</td>
+                        </tr>
+                        <tr>
+                            <td><b>Error:</b></td>
+                            <td><span class="label label-danger">Error</span></td>
+                        </tr>
+                        <tr>
+                            <td><b>Validation:</b></td>
+                            <td><span class="label label-success">True</span></td>
+                        </tr>
+                        <tr>
+                            <td><b>TLS Protocol:</b></td>
+                            <td>TLS v1.0</td>
+                        </tr>
+                        <tr>
+                            <td><b>Cipher Suite:</b></td>
+                            <td>NULL NULL</td>
+                        </tr>
+                        <tr>
+                            <td><b>Signature Algorithm:</b></td>
+                            <td>RSA plas</td>
+                        </tr>
+                        <tr>
+                            <td><b>Chain:</b></td>
+                            <td>Chain Chain Chain</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+    </div>
+{% endblock %}
