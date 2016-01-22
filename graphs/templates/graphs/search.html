@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block scripts %}
-    <script src="http://maps.googleapis.com/maps/api/js"></script>
+    <script src="http://maps.googleapis.com/maps/api/js" xmlns="http://www.w3.org/1999/html"></script>
 <script>
 function initialize() {
   var mapProp = {
@@ -44,86 +44,103 @@ google.maps.event.addDomListener(window, 'load', initialize);
                 <hr style="background-color: #3C8DBC; height: 2px">
 
                 <div class="panel panel-primary">
-                    <div class="panel-heading" style="background-color: #3C8DBC"><h4><b>HTTP</b> (port 80)</h4> </div>
-                    <table class="table table-hover">
-                        <tr>
-                            <td><b>Date:</b></td>
-                            <td>21/01/2016</td>
-                        </tr>
-                        <tr>
-                            <td><b>Error:</b></td>
-                            <td>Error</td>
-                        </tr>
-                        <tr>
-                            <td><b>Response:</b></td>
-                            <td>200 OK <span class="label label-success">Ok</span></td>
-                        </tr>
-                        <tr>
-                            <td><b>Server:</b></td>
-                            <td>Server server</td>
-                        </tr>
-                        <tr>
-                            <td><b>Content Type:</b></td>
-                            <td>Text</td>
-                        </tr>
-                        <tr>
-                            <td><b>WWW Authenticate:</b></td>
-                            <td>level 15</td>
-                        </tr>
-                        <tr>
-                            <td><b>Header:</b></td>
-                            <td>HEADER HEADER HEADER</td>
-                        </tr>
-                        <tr>
-                            <td><b>Index:</b></td>
-                            <td>njfjkhfdgahjfgdajhfgdhjkfgdhjkfgdadflgnkjaerhgui</td>
-                        </tr>
-                        <tr>
-                            <td><b>Service Metadata</b></td>
-                            <td>bla bla bla</td>
-                        </tr>
-                    </table>
+                    <div class="panel-heading" style="background-color: #3C8DBC">
+                        <h4>
+                            <a role="button" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <span style="color: white"><b>HTTP</b> (port 80)</span>
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in">
+                        <table class="table table-hover" >
+                            <tr>
+                                <td><b>Date:</b></td>
+                                <td>21/01/2016</td>
+                            </tr>
+                            <tr>
+                                <td><b>Error:</b></td>
+                                <td>Error</td>
+                            </tr>
+                            <tr>
+                                <td><b>Response:</b></td>
+                                <td>200 OK <span class="label label-success">Ok</span></td>
+                            </tr>
+                            <tr>
+                                <td><b>Server:</b></td>
+                                <td>Server server</td>
+                            </tr>
+                            <tr>
+                                <td><b>Content Type:</b></td>
+                                <td>Text</td>
+                            </tr>
+                            <tr>
+                                <td><b>WWW Authenticate:</b></td>
+                                <td>level 15</td>
+                            </tr>
+                            <tr>
+                                <td><b>Header:</b></td>
+                                <td>HEADER HEADER HEADER</td>
+                            </tr>
+                            <tr>
+                                <td><b>Index:</b></td>
+                                <td>njfjkhfdgahjfgdajhfgdhjkfgdhjkfgdadflgnkjaerhgui</td>
+                            </tr>
+                            <tr>
+                                <td><b>Service Metadata</b></td>
+                                <td>bla bla bla</td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
+
                 <div class="panel panel-primary">
-                    <div class="panel-heading" style="background-color: #3C8DBC"><h4><b>HTTPS</b> (port 443)</h4> </div>
-                    <table class="table table-hover">
-                        <tr>
-                            <td><b>Date:</b></td>
-                            <td>21/01/2016</td>
-                        </tr>
-                        <tr>
-                            <td><b>Error:</b></td>
-                            <td>Error</td>
-                        </tr>
-                        <tr>
-                            <td><b>Response:</b></td>
-                            <td>200 OK <span class="label label-success">Ok</span></td>
-                        </tr>
-                        <tr>
-                            <td><b>Server:</b></td>
-                            <td>Server server</td>
-                        </tr>
-                        <tr>
-                            <td><b>Content Type:</b></td>
-                            <td>Text</td>
-                        </tr>
-                        <tr>
-                            <td><b>WWW Authenticate:</b></td>
-                            <td>level 15</td>
-                        </tr>
-                        <tr>
-                            <td><b>Header:</b></td>
-                            <td>HEADER HEADER HEADER</td>
-                        </tr>
-                        <tr>
-                            <td><b>Index:</b></td>
-                            <td>njfjkhfdgahjfgdajhfgdhjkfgdhjkfgdadflgnkjaerhgui</td>
-                        </tr>
-                        <tr>
-                            <td><b>Service Metadata</b></td>
-                            <td>bla bla bla</td>
-                        </tr>
-                    </table>
+                    <div class="panel-heading" style="background-color: #3C8DBC">
+                        <h4>
+                            <a role="button" data-toggle="collapse" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                <span style="color: white"><b>HTTPS</b> (port 443)</span>
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse in">
+                        <table class="table table-hover">
+                            <tr>
+                                <td><b>Date:</b></td>
+                                <td>21/01/2016</td>
+                            </tr>
+                            <tr>
+                                <td><b>Error:</b></td>
+                                <td>Error</td>
+                            </tr>
+                            <tr>
+                                <td><b>Response:</b></td>
+                                <td>200 OK <span class="label label-success">Ok</span></td>
+                            </tr>
+                            <tr>
+                                <td><b>Server:</b></td>
+                                <td>Server server</td>
+                            </tr>
+                            <tr>
+                                <td><b>Content Type:</b></td>
+                                <td>Text</td>
+                            </tr>
+                            <tr>
+                                <td><b>WWW Authenticate:</b></td>
+                                <td>level 15</td>
+                            </tr>
+                            <tr>
+                                <td><b>Header:</b></td>
+                                <td>HEADER HEADER HEADER</td>
+                            </tr>
+                            <tr>
+                                <td><b>Index:</b></td>
+                                <td>njfjkhfdgahjfgdajhfgdhjkfgdhjkfgdadflgnkjaerhgui</td>
+                            </tr>
+                            <tr>
+                                <td><b>Service Metadata</b></td>
+                                <td>bla bla bla</td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
 
                 <hr style="background-color: #3C8DBC; height: 2px">
