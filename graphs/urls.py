@@ -17,5 +17,6 @@ urlpatterns = [
     url(r'^https/validation$', views.certificate_validation, name='graphs/https/validation'),
     url(r'^https/cipher-suite$', views.certificate_cipher_suite, name='graphs/https/cipher-suite'),
     url(r'^https/tls_version$', views.certificate_tls_version, name='graphs/https/tls-version'),
-    url(r'^https/signature', views.certificate_signature, name='graphs/https/signature'),
+    url(r'^https/signature$', views.certificate_signature, name='graphs/https/signature'),
+    url(r'^search/ip', views.ip_search, name='search/ip'),
 ]

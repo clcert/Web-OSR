@@ -69,6 +69,7 @@ class Http(Document):
     def __str__(self):
         return str({
             'ip': self.ip,
+            'date': self.date,
             'metadata': self.metadata.__str__()
         })
 

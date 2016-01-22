@@ -1,0 +1,27 @@
+<div class="panel panel-info">
+    <div class="panel-heading"><b>{{ title }}</b></div>
+    <div class="panel-body">
+        <div id="container">
+            <table class="table table-hover">
+                <tbody>
+                <tr>
+                    <td>Date</td>
+                    <td>{{ data.date }}</td>
+                </tr>
+                {% if data.error %}
+                    <tr>
+                        <td>Error</td>
+                        <td>{{ data.error }}</td>
+                    </tr>
+                {% endif %}
+                {% if data.response %}
+                    <tr>
+                        <td>Response</td>
+                        <td>{{ data.response }}</td>
+                    </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
