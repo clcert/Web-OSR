@@ -1,0 +1,88 @@
+<div class="panel panel-primary">
+    <div class="panel-heading" style="background-color: #3C8DBC">
+        <h4>
+            <a role="button" data-toggle="collapse" href="#{{ id }}" aria-expanded="true" aria-controls="{{ id }}">
+                <span style="color: white"><b>{{ protocol }}</b> (port {{ port }})</span>
+            </a>
+        </h4>
+    </div>
+    <div id="{{ id }}" class="panel-collapse collapse in">
+        <table class="table table-hover" >
+            {% if date %}
+            <tr>
+                <td><b>Date:</b></td>
+                <td>{{ date }}</td>
+            </tr>
+            {% endif %}
+
+            {% if error %}
+            <tr>
+                <td><b>Error:</b></td>
+                <td>{{ error }}</td>
+            </tr>
+            {% endif %}
+
+            {% if valid != None %}
+                <tr>
+                    <td><b>Valid Certificate:</b></td>
+                    <td>{{ valid }} <span class="label label-success">{{ valid }}</span></td>
+                </tr>
+            {% endif %}
+
+            {% if tls_protocol %}
+            <tr>
+                <td><b>TLS Protocol:</b></td>
+                <td>{{ tls_protocol }}</td>
+            </tr>
+            {% endif %}
+
+            {% if cipher_suite %}
+            <tr>
+                <td><b>Cipher Suite:</b></td>
+                <td>{{ cipher_suite }}</td>
+            </tr>
+            {% endif %}
+
+            {% if certificate_authority %}
+            <tr>
+                <td><b>Certificate Authority:</b></td>
+                <td>{{ certificate_authority }}</td>
+            </tr>
+            {% endif %}
+
+            {% if signature_algorithm %}
+            <tr>
+                <td><b>Signature Algorithm:</b></td>
+                <td>{{ signature_algorithm }}</td>
+            </tr>
+            {% endif %}
+
+            {% if key_bits %}
+            <tr>
+                <td><b>Key Bits:</b></td>
+                <td>{{ key_bits }}</td>
+            </tr>
+            {% endif %}
+{#            {% if service %}#}
+{#                {%  if service.manufacturer %}#}
+{#                <tr>#}
+{#                    <td><b>Manufacturer:</b></td>#}
+{#                    <td>{{ service.manufacturer }}</td>#}
+{#                </tr>#}
+{#                {% endif %}#}
+{#                {%  if service.product %}#}
+{#                <tr>#}
+{#                    <td><b>Product:</b></td>#}
+{#                    <td>{{ service.product }}</td>#}
+{#                </tr>#}
+{#                {% endif %}#}
+{#                {%  if service.version %}#}
+{#                <tr>#}
+{#                    <td><b>Version:</b></td>#}
+{#                    <td>{{ service.version }}</td>#}
+{#                </tr>#}
+{#                {% endif %}#}
+{#            {% endif %}#}
+        </table>
+    </div>
+</div>

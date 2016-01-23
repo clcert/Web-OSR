@@ -21,4 +21,20 @@ def http_table(id, port, http_data):
             'header': http_data.header,
             'index': http_data.index,
             'service': service
-          }
+            }
+
+
+@register.inclusion_tag("tables/certificate_table.html")
+def certificate_table(protocol, id, port, cert_data):
+    return {'protocol': protocol,
+            'id': id,
+            'port': port,
+            'date': cert_data.date,
+            'error': cert_data.error,
+            'valid': cert_data.valid,
+            'tls_protocol': cert_data.tls_protocol,
+            'cipher_suite': cert_data.cipher_suite,
+            'certificate_authority': cert_data.certificate_authority,
+            'signature_algorithm': cert_data.signature_algorithm,
+            'key_bits': cert_data.key_bits
+            }
