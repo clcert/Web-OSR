@@ -147,7 +147,7 @@ class Https(Document):
     error = StringField()
     tls_protocol = StringField()
     cipher_suite = StringField()
-    certificate_authority = StringField()
+    certificate_authority = StringField(db_field='certificateAuthority')
     signature_algorithm = StringField()
     key_bits = IntField()
     chain = ListField()
