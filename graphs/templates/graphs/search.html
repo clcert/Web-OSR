@@ -65,43 +65,12 @@ google.maps.event.addDomListener(window, 'load', initialize);
                     {% http_table 'http443' '8080' http8080 %}
                 {% endif %}
 
-
-
                 <hr style="background-color: #3C8DBC; height: 2px">
 
-                <div class="panel panel-primary">
-                    <div class="panel-heading" style="background-color: #3C8DBC"><h4><b>HTTPS  Certificate</b> (port 443)</h4> </div>
-                    <table class="table table-hover">
-                        <tr>
-                            <td><b>Date:</b></td>
-                            <td>21/01/2016</td>
-                        </tr>
-                        <tr>
-                            <td><b>Error:</b></td>
-                            <td><span class="label label-danger">Error</span></td>
-                        </tr>
-                        <tr>
-                            <td><b>Validation:</b></td>
-                            <td><span class="label label-success">True</span></td>
-                        </tr>
-                        <tr>
-                            <td><b>TLS Protocol:</b></td>
-                            <td>TLS v1.0</td>
-                        </tr>
-                        <tr>
-                            <td><b>Cipher Suite:</b></td>
-                            <td>NULL NULL</td>
-                        </tr>
-                        <tr>
-                            <td><b>Signature Algorithm:</b></td>
-                            <td>RSA plas</td>
-                        </tr>
-                        <tr>
-                            <td><b>Chain:</b></td>
-                            <td>Chain Chain Chain</td>
-                        </tr>
-                    </table>
-                </div>
+                {% if https %}
+                    {% certificate_table 'HTTPS  Certificate' 'https' '443' https %}
+                {% endif %}
+
             </div>
             <div class="col-md-4"></div>
         </div>
