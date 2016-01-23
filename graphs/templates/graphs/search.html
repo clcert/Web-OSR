@@ -57,6 +57,14 @@ google.maps.event.addDomListener(window, 'load', initialize);
                     {% http_table 'http443' '443' http443 %}
                 {% endif %}
 
+                {% if http8000 %}
+                    {% http_table 'http8000' '8000' http8000 %}
+                {% endif %}
+
+                {% if http8080 %}
+                    {% http_table 'http443' '8080' http8080 %}
+                {% endif %}
+
 
 
                 <hr style="background-color: #3C8DBC; height: 2px">
