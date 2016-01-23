@@ -79,7 +79,7 @@ class Http80(Http):
         'collection': 'port-80',
         'strict': False,
         'ordering': ['date'],
-        'indexes': ['#date']
+        'indexes': ['#ip']
     }
 
 
@@ -88,7 +88,7 @@ class Http443(Http):
         'collection': 'port-443',
         'strict': False,
         'ordering': ['date'],
-        'indexes': ['#date']
+        'indexes': ['#ip']
 
     }
 
@@ -98,7 +98,7 @@ class Http8000(Http):
         'collection': 'port-8000',
         'strict': False,
         'ordering': ['date'],
-        'indexes': ['#date']
+        'indexes': ['#ip']
     }
 
 
@@ -107,7 +107,7 @@ class Http8080(Http):
         'collection': 'port-8080',
         'strict': False,
         'ordering': ['date'],
-        'indexes': ['#date']
+        'indexes': ['#ip']
     }
 
 
