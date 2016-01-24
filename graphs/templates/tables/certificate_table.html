@@ -103,6 +103,99 @@
                     </td>
                 </tr>
             {% endif %}
+            {% if ciphers_suites %}
+            <tr><td><b>Supported Ciphers Suites:</b></td><td></td></tr>
+            <tr>
+                <td style="text-align: center"><b>Null Ciphers</b></td>
+                <td>{% if ciphers_suites.null_ciphers %}
+                    {{ ciphers_suites.null_ciphers }}
+                    {% else %}
+                    Not Supported
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center"><b>Anonymous Null Ciphers</b></td>
+                <td>{% if ciphers_suites.anonymous_null_ciphers %}
+                    {{ ciphers_suites.anonymous_null_ciphers }}
+                    {% else %}
+                    Not Supported
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center"><b>Anonymous DH Ciphers</b></td>
+                <td>{% if ciphers_suites.anonymous_dh_ciphers %}
+                    {{ ciphers_suites.anonymous_dh_ciphers }}
+                    {% else %}
+                    Not Supported
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center"><b>Export 40 Ciphers</b></td>
+                <td>{% if ciphers_suites.export_40_ciphers %}
+                    {{ ciphers_suites.export_40_ciphers }}
+                    {% else %}
+                    Not Supported
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center"><b>Low Ciphers</b></td>
+                <td>{% if ciphers_suites.low_ciphers %}
+                    {{ ciphers_suites.low_ciphers }}
+                    {% else %}
+                    Not Supported
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center"><b>Medium Ciphers</b></td>
+                <td>{% if ciphers_suites.medium_ciphers %}
+                    {{ ciphers_suites.medium_ciphers }}
+                    {% else %}
+                    Not Supported
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center"><b>DES3 Ciphers</b></td>
+                <td>{% if ciphers_suites.des3_ciphers %}
+                    {{ ciphers_suites.des3_ciphers }}
+                    {% else %}
+                    Not Supported
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center"><b>High Ciphers</b></td>
+                <td>{% if ciphers_suites.high_ciphers %}
+                    {{ ciphers_suites.high_ciphers }}
+                    {% else %}
+                    Not Supported
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center"><b>FREAK</b></td>
+                <td>{% if ciphers_suites.freak %}
+                    {{ ciphers_suites.freak }}
+                    {% else %}
+                    Not Supported
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center"><b>LogJam</b></td>
+                <td>{% if ciphers_suites.logjam %}
+                    {{ ciphers_suites.logjam }}
+                    {% else %}
+                    Not Supported
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
         </table>
     </div>
 </div>

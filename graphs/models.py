@@ -147,6 +147,19 @@ class Protocols(EmbeddedDocument):
     SSL_30 = StringField()
 
 
+class CiphersSuites(EmbeddedDocument):
+    null_ciphers = StringField()
+    anonymous_null_ciphers = StringField()
+    anonymous_dh_ciphers = StringField()
+    export_40_ciphers = StringField()
+    low_ciphers = StringField()
+    medium_ciphers = StringField()
+    des3_ciphers = StringField()
+    high_ciphers = StringField()
+    freak = StringField()
+    logjam = StringField()
+
+
 # Todo complete the model
 class Https(Document):
     ip = StringField()
@@ -160,6 +173,7 @@ class Https(Document):
     chain = ListField()
     valid = BooleanField(db_field='validate')
     protocols = EmbeddedDocumentField(Protocols)
+    ciphersSuites = EmbeddedDocumentField(CiphersSuites)
 
     meta = {
         'collection': 'port_443_cert',
