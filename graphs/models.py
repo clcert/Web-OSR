@@ -140,6 +140,13 @@ class GrabberScan(Document):
     }
 
 
+class Protocols(EmbeddedDocument):
+    TLS_12 = StringField()
+    TLS_11 = StringField()
+    TLS_10 = StringField()
+    SSL_30 = StringField()
+
+
 # Todo complete the model
 class Https(Document):
     ip = StringField()
@@ -152,6 +159,7 @@ class Https(Document):
     key_bits = IntField()
     chain = ListField()
     valid = BooleanField(db_field='validate')
+    protocols = EmbeddedDocumentField(Protocols)
 
     meta = {
         'collection': 'port_443_cert',

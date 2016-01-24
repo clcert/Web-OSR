@@ -63,26 +63,46 @@
                 <td>{{ key_bits }}</td>
             </tr>
             {% endif %}
-{#            {% if service %}#}
-{#                {%  if service.manufacturer %}#}
-{#                <tr>#}
-{#                    <td><b>Manufacturer:</b></td>#}
-{#                    <td>{{ service.manufacturer }}</td>#}
-{#                </tr>#}
-{#                {% endif %}#}
-{#                {%  if service.product %}#}
-{#                <tr>#}
-{#                    <td><b>Product:</b></td>#}
-{#                    <td>{{ service.product }}</td>#}
-{#                </tr>#}
-{#                {% endif %}#}
-{#                {%  if service.version %}#}
-{#                <tr>#}
-{#                    <td><b>Version:</b></td>#}
-{#                    <td>{{ service.version }}</td>#}
-{#                </tr>#}
-{#                {% endif %}#}
-{#            {% endif %}#}
+            
+            {% if protocols %}
+            <tr><td><b>Supported Protocols:</b></td><td></td></tr>
+                <tr>
+                    <td style="text-align: center"><b>TLS V1.2</b></td>
+                    <td>{% if protocols.TLS_12 %}
+                        <span class="label label-success">{{ protocols.TLS_12 }}</span>
+                        {% else %}
+                        <span class="label label-danger">{{ protocols.TLS_12 }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center"><b>TLS V1.1</b></td>
+                    <td>{% if protocols.TLS_11 %}
+                        <span class="label label-success">{{ protocols.TLS_11 }}</span>
+                        {% else %}
+                        <span class="label label-danger">{{ protocols.TLS_11 }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center"><b>TLS V1.0</b></td>
+                    <td>{% if protocols.TLS_10 %}
+                        <span class="label label-success">{{ protocols.TLS_10 }}</span>
+                        {% else %}
+                        <span class="label label-danger">{{ protocols.TLS_10 }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center"><b>SSL V3.0</b></td>
+                    <td>{% if protocols.SSL_30 %}
+                        <span class="label label-success">{{ protocols.SSL_30 }}</span>
+                        {% else %}
+                        <span class="label label-danger">{{ protocols.SSL_30 }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endif %}
         </table>
     </div>
 </div>

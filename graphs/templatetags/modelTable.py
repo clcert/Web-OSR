@@ -36,5 +36,6 @@ def certificate_table(protocol, id, port, cert_data):
             'cipher_suite': cert_data.cipher_suite,
             'certificate_authority': cert_data.certificate_authority,
             'signature_algorithm': cert_data.signature_algorithm,
-            'key_bits': cert_data.key_bits
+            'key_bits': cert_data.key_bits,
+            'protocols': cert_data.protocols
             }
