@@ -5,8 +5,8 @@ from graphs.models import Http80, Http443, Http8080, Http8000, Https
 
 
 def search(request):
-    # ip = '192.80.24.6'
-    ip = '201.220.232.16'
+    ip = '192.80.24.6'
+    # ip = '201.220.232.16'
     reversed_dns = socket.gethostbyaddr(ip)
     lat, long = geolite2.lookup(ip).location
 
