@@ -20,5 +20,6 @@ urlpatterns = [
     url(r'^https/signature$', views.certificate_signature, name='graphs/https/signature'),
     url(r'^search/ip', views.ip_search, name='search/ip'),
     url(r'^search$', views.search, name='search'),
+    url(r'^asn$', views.asn, name='graphs/asn'),
 ]
 

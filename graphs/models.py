@@ -111,6 +111,14 @@ class Http8080(Http):
     }
 
 
+class AsnIpAmount(Document):
+    _id = StringField()
+    total = IntField()
+    meta = {
+        'collection': 'ips_per_asn',
+    }
+
+
 class ZmapLog(Document):
     port = StringField()
     date = DateTimeField()

@@ -50,6 +50,7 @@
         <!-- Logo -->
         <a href="{% url "graphs/index" %}" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
+          <!-- it will be used when you click the sidebar toggle -->
           <span class="logo-mini">OSR</span>
           <!-- logo for regular state and mobile devices -->
           <span class="logo-lg">OSR</span>
@@ -71,7 +72,7 @@
                 <!-- Menu Toggle Button -->
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                   <!-- The user image in the navbar-->
-                  <img src="{% static "hevia.png" %}" class="user-image" alt="User Image">
+                  <img src="{% static "hevia.jpg" %}" class="user-image" alt="User Image">
                   <!-- hidden-xs hides the username on small devices so only the image appears. -->
                   <span class="hidden-xs">Alejandro Hevia</span>
                 </a>
@@ -87,6 +88,7 @@
         <section class="sidebar">
 
           <!-- search form (Optional) -->
+
           <form action="{% url 'search' %}" method="get" class="sidebar-form">
             <div class="input-group">
               <input type="text" name="question" class="form-control" placeholder="Search...">
@@ -95,14 +97,17 @@
               </span>
             </div>
           </form>
+
           <!-- /.search form -->
 
           <!-- Sidebar Menu -->
           <ul class="sidebar-menu">
             <li class="header">MAIN MENU</li>
             <!-- Optionally, you can add icons to the links -->
+                <!-- Dummies!
             <li class="active"><a href="#"><i class="fa fa-line-chart"></i> <span>Dummy</span></a></li>
             <li><a href="#"><i class="fa fa-link"></i> <span>Dummy</span></a></li>
+                -->
             <li class="treeview">
               <a href="#"><i class="fa fa-line-chart"></i> <span>HTTP</span> <i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu">
@@ -122,6 +127,7 @@
                 <li><a href="{% url 'graphs/https/tls-version' %}">TLS Version</a></li>
               </ul>
             </li>
+            <li class="active"><a href="{% url 'graphs/asn' %}"><i class="fa fa-line-chart"></i> <span>Top ASN</span></a></li>
           </ul><!-- /.sidebar-menu -->
         </section>
         <!-- /.sidebar -->
