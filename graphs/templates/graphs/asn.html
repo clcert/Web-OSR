@@ -21,6 +21,21 @@
             <div class="panel-heading">{{ panel_title }}</div>
             <div class="panel-body">
                 <div id="container" style="height: 700px"></div>
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if partial_data.has_previous %}
+                            <a href="?page={{ partial_data.previous_page_number }}">previous</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Page {{ partial_data.number }} of {{ partial_data.paginator.num_pages }}.
+                        </span>
+
+                        {% if partial_data.has_next %}
+                            <a href="?page={{ partial_data.next_page_number }}">next</a>
+                        {% endif %}
+                    </span>
+                </div>
             </div>
         </div>
     </div>

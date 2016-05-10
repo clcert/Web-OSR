@@ -118,5 +118,6 @@ pip-selfcheck.json
 
 ### Databases
 *.sqlite3
+mydatabase
 
 # Created by .ignore support plugin (hsz.mobi)
