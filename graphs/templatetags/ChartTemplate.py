@@ -12,6 +12,15 @@ def bar_chart(id, data):
             'x_label': data['xvalues'],
             'values': data['values']}
 
+@register.inclusion_tag('charts/log_bars_chart.html')
+def log_bar_chart(id, data):
+    return {'id': id,
+            'title': data['title'],
+            'title_x_axis': data['xaxis'],
+            'title_y_axis': data['yaxis'],
+            'x_label': data['xvalues'],
+            'values': data['values']}
+
 
 @register.inclusion_tag('charts/pie_chart_with_legend.html')
 def pie_chart_with_legend(id, data):
