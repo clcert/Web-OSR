@@ -34,11 +34,19 @@ google.maps.event.addDomListener(window, 'load', initialize);
                 <ul style="list-style-type: none">
                     <li><b>IP:</b> {{ ip }}</li>
                     <li><b>DNS Name: </b> {{ reverse }}</li>
-                    <li><b>Manufacturer: </b> PC Factory </li>
                     <li><b></b></li>
-                    <li><b>Operative System: </b> CentOS </li>
-                    <li><b>Operative System Version: </b> 14.3.5 </li>
-                    <li><b>Device Type: </b> Server </li>
+                    {% if http80.metadata.device %}
+                        <li><b>Operative System: </b> {{ http80.metadata.device.os }} </li>
+                        <li><b>Operative System Version: </b> {{ http80.metadata.device.os_version }} </li>
+                        <li><b>Device Type: </b> {{ http80.metadata.device.type }} </li>
+                    {% endif %}
+
+                    {% if http80.metadata.service %}
+                        <li><b>Product: </b> {{ http80.metadata.service.product }} </li>
+                        <li><b>Product Manufacturer: </b> {{ http80.metadata.service.manufacturer  }} </li>
+                        <li><b>Product Version: </b> {{ http80.metadata.service.version  }} </li>
+                    {% endif %}
+
                 </ul>
             </div>
             <div class="col-md-4">
