@@ -7,8 +7,15 @@ from graphs.models import Http80, Http443, Http8080, Http8000, Https
 def search(request):
     ip = request.GET[u'question']
     # ip = '201.220.232.16'
-    reversed_dns = socket.gethostbyaddr(ip)
-    lat, long = geolite2.lookup(ip).location
+    try:
+        reversed_dns = socket.gethostbyaddr(ip)
+    except socket.herror:
+        reversed_dns = 'Unknown host'
+
+    try:
+        lat, long = geolite2.lookup(ip).location
+    except AttributeError:
+        lat, long = None, None
 
     http80 = Http80.objects(ip=ip).order_by('-date').first()
     http443 = Http443.objects(ip=ip).order_by('-date').first()
