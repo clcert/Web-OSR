@@ -120,3 +120,4 @@ pip-selfcheck.json
 *.sqlite3
 
 # Created by .ignore support plugin (hsz.mobi)
+/web/accounts.py
