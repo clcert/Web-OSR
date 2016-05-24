@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{#{% load staticfiles %}#}
+{% load bootstrap %}
+
+{% block title %}
+    OSR | Registro
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h1>Registro</h1>
+                </div>
+                <div class="box-body">
+                    <form action="." method="post">
+                        {% csrf_token %}
+                        {{ form|bootstrap }}
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Enviar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+{% endblock %}
