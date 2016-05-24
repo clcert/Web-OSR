@@ -13,16 +13,19 @@ Including another URLconf
     1. Add an import:  from blog import urls as blog_urls
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
+import registration
 from django.conf.urls import include, url
 from django.contrib import admin
 
 # from graphs.views import index
-from django.contrib.auth.views import password_reset
+from registration.forms import RegistrationFormUniqueEmail
+from registration.views import RegistrationView
 
 from login.views import index
 
 urlpatterns = [
     url(r'^$', index, name='index'),
+    url(r'^accounts/register/', RegistrationView.as_view(form_class=RegistrationFormUniqueEmail), name='registration_register'),
     url(r'^accounts/', include('registration.backends.hmac.urls')),
     # url(r'^$', index, name='index'),
     # url(r'^graphs/', include('graphs.urls')),
