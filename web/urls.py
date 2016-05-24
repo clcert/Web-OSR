@@ -17,6 +17,8 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 # from graphs.views import index
+from django.contrib.auth.views import password_reset
+
 from login.views import index
 
 urlpatterns = [

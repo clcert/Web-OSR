@@ -59,16 +59,31 @@
         <nav class="navbar navbar-static-top" role="navigation">
           <!-- Sidebar toggle button-->
           <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-            <span class="sr-only">Toggle navigation</span>
+              <span class="sr-only">Toggle navigation</span>
           </a>
-          <!-- Navbar Right Menu -->
-          <div class="navbar-custom-menu">
-            <ul class="nav navbar-nav">
-              <!-- Messages: style can be found in dropdown.less-->
-                {% block user %}
-                {% endblock %}
-            </ul>
-          </div>
+            <!-- Navbar Right Menu -->
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    {% if request.user.is_authenticated %}
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" href="{% url 'index' %}"><i class="fa fa-user" aria-hidden="true"></i> {{ request.user.username }}</a>
+                        </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" href="{% url 'auth_logout' %}?next=/"><i class="fa fa-sign-out" aria-hidden="true"></i></i> Log out</a>
+                        </li>
+                    {% else %}
+
+                        <!-- Messages: style can be found in dropdown.less-->
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" href="{% url 'auth_login' %}"><i class="fa fa-sign-in" aria-hidden="true"></i> Login</a>
+                        </li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" href="{% url 'registration_register' %}"><i class="fa fa-user-plus" aria-hidden="true"></i> Registrar</a>
+                        </li>
+
+                    {% endif %}
+                </ul>
+            </div>
         </nav>
       </header>
 

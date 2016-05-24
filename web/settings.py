@@ -26,13 +26,15 @@ SECRET_KEY = 'm#c_!e%kce71oh4vnuj4=)f41m+mqbl5)rx54r9t98_&oz7_fw'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Loging Redirect
+LOGIN_REDIRECT_URL = '/'
+
 ALLOWED_HOSTS = []
 
 
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -41,7 +43,7 @@ INSTALLED_APPS = (
     'bootstrapform',
     'graphs',
     'login',
-
+    'django.contrib.admin',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -60,7 +62,7 @@ ROOT_URLCONF = 'web.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
