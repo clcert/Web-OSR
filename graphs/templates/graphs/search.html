@@ -21,6 +21,7 @@ function initialize() {
 }
 google.maps.event.addDomListener(window, 'load', initialize);
 </script>
+
 </head>
 {% endblock %}
 
@@ -29,9 +30,9 @@ google.maps.event.addDomListener(window, 'load', initialize);
     <div class="col-md-2"></div>
     <div class="col-md-8">
         <div class="row">
-            <div class="arrow-left"></div>
+            <button style="font-size:24px" id="left-button"><i class="fa fa-angle-left"> Antes</i></button>
             <h1 style="display: inline-block">Query: <small>{{ ip }}</small></h1>
-            <div class="arrow-right"></div>
+            <button style="font-size:24px" id="right-button">Después <i class="fa fa-angle-right"></i></button>
         </div>
 
         <hr style="background-color: #3C8DBC; height: 2px">
@@ -91,4 +92,37 @@ google.maps.event.addDomListener(window, 'load', initialize);
     </div>
     <div class="col-md-2"></div>
     </div>
+<script>
+    $('#left-button').on('click', function(event){
+        event.preventDefault();
+        dateRequest('left');
+    });
+
+    $('#right-button').on('click', function(event){
+        event.preventDefault();
+        dateRequest('right');
+    });
+
+    function dateRequest(direction) {
+        var i = {{ datePosition }};
+        $.ajax({
+            url : "search",
+            type : "GET",
+            data : {
+                question : '{{ ip }}',
+                position : i,
+                direction : direction,
+            },
+            success : function (json) {
+                console.log("success");
+            },
+            error : function (xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+            },
+        });
+    };
+
+
+</script>
+
 {% endblock %}

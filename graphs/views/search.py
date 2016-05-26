@@ -8,10 +8,20 @@ def search(request):
     ip = request.GET[u'question']
     if u'position' not in request.GET:
         date_position = 0
-        print "wat"
+        print 'No se entrego position'
     else:
         date_position = int(request.GET[u'position'])
-        
+        direction = request.GET[u'direction']
+        print direction
+        print date_position
+        if direction == 'left':
+            date_position += 1
+        else:
+            date_position -= 1
+
+    print date_position
+
+
     # latest date is 0, increasing position goes back in time
     # ip = '201.220.232.16'
     try:
@@ -24,7 +34,10 @@ def search(request):
     except AttributeError:
         lat, long = None, None
 
-    http80 = Http80.objects(ip=ip).order_by('-date')[date_position]
+    try:
+        http80 = Http80.objects(ip=ip).order_by('-date')[date_position]
+    except IndexError:
+        http80 = None
     try:
         http443 = Http443.objects(ip=ip).order_by('-date')[date_position]
     except IndexError:
