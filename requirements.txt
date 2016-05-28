@@ -3,3 +3,4 @@ django
 django-registration
 django-bootstrap-form
 python-geoip-geolite2
+psycopg2
