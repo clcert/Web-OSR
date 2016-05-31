@@ -87,7 +87,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
                 {% endif %}
 
                 {% if http8080 %}
-                    {% http_table 'http443' '8080' http8080 %}
+                    {% http_table 'http8080' '8080' http8080 %}
                 {% endif %}
 
                 <hr style="background-color: #3C8DBC; height: 2px">
@@ -103,21 +103,19 @@ google.maps.event.addDomListener(window, 'load', initialize);
     <div class="col-md-2"></div>
     </div>
 <script>
-    $('#left-button').on('click', function(event){
+    $('.leftButton').on('click', function(event){
         event.preventDefault();
-        dateRequest('left');
+        console.log("pressed < on ".concat($(this).parent().parent().siblings().attr('id')));
     });
 
-    $('#right-button').on('click', function(event){
+    $('.rightButton').on('click', function(event){
         event.preventDefault();
-        dateRequest('right');
+        console.log("pressed > on ".concat($(this).parent().parent().siblings().attr('id')));
     });
 
     function dateRequest(direction) {
-        var i = {{ datePosition }};
         console.log("date request") // sanity check
-        console.log(i);
-        window.location.href = 'search';
+        console.log(this);
     };
 
 
