@@ -2,25 +2,26 @@ import socket
 from geoip import geolite2
 from django.shortcuts import render
 from graphs.models import Http80, Http443, Http8080, Http8000, Https
+from django.http import HttpResponse
+import json
 
 
 def search(request):
+    datechange = False
     ip = request.GET[u'question']
     if u'position' not in request.GET:
         date_position = 0
         print 'No se entrego position'
     else:
+        datechange = True
         date_position = int(request.GET[u'position'])
         direction = request.GET[u'direction']
-        print direction
-        print date_position
         if direction == 'left':
             date_position += 1
         else:
             date_position -= 1
-
-    print date_position
-
+        if date_position < 0:
+            date_position = 0
 
     # latest date is 0, increasing position goes back in time
     # ip = '201.220.232.16'

@@ -30,9 +30,19 @@ google.maps.event.addDomListener(window, 'load', initialize);
     <div class="col-md-2"></div>
     <div class="col-md-8">
         <div class="row">
-            <button style="font-size:24px" id="left-button"><i class="fa fa-angle-left"> Antes</i></button>
+            <form action="search" style="display: inline-block">
+                <input type="hidden" name="question" value='{{ ip }}'>
+                <input type="hidden" name="position" value='{{ datePosition }}'>
+                <input type="hidden" name="direction" value='left'>
+                <input type="submit" value="Antes">
+            </form>
             <h1 style="display: inline-block">Query: <small>{{ ip }}</small></h1>
-            <button style="font-size:24px" id="right-button">Después <i class="fa fa-angle-right"></i></button>
+            <form action="search" style="display: inline-block">
+                <input type="hidden" name="question" value='{{ ip }}'>
+                <input type="hidden" name="position" value='{{ datePosition }}'>
+                <input type="hidden" name="direction" value='right'>
+                <input type="submit" value="Después">
+            </form>
         </div>
 
         <hr style="background-color: #3C8DBC; height: 2px">
@@ -105,21 +115,9 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
     function dateRequest(direction) {
         var i = {{ datePosition }};
-        $.ajax({
-            url : "search",
-            type : "GET",
-            data : {
-                question : '{{ ip }}',
-                position : i,
-                direction : direction,
-            },
-            success : function (json) {
-                console.log("success");
-            },
-            error : function (xhr, errmsg, err) {
-                console.log(xhr.status + ": " + xhr.responseText);
-            },
-        });
+        console.log("date request") // sanity check
+        console.log(i);
+        window.location.href = 'search';
     };
 
 
