@@ -6,14 +6,48 @@ from django.http import HttpResponse
 import json
 
 
+def search_partial(port, ip, position):
+    if port == '80':
+        try:
+            data = Http80.objects(ip=ip).order_by('-date')[position]
+        except IndexError:
+            data = None
+    if port == '443':
+        try:
+            data = Http443.objects(ip=ip).order_by('-date')[position]
+        except IndexError:
+            data = None
+
+    if port == '8000':
+        try:
+            data = Http8000.objects(ip=ip).order_by('-date')[position]
+        except IndexError:
+            data = None
+
+    if port == '8080':
+        try:
+            data = Http8080.objects(ip=ip).order_by('-date')[position]
+        except IndexError:
+            data = None
+
+    if port == 'https':
+        try:
+            data = Https.objects(ip=ip).order_by('-date')[position]
+        except IndexError:
+            data = None
+
+    return {'ip': ip,
+            'datePosition': position,
+            'port': port,
+            'data': data}
+
+
 def search(request):
-    datechange = False
     ip = request.GET[u'question']
     if u'position' not in request.GET:
         date_position = 0
         print 'No se entrego position'
     else:
-        datechange = True
         date_position = int(request.GET[u'position'])
         direction = request.GET[u'direction']
         if direction == 'left':
