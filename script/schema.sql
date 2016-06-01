@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS zmap_log (
 CREATE TABLE IF NOT EXISTS http_port_80 (
 	ip inet not null,
 	date date not null,
-	data JSON not null
+	data JSON not null,
+	PRIMARY KEY(ip, date)
 );
 
 -- Permisos de la tabla
