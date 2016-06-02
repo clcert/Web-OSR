@@ -2,51 +2,43 @@ import socket
 from geoip import geolite2
 from django.shortcuts import render
 from graphs.models import Http80, Http443, Http8080, Http8000, Https
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 import json
 
 
-def search_partial(port, ip, position):
+def search_partial(request, port, ip, date, direction=None):
     if port == '80':
-        try:
-            data = Http80.objects(ip=ip).order_by('-date')[position]
-        except IndexError:
-            data = None
+        http_model = Http80
+
     if port == '443':
-        try:
-            data = Http443.objects(ip=ip).order_by('-date')[position]
-        except IndexError:
-            data = None
+        http_model = Http443
 
     if port == '8000':
-        try:
-            data = Http8000.objects(ip=ip).order_by('-date')[position]
-        except IndexError:
-            data = None
+        http_model = Http8000
 
     if port == '8080':
-        try:
-            data = Http8080.objects(ip=ip).order_by('-date')[position]
-        except IndexError:
-            data = None
+        http_model = Http8080
 
-    if port == 'https':
-        try:
-            data = Https.objects(ip=ip).order_by('-date')[position]
-        except IndexError:
-            data = None
-
-    return {'ip': ip,
-            'datePosition': position,
-            'port': port,
-            'data': data}
+    params = {'ip': ip}
+    if direction == 'left':
+        direction = '-date'
+        params['date__lt'] = date
+    else:
+        direction = 'date'
+        params['date__gt'] = date
+    try:
+        data = http_model.objects(**params).order_by(direction).first()
+    except IndexError:
+        data = {}
+    if data is None:
+        return JsonResponse({})
+    return HttpResponse(data.to_json(), content_type="application/json")
 
 
 def search(request):
     ip = request.GET[u'question']
     if u'position' not in request.GET:
         date_position = 0
-        print 'No se entrego position'
     else:
         date_position = int(request.GET[u'position'])
         direction = request.GET[u'direction']

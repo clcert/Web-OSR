@@ -20,7 +20,8 @@ def http_table(id, port, http_data):
             'www_authenticate': http_data.www_authenticate,
             'header': http_data.header,
             'index': http_data.index,
-            'service': service
+            'service': service,
+            'ip': http_data.ip,
             }
 
 

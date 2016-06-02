@@ -101,24 +101,5 @@ google.maps.event.addDomListener(window, 'load', initialize);
         </div>
     </div>
     <div class="col-md-2"></div>
-    </div>
-<script>
-    $('.leftButton').on('click', function(event){
-        event.preventDefault();
-        console.log("pressed < on ".concat($(this).parent().parent().siblings().attr('id')));
-    });
-
-    $('.rightButton').on('click', function(event){
-        event.preventDefault();
-        console.log("pressed > on ".concat($(this).parent().parent().siblings().attr('id')));
-    });
-
-    function dateRequest(direction) {
-        console.log("date request") // sanity check
-        console.log(this);
-    };
-
-
-</script>
-
+</div>
 {% endblock %}
