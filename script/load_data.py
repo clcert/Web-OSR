@@ -75,7 +75,7 @@ if __name__ == '__main__':
     cur = conn.cursor()
 
     f = open(TMPFILE_NAME)
-    cur.copy_from(f, 'http_port_80', columns=('ip', 'date', 'data'), sep=";")
+    cur.copy_from(f, args.dbtable, columns=('ip', 'date', 'data'), sep=";")
     f.close()
 
     conn.commit()
