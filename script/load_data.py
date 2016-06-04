@@ -5,6 +5,8 @@ import os
 import psycopg2
 import sys
 
+import re
+
 TMPFILE_NAME = 'tmpfile.txt'
 
 def argument_parser():
@@ -22,12 +24,16 @@ def argument_parser():
     return parser.parse_args()
 
 
+def escape_string(string):
+    return string.replace('\\\\\\', '\\').replace('\\', '\\\\')
+
+
 def scan_data(data_file):
     writer = file(TMPFILE_NAME, 'w')
 
     for line in data_file:
         json_line = json.loads(line)
-        csv_line = '%s; %s; %s\n' % (json_line.get("ip"), json_line.get("date"), line.rstrip())
+        csv_line = '%s; %s; %s\n' % (json_line.get("ip"), json_line.get("date"), escape_string(line.rstrip().replace(';', ',')))
         writer.write(csv_line)
 
     data_file.close()
@@ -69,7 +75,7 @@ if __name__ == '__main__':
     cur = conn.cursor()
 
     f = open(TMPFILE_NAME)
-    cur.copy_from(f, 'http_port_80', columns=('ip', 'date', 'data'), sep=";")
+    cur.copy_from(f, args.dbtable, columns=('ip', 'date', 'data'), sep=";")
     f.close()
 
     conn.commit()
