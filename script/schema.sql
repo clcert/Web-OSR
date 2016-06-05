@@ -14,28 +14,28 @@ CREATE TABLE IF NOT EXISTS zmap_log (
 CREATE TABLE IF NOT EXISTS http_port_80 (
 	ip inet not null,
 	date date not null,
-	data JSON not null,
+	data JSONB not null,
   PRIMARY KEY (ip, date)
 );
 
 CREATE TABLE IF NOT EXISTS http_port_443 (
 	ip inet not null,
 	date date not null,
-	data JSON not null,
+	data JSONB not null,
   PRIMARY KEY (ip, date)
 );
 
 CREATE TABLE IF NOT EXISTS http_port_8000 (
 	ip inet not null,
 	date date not null,
-	data JSON not null,
+	data JSONB not null,
   PRIMARY KEY (ip, date)
 );
 
 CREATE TABLE IF NOT EXISTS http_port_8080 (
 	ip inet not null,
 	date date not null,
-	data JSON not null,
+	data JSONB not null,
   PRIMARY KEY (ip, date)
 );
 
