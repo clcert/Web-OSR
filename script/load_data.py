@@ -5,9 +5,8 @@ import os
 import psycopg2
 import sys
 
-import re
-
 TMPFILE_NAME = 'tmpfile.txt'
+
 
 def argument_parser():
     parser = argparse.ArgumentParser(description='Insert a data into postgres database')
@@ -25,7 +24,7 @@ def argument_parser():
 
 
 def escape_string(string):
-    return string.replace('\\\\\\', '\\').replace('\\', '\\\\')
+    return string.replace('\\u0000', '').replace('\\\\\\', '\\').replace('\\', '\\\\')
 
 
 def scan_data(data_file):
