@@ -93,7 +93,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
                 <hr style="background-color: #3C8DBC; height: 2px">
 
                 {% if https %}
-                    {% certificate_table 'HTTPS  Certificate' 'https' '443' https %}
+                    {% certificate_table 'HTTPS  Certificate' 'https' '443' https ip %}
                 {% endif %}
 
             </div>
