@@ -26,7 +26,6 @@ urlpatterns = [
     url(r'^$', index, name='index'),
     url(r'^accounts/register/', RegistrationView.as_view(form_class=RegistrationFormUniqueEmail), name='registration_register'),
     url(r'^accounts/', include('registration.backends.hmac.urls')),
-    # url(r'^$', index, name='index'),
-    # url(r'^graphs/', include('graphs.urls')),
+    url(r'^graphs/', include('graphs.urls')),
     url(r'^admin/', include(admin.site.urls)),
 ]
