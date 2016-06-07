@@ -93,8 +93,6 @@
     $('.httpTable_{{ port }} .leftButton').on('click', function(event){
         event.preventDefault();
         var tempDate = $('.table_date_{{ port }}').html();
-        console.log('.table_date_{{ port }}');
-        console.log(tempDate);
         var data = "search/{{ port }}/{{ ip }}/".concat(tempDate).concat("/left");
         $.ajax({url : data, success: function(result){
             reRenderTable(result, {{ port }});
@@ -104,8 +102,6 @@
     $('.httpTable_{{ port }} .rightButton').on('click', function(event) {
         event.preventDefault();
         var tempDate = $('.table_date_{{ port }}').html();
-        console.log('.table_date_{{ port }}');
-        console.log(tempDate);
         var data = "search/{{ port }}/{{ ip }}/".concat(tempDate).concat("/right");
         $.ajax({url : data, success: function(result){
             reRenderTable(result, {{ port }});
@@ -128,7 +124,9 @@
      }
 
     function reRenderTable(result, tablePort){
-        console.log('.tabla_'.concat(tablePort));
+        if ($.isEmptyObject(result)){
+            return;
+        }
         $('.tabla_'.concat(tablePort)).children().remove();
         if(result.date){
             $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Date:</b></td> <td class="table_date_'
