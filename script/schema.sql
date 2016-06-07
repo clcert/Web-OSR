@@ -2,12 +2,10 @@
 CREATE TABLE IF NOT EXISTS zmap_log (
 	port integer not null,
 	date date not null,
-	time varchar(15) not null,
+	time integer not null,
 	send integer not null,
-	send_avg varchar(15) not null,
 	recv integer not null,
-	recv_avg varchar(15) not null,
-	hits varchar(15) not null,
+	hits float not null,
 	PRIMARY KEY (port, date)
 );
 
