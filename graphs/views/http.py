@@ -1,17 +1,25 @@
+from django.db.models import Count
 from django.shortcuts import render
-from graphs.models import ZmapLog
+from graphs.models import ZmapLog, HTTP80
 
 
 def http_index(request):
     zmap80 = ZmapLog.objects.filter(port=80)
+
+    http80 = HTTP80.objects.values('date').annotate(total=Count('date')).order_by('date')
 
     return render(request, 'graphs/http_index.html',
                   {'line': {
                       'title': 'Hosts Hit in Chilean Internet (HTTP)',
                       'xAxis': 'Date of Scan',
                       'yAxis': 'Hits',
-                      'series': [{'name': 'Zmap, Port 80', 'data': [[str(i.date), i.recv] for i in zmap80]}]
+                      'series': [
+                          {'name': 'Zmap, Port 80', 'data': [[str(i.date), i.recv] for i in zmap80]},
+                          {'name': 'Grabber, Port 80', 'data': [[str(i.get('date')), i.get('total')] for i in http80]}
+                                 ]
                   }})
+
+
 
 
 
