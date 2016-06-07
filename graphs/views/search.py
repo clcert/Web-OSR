@@ -35,6 +35,25 @@ def search_partial(request, port, ip, date, direction=None):
     return HttpResponse(data.to_json(), content_type="application/json")
 
 
+def search_partial_cert(request, ip, date, direction=None):
+    http_model = Https
+
+    params = {'ip': ip}
+    if direction == 'left':
+        direction = '-date'
+        #params['date__lt'] = date
+    else:
+        direction = 'date'
+        #params['date__gt'] = date
+    try:
+        data = http_model.objects(**params).order_by(direction).first()
+    except IndexError:
+        data = {}
+    if data is None:
+        return JsonResponse({})
+    return HttpResponse(data.to_json(), content_type="application/json")
+
+
 def search(request):
     ip = request.GET[u'question']
     if u'position' not in request.GET:
