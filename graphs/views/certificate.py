@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from graphs.models import Https
-from graphs.views.util import accumulate, complete_bars_chart
+from graphs.util import accumulate, complete_bars_chart
 
 
 def certificate_key_bits(request):

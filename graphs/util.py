@@ -71,5 +71,36 @@ from operator import itemgetter
 #     return version_data
 
 
+class CountSet:
+
+    def __init__(self, name, total):
+        self.name = name
+        self.total = total
+
+    def __str__(self):
+        return 'name: ' + self.name + ' total: ' + self.total
+
+    @staticmethod
+    def getKey(count_set):
+        return count_set.total
+
+
+def count(queryset, by='name'):
+    query_count = dict()
+    query_list = list()
+
+    for query in queryset:
+        if query[by] not in query_count:
+            query_count[query[by]] = 1
+        else:
+            query_count[query[by]] += 1
+
+    for k, v in query_count.iteritems():
+        query_list.append(CountSet(k, v))
+
+    return sorted(query_list, key=CountSet.getKey, reverse=True)
+
+
+
 def date_to_yyyy_mm_dd(date):
     return str(date.year) + '-' + str(date.month) + '-' + str(date.day)

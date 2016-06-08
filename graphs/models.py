@@ -24,3 +24,6 @@ class HTTP80(models.Model):
         db_table = 'http_port_80'
         ordering = ['ip']
 
+HTTP_PORT = {
+    '80': HTTP80
+}
