@@ -7,7 +7,7 @@ from graphs.util import count
 def http_index(request):
     zmap80 = ZmapLog.objects.filter(port=80)
 
-    http80 = HTTP80.objects.values('date').annotate(total=Count('date')).order_by('date')
+    http80 = HTTP80.objects.filter(success=True).values('date').annotate(total=Count('date')).order_by('date')
 
     return render(request, 'graphs/http_index.html',
                   {'line': {
