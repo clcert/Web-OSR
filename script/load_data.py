@@ -6,6 +6,11 @@ import psycopg2
 import sys
 
 TMPFILE_NAME = 'tmpfile.txt'
+EMPTY_SCAN = ['ip', 'date', 'error', 'schema_version']
+
+
+def escape_string(string):
+    return string.replace('\\u0000', '').replace('\\\\\\', '\\').replace('\\', '\\\\')
 
 
 def argument_parser():
@@ -23,8 +28,15 @@ def argument_parser():
     return parser.parse_args()
 
 
-def escape_string(string):
-    return string.replace('\\u0000', '').replace('\\\\\\', '\\').replace('\\', '\\\\')
+def is_empty_scan(json_line):
+        if len(json_line) > 4:
+            return False
+
+        is_empty = True
+        for key in EMPTY_SCAN:
+            is_empty = is_empty and key in json_line
+
+        return is_empty
 
 
 def scan_data(data_file):
@@ -32,7 +44,7 @@ def scan_data(data_file):
 
     for line in data_file:
         json_line = json.loads(line)
-        csv_line = '%s; %s; %s\n' % (json_line.get("ip"), json_line.get("date"), escape_string(line.rstrip().replace(';', ',')))
+        csv_line = '%s; %s; %s; %s\n' % (json_line.get("ip"), json_line.get("date"), not is_empty_scan(json_line), escape_string(line.rstrip().replace(';', ',')))
         writer.write(csv_line)
 
     data_file.close()
@@ -74,7 +86,7 @@ if __name__ == '__main__':
     cur = conn.cursor()
 
     f = open(TMPFILE_NAME)
-    cur.copy_from(f, args.dbtable, columns=('ip', 'date', 'data'), sep=";")
+    cur.copy_from(f, args.dbtable, columns=('ip', 'date', 'success', 'data'), sep=";")
     f.close()
 
     conn.commit()
