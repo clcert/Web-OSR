@@ -18,6 +18,7 @@ class ZmapLog(models.Model):
 class HTTP80(models.Model):
     ip = models.GenericIPAddressField(primary_key=True)
     date = models.DateField(primary_key=True)
+    success = models.BooleanField()
     data = JSONField()
 
     class Meta:
