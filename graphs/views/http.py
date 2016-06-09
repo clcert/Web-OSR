@@ -26,7 +26,7 @@ def http_server(request, port, scan_date=None, version=None):
     if scan_date is None:
         scan_date = scan_date_list.last().date
 
-    web_server = count(HTTP_PORT[port].objects.extra(select={'name': "data#>>'{metadata, service, product}'"}, where={"data#>>'{metadata, service, product}'!=''"}).values('name'))[:10]
+    web_server = count(HTTP_PORT[port].objects.filter(date=scan_date).extra(select={'name': "data#>>'{metadata, service, product}'"}, where={"data#>>'{metadata, service, product}'!=''"}).values('name'))[:10]
 
     return render(request, 'graphs/http_server.html',
                   {'port': port,
