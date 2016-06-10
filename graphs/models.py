@@ -59,6 +59,41 @@ class HTTP8080(models.Model):
         ordering = ['ip']
 
 
+class HTTPServer(models.Model):
+    port = models.IntegerField(primary_key=True)
+    date = models.DateField(primary_key=True)
+    product = models.TextField(primary_key=True)
+    version = models.TextField(primary_key=True)
+    total = models.IntegerField()
+
+    class Meta:
+        db_table = 'http_product'
+        ordering = ['-total']
+
+
+class HTTPOS(models.Model):
+    port = models.IntegerField(primary_key=True)
+    date = models.DateField(primary_key=True)
+    os = models.TextField(primary_key=True)
+    version = models.TextField(primary_key=True)
+    total = models.IntegerField()
+
+    class Meta:
+        db_table = 'http_os'
+        ordering = ['-total']
+
+
+class HTTPType(models.Model):
+    port = models.IntegerField(primary_key=True)
+    date = models.DateField(primary_key=True)
+    type = models.TextField(primary_key=True)
+    total = models.IntegerField()
+
+    class Meta:
+        db_table = 'http_type'
+        ordering = ['-total']
+
+
 HTTP_PORT = {
     '80': HTTP80,
     '443': HTTP443,

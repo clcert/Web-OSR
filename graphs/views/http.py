@@ -1,6 +1,6 @@
-from django.db.models import Count
+from django.db.models import Count, Sum
 from django.shortcuts import render
-from graphs.models import ZmapLog, HTTP80, HTTP_PORT, HTTP443, HTTP8000, HTTP8080
+from graphs.models import ZmapLog, HTTP80, HTTP_PORT, HTTP443, HTTP8000, HTTP8080, HTTPServer
 from graphs.util import count
 
 
@@ -33,12 +33,16 @@ def http_index(request):
                   }})
 
 
-def http_server(request, port, scan_date=None, version=None):
+def http_server(request, port, scan_date=None, product=None):
     scan_date_list = ZmapLog.objects.filter(port=port)
     if scan_date is None:
         scan_date = scan_date_list.last().date
 
-    web_server = count(HTTP_PORT[port].objects.filter(date=scan_date).extra(select={'name': "data#>>'{metadata, service, product}'"}, where={"data#>>'{metadata, service, product}'!=''"}).values('name'))[:10]
+    if product:
+        version_server = HTTPServer.objects.filter(port=port, date=scan_date, product=)
+
+    web_server = HTTPServer.objects.filter(port=port, date=scan_date).values('product').order_by('product')\
+        .annotate(total=Sum('total')).order_by('-total')[:10]
 
     return render(request, 'graphs/http_server.html',
                   {'port': port,
@@ -46,8 +50,9 @@ def http_server(request, port, scan_date=None, version=None):
                    'scan_list': [i.date for i in scan_date_list],
                    'bars': {
                        'title': 'Web Server Running (HTTP)', 'xaxis': 'Web Server', 'yaxis': 'Number of Servers',
-                       'xvalues': [i.name for i in web_server],
-                       'values': [{'name': 'port ' + port, 'yvalue': [i.total for i in web_server]}]},
+                       'xvalues': [i['product'] for i in web_server],
+                       'values': [{'name': 'port ' + port, 'yvalue': [i['total'] for i in web_server]}]},
+                   'pie': {'title': product, 'data': }
                    })
         # # Database Query
         # zmap = ZmapLog.objects(port=port)
@@ -63,59 +68,10 @@ def http_server(request, port, scan_date=None, version=None):
         #                         'values': [{'name': 'port ' + port, 'yvalue': [i[1] for i in web_server_frequency]}]},
         #                'pie': {'title': version, 'data': version_web_server(port, scan, version)}})
 
+def http_server_all(request, scan_date):
+    scan_date_list = ZmapLog.objects.filter(port=80)
 
 
-        # def index(request):
-        #     return render(request, 'graphs/index.html')
-
-        #
-        # def http_index(request):
-        #     zmap80 = ZmapLog.objects(port='80')
-        #     zmap443 = ZmapLog.objects(port='443')
-        #     zmap8000 = ZmapLog.objects(port='8000')
-        #     zmap8080 = ZmapLog.objects(port='8080')
-        #
-        #     http80 = GrabberScan.objects(port='80')
-        #     http443 = GrabberScan.objects(port='443')
-        #     http8000 = GrabberScan.objects(port='8000')
-        #     http8080 = GrabberScan.objects(port='8080')
-        #
-        #     return render(request, 'graphs/http_index.html',
-        #                   {'line': {
-        #                       'title': 'Hosts Hit in Chilean Internet (HTTP)',
-        #                       'xAxis': 'Date of Scan',
-        #                       'yAxis': 'Hits',
-        #                       'series': [{'name': 'Zmap, Port 80', 'data': [[i.date, i.recv] for i in zmap80]},
-        #                                  {'name': 'Zmap, Port 443', 'data': [[i.date, i.recv] for i in zmap443]},
-        #                                  {'name': 'Zmap, Port 8000', 'data': [[i.date, i.recv] for i in zmap8000]},
-        #                                  {'name': 'Zmap, Port 8080', 'data': [[i.date, i.recv] for i in zmap8080]},
-        #                                  {'name': 'Grabber, Port 80',
-        #                                   'data': [[date_to_yyyy_mm_dd(i.date), i.amount] for i in http80]},
-        #                                  {'name': 'Grabber, Port 443',
-        #                                   'data': [[date_to_yyyy_mm_dd(i.date), i.amount] for i in http443]},
-        #                                  {'name': 'Grabber, Port 8000',
-        #                                   'data': [[date_to_yyyy_mm_dd(i.date), i.amount] for i in http8000]},
-        #                                  {'name': 'Grabber, Port 8080',
-        #                                   'data': [[date_to_yyyy_mm_dd(i.date), i.amount] for i in http8080]}]
-        #                   }})
-        #
-        #
-        # def http_server(request, port, scan, version=None):
-        #     # Database Query
-        #     zmap = ZmapLog.objects(port=port)
-        #     web_server_frequency = accumulate(HttpWebServer.objects(port=port, scan=scan), 'product', sum_value='$count',
-        #                                       with_none=False)[:10]
-        #
-        #     return render(request, 'graphs/http_server.html',
-        #                   {'port': port,
-        #                    'scan_date': scan,
-        #                    'scan_list': [i.date for i in zmap],
-        #                    'bars': {'title': 'Web Server Running (HTTP)', 'xaxis': 'Web Server', 'yaxis': 'Number of Servers',
-        #                             'xvalues': [i[0] for i in web_server_frequency],
-        #                             'values': [{'name': 'port ' + port, 'yvalue': [i[1] for i in web_server_frequency]}]},
-        #                    'pie': {'title': version, 'data': version_web_server(port, scan, version)}})
-        #
-        #
         # def http_server_all(request, scan):
         #     zmap = ZmapLog.objects(port='80')
         #     http80 = accumulate(HttpWebServer.objects(port='80', scan=scan), 'product', sum_value='$count', with_none=False)[:10]

@@ -81,7 +81,7 @@ class CountSet:
         return 'name: ' + self.name + ' total: ' + self.total
 
     @staticmethod
-    def getKey(count_set):
+    def get_key(count_set):
         return count_set.total
 
 
@@ -98,8 +98,7 @@ def count(queryset, by='name'):
     for k, v in query_count.iteritems():
         query_list.append(CountSet(k, v))
 
-    return sorted(query_list, key=CountSet.getKey, reverse=True)
-
+    return sorted(query_list, key=CountSet.get_key, reverse=True)
 
 
 def date_to_yyyy_mm_dd(date):
