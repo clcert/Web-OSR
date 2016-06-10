@@ -1,13 +1,19 @@
 from django.db.models import Count
 from django.shortcuts import render
-from graphs.models import ZmapLog, HTTP80, HTTP_PORT
+from graphs.models import ZmapLog, HTTP80, HTTP_PORT, HTTP443, HTTP8000, HTTP8080
 from graphs.util import count
 
 
 def http_index(request):
     zmap80 = ZmapLog.objects.filter(port=80)
+    zmap443 = ZmapLog.objects.filter(port=443)
+    zmap8000 = ZmapLog.objects.filter(port=8000)
+    zmap8080 = ZmapLog.objects.filter(port=8080)
 
     http80 = HTTP80.objects.filter(success=True).values('date').annotate(total=Count('date')).order_by('date')
+    http443 = HTTP443.objects.filter(success=True).values('date').annotate(total=Count('date')).order_by('date')
+    http8000 = HTTP8000.objects.filter(success=True).values('date').annotate(total=Count('date')).order_by('date')
+    http8080 = HTTP8080.objects.filter(success=True).values('date').annotate(total=Count('date')).order_by('date')
 
     return render(request, 'graphs/http_index.html',
                   {'line': {
@@ -16,8 +22,14 @@ def http_index(request):
                       'yAxis': 'Hits',
                       'series': [
                           {'name': 'Zmap, Port 80', 'data': [[str(i.date), i.recv] for i in zmap80]},
-                          {'name': 'Grabber, Port 80', 'data': [[str(i.get('date')), i.get('total')] for i in http80]}
-                                 ]
+                          {'name': 'Zmap, Port 443', 'data': [[str(i.date), i.recv] for i in zmap443]},
+                          {'name': 'Zmap, Port 8000', 'data': [[str(i.date), i.recv] for i in zmap8000]},
+                          {'name': 'Zmap, Port 8080', 'data': [[str(i.date), i.recv] for i in zmap8000]},
+                          {'name': 'Grabber, Port 80', 'data': [[str(i.get('date')), i.get('total')] for i in http80]},
+                          {'name': 'Grabber, Port 443', 'data': [[str(i.get('date')), i.get('total')] for i in http443]},
+                          {'name': 'Grabber, Port 8000', 'data': [[str(i.get('date')), i.get('total')] for i in http8000]},
+                          {'name': 'Grabber, Port 8080', 'data': [[str(i.get('date')), i.get('total')] for i in http8080]}
+                      ]
                   }})
 
 
