@@ -36,7 +36,7 @@
                     <li role="presentation" {% if port == '443' %}class="active"{% endif %}><a href="{% url "graphs/server" 443 scan_date %}">Port 443</a></li>
                     <li role="presentation" {% if port == '8000' %}class="active"{% endif %}><a href="{% url "graphs/server" 8000 scan_date %}">Port 8000</a></li>
                     <li role="presentation" {% if port == '8080' %}class="active"{% endif %}><a href="{% url "graphs/server" 8080 scan_date %}">Port 8080</a></li>
-{#                    <li role="presentation" {% if port == 'all' %}class="active"{% endif %}><a href="{% url "graphs/server/all" scan_date %}">All</a></li>#}
+                    <li role="presentation" {% if port == 'all' %}class="active"{% endif %}><a href="{% url "graphs/server/all" scan_date %}">All</a></li>
                 </ul>
                 {% ifnotequal port 'all' %}
                     <hr>

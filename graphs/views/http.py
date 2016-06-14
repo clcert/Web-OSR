@@ -1,7 +1,7 @@
 from django.db.models import Count, Sum
 from django.shortcuts import render
 from graphs.models import ZmapLog, HTTP80, HTTP_PORT, HTTP443, HTTP8000, HTTP8080, HTTPServer
-from graphs.util import count
+from graphs.util import count, filter_by_name
 
 
 def http_index(request):
@@ -38,8 +38,8 @@ def http_server(request, port, scan_date=None, product=None):
     if scan_date is None:
         scan_date = scan_date_list.last().date
 
-    if product:
-        version_server = HTTPServer.objects.filter(port=port, date=scan_date, product=)
+    # if product:
+    #     version_server = HTTPServer.objects.filter(port=port, date=scan_date, product=product)[:9]
 
     web_server = HTTPServer.objects.filter(port=port, date=scan_date).values('product').order_by('product')\
         .annotate(total=Sum('total')).order_by('-total')[:10]
@@ -52,7 +52,7 @@ def http_server(request, port, scan_date=None, product=None):
                        'title': 'Web Server Running (HTTP)', 'xaxis': 'Web Server', 'yaxis': 'Number of Servers',
                        'xvalues': [i['product'] for i in web_server],
                        'values': [{'name': 'port ' + port, 'yvalue': [i['total'] for i in web_server]}]},
-                   'pie': {'title': product, 'data': }
+                   'pie': None
                    })
         # # Database Query
         # zmap = ZmapLog.objects(port=port)
@@ -70,7 +70,28 @@ def http_server(request, port, scan_date=None, product=None):
 
 def http_server_all(request, scan_date):
     scan_date_list = ZmapLog.objects.filter(port=80)
+    http80 = HTTPServer.objects.filter(port=80, date=scan_date).values('product').order_by('product') \
+        .annotate(total=Sum('total')).order_by('-total')[:10]
+    http443 = filter_by_name(HTTPServer.objects.filter(port=443, date=scan_date).values('product').order_by('product') \
+        .annotate(total=Sum('total')), [i['product'] for i in http80], 'product', 'total')
+    http8000 = filter_by_name(HTTPServer.objects.filter(port=8000, date=scan_date).values('product').order_by('product') \
+        .annotate(total=Sum('total')), [i['product'] for i in http80], 'product', 'total')
+    http8080 = filter_by_name(HTTPServer.objects.filter(port=8080, date=scan_date).values('product').order_by('product') \
+        .annotate(total=Sum('total')), [i['product'] for i in http80], 'product', 'total')
 
+    return render(request, 'graphs/http_server.html',
+                  {'port': 'all',
+                   'scan_date': scan_date,
+                   'scan_list': [i.date for i in scan_date_list],
+                   'bars': {'title': 'Web Server Running (HTTP)', 'xaxis': 'Web Server', 'yaxis': 'Number of Servers',
+                            'xvalues': [i['product'] for i in http80],
+                            'values': [
+                                {'name': 'port 80', 'yvalue': [i['total'] for i in http80]},
+                                {'name': 'port 443', 'yvalue': [i['total'] for i in http443]},
+                                {'name': 'port 8000', 'yvalue': [i['total'] for i in http8000]},
+                                {'name': 'port 8080', 'yvalue': [i['total'] for i in http8080]}
+                            ]}
+                   })
 
         # def http_server_all(request, scan):
         #     zmap = ZmapLog.objects(port='80')

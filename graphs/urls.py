@@ -4,9 +4,8 @@ from django.contrib import admin
 from graphs import views
 
 urlpatterns = [
-    # url(r'^$', views.index, name='graphs/index'),
     url(r'^http$', views.http_index, name='graphs/http-index'),
-    # url(r'^web-server/all/(?P<scan>\d+-\d+-\d+)$', views.http_server_all, name='graphs/server/all'),
+    url(r'^web-server/all/(?P<scan_date>\d+-\d+-\d+)$', views.http_server_all, name='graphs/server/all'),
     url(r'^web-server/(?P<port>[0-9]+)$', views.http_server, name='graphs/server'),
     url(r'^web-server/(?P<port>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)$', views.http_server, name='graphs/server'),
     url(r'^web-server/(?P<port>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)/(?P<product>[\w\s]+)$', views.http_server, name='graphs/server'),

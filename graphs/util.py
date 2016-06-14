@@ -1,26 +1,21 @@
-from operator import itemgetter
+AVAILABLE_PORTS = [80, 443, 8000, 8080]
 
-# from graphs.models import Http80, Http443, Http8000, Http8080
 
-# port_dict = {
-#     '80': Http80,
-#     '443': Http443,
-#     '8000': Http8000,
-#     '8080': Http8080
-# }
-#
-#
-# def filter_by_name(data, names):
-#     filtered_list = list()
-#
-#     for name in names:
-#         total = 0
-#         for elem in data:
-#             if name == elem[0]:
-#                 total = elem[1]
-#                 break
-#         filtered_list.append((name, total))
-#     return filtered_list
+def check_ports(port):
+    return port in AVAILABLE_PORTS
+
+
+def filter_by_name(data, names, key, value):
+    filtered_list = list()
+
+    for name in names:
+        total = 0
+        for elem in data:
+            if name == elem[key]:
+                total = elem[value]
+                break
+        filtered_list.append({ key: name, value: total})
+    return filtered_list
 #
 #
 # def complete_bars_chart(value_name, value_list):
@@ -61,14 +56,14 @@ from operator import itemgetter
 #         for key, value in freqs_dict.iteritems():
 #             freqs_dict[key] = value / sum
 #     return sorted(freqs_dict.items(), key=itemgetter(1), reverse=reverse)
-#
-#
-# def version_web_server(port, scan, version):
-#     version_data = None
-#     if version:
-#         version_data = add_other(accumulate(port_dict[port].objects(date=scan, metadata__service__product=version),
-#                                             'metadata.service.version', percentage=True)[:9])
-#     return version_data
+
+
+def version_web_server(port, scan, version):
+    version_data = None
+    if version:
+        version_data = add_other(accumulate(port_dict[port].objects(date=scan, metadata__service__product=version),
+                                            'metadata.service.version', percentage=True)[:9])
+    return version_data
 
 
 class CountSet:
