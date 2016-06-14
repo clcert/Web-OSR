@@ -14,7 +14,7 @@ def filter_by_name(data, names, key, value):
             if name == elem[key]:
                 total = elem[value]
                 break
-        filtered_list.append({ key: name, value: total})
+        filtered_list.append({key: name, value: total})
     return filtered_list
 #
 #

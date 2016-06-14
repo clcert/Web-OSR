@@ -1,6 +1,6 @@
 from django.db.models import Count, Sum
 from django.shortcuts import render
-from graphs.models import ZmapLog, HTTP80, HTTP_PORT, HTTP443, HTTP8000, HTTP8080, HTTPServer
+from graphs.models import ZmapLog, HTTP80, HTTP_PORT, HTTP443, HTTP8000, HTTP8080, HTTPServer, HTTPOS
 from graphs.util import count, filter_by_name
 
 
@@ -54,11 +54,7 @@ def http_server(request, port, scan_date=None, product=None):
                        'values': [{'name': 'port ' + port, 'yvalue': [i['total'] for i in web_server]}]},
                    'pie': None
                    })
-        # # Database Query
-        # zmap = ZmapLog.objects(port=port)
-        # web_server_frequency = accumulate(HttpWebServer.objects(port=port, scan=scan), 'product', sum_value='$count',
-        #                                   with_none=False)[:10]
-        #
+
         # return render(request, 'graphs/http_server.html',
         #               {'port': port,
         #                'scan_date': scan,
@@ -67,6 +63,7 @@ def http_server(request, port, scan_date=None, product=None):
         #                         'xvalues': [i[0] for i in web_server_frequency],
         #                         'values': [{'name': 'port ' + port, 'yvalue': [i[1] for i in web_server_frequency]}]},
         #                'pie': {'title': version, 'data': version_web_server(port, scan, version)}})
+
 
 def http_server_all(request, scan_date):
     scan_date_list = ZmapLog.objects.filter(port=80)
@@ -93,41 +90,51 @@ def http_server_all(request, scan_date):
                             ]}
                    })
 
-        # def http_server_all(request, scan):
-        #     zmap = ZmapLog.objects(port='80')
-        #     http80 = accumulate(HttpWebServer.objects(port='80', scan=scan), 'product', sum_value='$count', with_none=False)[:10]
-        #     http443 = filter_by_name(accumulate(HttpWebServer.objects(port='443', scan=scan), 'product', sum_value='$count', with_none=False)[:10], [i[0] for i in http80])
-        #     http8000 = filter_by_name(accumulate(HttpWebServer.objects(port='8000', scan=scan), 'product', sum_value='$count', with_none=False)[:10], [i[0] for i in http80])
-        #     http8080 = filter_by_name(accumulate(HttpWebServer.objects(port='8080', scan=scan), 'product', sum_value='$count', with_none=False)[:10], [i[0] for i in http80])
-        #
-        #     return render(request, 'graphs/http_server.html',
-        #                   {'port': 'all',
-        #                    'scan_date': scan,
-        #                    'scan_list': [i.date for i in zmap],
-        #                    'bars': {'title': 'Web Server Running (HTTP)', 'xaxis': 'Web Server', 'yaxis': 'Number of Servers',
-        #                             'xvalues': [i[0] for i in http80],
-        #                             'values': [{'name': 'port 80', 'yvalue': [i[1] for i in http80]},
-        #                                        {'name': 'port 443', 'yvalue': [i[1] for i in http443]},
-        #                                        {'name': 'port 8000', 'yvalue': [i[1] for i in http8000]},
-        #                                        {'name': 'port 8080', 'yvalue': [i[1] for i in http8080]}]}
-        #                    })
-        #
-        #
-        # def os_server(request, port, scan):
-        #     zmap = ZmapLog.objects(port=port)
-        #     os = accumulate(HttpOperativeSystem.objects(port=port, scan=scan), 'operative_system', sum_value='$count',
-        #                     with_none=False)[:10]
-        #
-        #     return render(request, 'graphs/operative_systems.html',
-        #                   {'port': port,
-        #                    'scan_date': scan,
-        #                    'scan_list': [i.date for i in zmap],
-        #                    'bars': {'title': 'Operative System of Server (HTTP)', 'xaxis': 'Operative Systems',
-        #                             'yaxis': 'Number of Servers',
-        #                             'xvalues': [i[0] for i in os],
-        #                             'values': [{'name': 'port ' + str(port), 'yvalue': [i[1] for i in os]}]}})
-        #
-        #
+
+def operating_system_server(request, port, scan_date=None):
+    scan_date_list = ZmapLog.objects.filter(port=port)
+    if scan_date is None:
+        scan_date = scan_date_list.last().date
+
+    operating_system = HTTPOS.objects.filter(port=port, date=scan_date).values('os').order_by('os') \
+        .annotate(total=Sum('total')).order_by('-total')[:10]
+
+    return render(request, 'graphs/operative_systems.html',
+                  {'port': port,
+                   'scan_date': scan_date,
+                   'scan_list': [i.date for i in scan_date_list],
+                   'bars': {
+                       'title': 'Operative System of Server (HTTP)', 'xaxis': 'Operative Systems',
+                       'yaxis': 'Number of Servers',
+                       'xvalues': [i['os'] for i in operating_system],
+                       'values': [{'name': 'port ' + str(port), 'yvalue': [i['total'] for i in operating_system]}]}})
+
+
+def operating_system_server_all(request, scan_date):
+    scan_date_list = ZmapLog.objects.filter(port=80)
+    os80 = HTTPOS.objects.filter(port=80, date=scan_date).values('os').order_by('os') \
+        .annotate(total=Sum('total')).order_by('-total')[:10]
+    os443 = filter_by_name(HTTPOS.objects.filter(port=443, date=scan_date).values('os').order_by('os') \
+        .annotate(total=Sum('total')).order_by('-total'), [i['os'] for i in os80], 'os', 'total')
+    os8000 = filter_by_name(HTTPOS.objects.filter(port=8000, date=scan_date).values('os').order_by('os') \
+        .annotate(total=Sum('total')).order_by('-total'), [i['os'] for i in os80], 'os', 'total')
+    os8080 = filter_by_name(HTTPOS.objects.filter(port=8080, date=scan_date).values('os').order_by('os') \
+        .annotate(total=Sum('total')).order_by('-total'), [i['os'] for i in os80], 'os', 'total')
+
+    return render(request, 'graphs/operative_systems.html',
+                  {'port': 'all',
+                   'scan_date': scan_date,
+                   'scan_list': [i.date for i in scan_date_list],
+                   'bars': {'title': 'Operative System of Server (HTTP)', 'xaxis': 'Operative Systems',
+                            'yaxis': 'Number of Servers',
+                            'xvalues': [i['os'] for i in os80],
+                            'values': [{'name': 'port 80', 'yvalue': [i['total'] for i in os80]},
+                                       {'name': 'port 443', 'yvalue': [i['total'] for i in os443]},
+                                       {'name': 'port 8000', 'yvalue': [i['total'] for i in os8000]},
+                                       {'name': 'port 8080', 'yvalue': [i['total'] for i in os8080]}]}})
+
+
+
         # def os_server_all(request, scan):
         #     zmap = ZmapLog.objects(port='80')
         #     os80 = accumulate(HttpOperativeSystem.objects(port='80', scan=scan), 'operative_system', sum_value='$count', with_none=False)[:10]
