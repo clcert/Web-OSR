@@ -1,11 +1,17 @@
 $(function () {
     $('#{{ id }}').highcharts({
+        chart: {
+            type: 'spline'
+        },
         title: {
             text: '{{ title }}',
             x: -20 //center
         },
         xAxis: {
             type: 'datetime',
+            dateTimeLabelFormats: {
+                month: '%e/%m/%Y'
+            },
             title: {
                 text: '{{ xAxis }}'
             },
@@ -21,7 +27,7 @@ $(function () {
             }]
         },
         tooltip: {
-            headerFormat: '<b>{series.name}</b> ({point.key})<br>',
+            headerFormat: '<b>{series.name}</b> ({point.x:%e/%m/%Y})<br>',
             pointFormat: '{point.y} Host'
         },
         legend: {
@@ -34,7 +40,8 @@ $(function () {
             {% for serie in series %}
             {
             name: '{{ serie.name }}',
-            data: [{% for data in serie.data %}[new Date('{{ data.0 }}').valueOf(), {{ data.1 }}],{% endfor %}]
+            data: [{% for data in serie.data %}[new Date('{{ data.0 }}').valueOf(), {{ data.1 }}],{% endfor %}],
+            marker: { symbol: 'circle' }
             },
             {% endfor %}
         ],

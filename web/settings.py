@@ -43,6 +43,7 @@ INSTALLED_APPS = (
     'bootstrapform',
     'graphs',
     'login',
+    'highcharts',
     'django.contrib.admin',
 )
 

@@ -24,7 +24,7 @@ def http_index(request):
                           {'name': 'Zmap, Port 80', 'data': [[str(i.date), i.recv] for i in zmap80]},
                           {'name': 'Zmap, Port 443', 'data': [[str(i.date), i.recv] for i in zmap443]},
                           {'name': 'Zmap, Port 8000', 'data': [[str(i.date), i.recv] for i in zmap8000]},
-                          {'name': 'Zmap, Port 8080', 'data': [[str(i.date), i.recv] for i in zmap8000]},
+                          {'name': 'Zmap, Port 8080', 'data': [[str(i.date), i.recv] for i in zmap8080]},
                           {'name': 'Grabber, Port 80', 'data': [[str(i.get('date')), i.get('total')] for i in http80]},
                           {'name': 'Grabber, Port 443', 'data': [[str(i.get('date')), i.get('total')] for i in http443]},
                           {'name': 'Grabber, Port 8000', 'data': [[str(i.get('date')), i.get('total')] for i in http8000]},
@@ -99,7 +99,7 @@ def operating_system_server(request, port, scan_date=None):
     operating_system = HTTPOS.objects.filter(port=port, date=scan_date).values('os').order_by('os') \
         .annotate(total=Sum('total')).order_by('-total')[:10]
 
-    return render(request, 'graphs/operative_systems.html',
+    return render(request, 'graphs/http_operative_systems.html',
                   {'port': port,
                    'scan_date': scan_date,
                    'scan_list': [i.date for i in scan_date_list],
@@ -121,7 +121,7 @@ def operating_system_server_all(request, scan_date):
     os8080 = filter_by_name(HTTPOS.objects.filter(port=8080, date=scan_date).values('os').order_by('os') \
         .annotate(total=Sum('total')).order_by('-total'), [i['os'] for i in os80], 'os', 'total')
 
-    return render(request, 'graphs/operative_systems.html',
+    return render(request, 'graphs/http_operative_systems.html',
                   {'port': 'all',
                    'scan_date': scan_date,
                    'scan_list': [i.date for i in scan_date_list],
@@ -142,7 +142,7 @@ def device_type(request, port, scan_date=None):
     device = HTTPType.objects.filter(port=port, date=scan_date).values('type').order_by('type') \
         .annotate(total=Sum('total')).order_by('-total')[:10]
 
-    return render(request, 'graphs/device_type.html',
+    return render(request, 'graphs/http_device_type.html',
                   {'port': port,
                    'scan_date': scan_date,
                    'scan_list': [i.date for i in scan_date_list],
@@ -164,7 +164,7 @@ def device_type_all(request, scan_date):
     device8080 = filter_by_name(HTTPType.objects.filter(port=8080, date=scan_date).values('type').order_by('type') \
                             .annotate(total=Sum('total')).order_by('-total'), [i['type'] for i in device80], 'type', 'total')
 
-    return render(request, 'graphs/device_type.html',
+    return render(request, 'graphs/http_device_type.html',
                   {'port': 'all',
                    'scan_date': scan_date,
                    'scan_list': [i.date for i in scan_date_list],

@@ -2,15 +2,13 @@
 {% load staticfiles %}
 {% load ChartTemplate %}
 
-
-
 {% block scripts %}
 <script src="{% static "js/highcharts.js" %}"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-<link rel="stylesheet" href="{% static "css/dark.css" %}">
+<script src="{% static "js/highcharts-theme.js" %}"></script>
 <script src="{% static "js/highlight.min.js" %}"></script>
+<link rel="stylesheet" href="{% static "css/dark.css" %}">
 <script>hljs.initHighlightingOnLoad();</script>
-<script>{% irregular_time_line 'container' line %}</script>
+<script>{% irregular_timeline 'container' line %}</script>
 {% endblock %}
 
 {% block header %}

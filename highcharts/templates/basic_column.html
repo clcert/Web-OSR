@@ -1,0 +1,50 @@
+$(function () {
+    $('#{{ id }}').highcharts({
+        chart: {
+            type: 'column'
+        },
+        {% if title %}
+            title: {
+            text: '{{ title }}'
+            },
+        {% endif %}
+        xAxis: {
+            {% if title_xaxis %}
+                title: { text: '{{ title_xaxis }}' },
+            {% endif %}
+            categories: [ {% for label in xlabel %}'{{ label }}',{% endfor %}],
+            crosshair: true
+        },
+        yAxis: {
+            {% if title_yaxis %}
+            title: { text: '{{ title_yaxis }}'},
+            {% endif %}
+            min: 0
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y}</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [
+            {% for elem in values %}
+            {
+            name: '{{ elem.name }}',
+            data: [{% for v in elem.yvalue %}{{ v }},{% endfor %}]
+            },
+            {% endfor %}
+        ],
+        credits: {
+            enabled: false
+        }
+    });
+});

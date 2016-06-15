@@ -2,12 +2,11 @@
 {% load staticfiles %}
 {% load ChartTemplate %}
 
-
 {% block scripts %}
 <script src="{% static "js/highcharts.js" %}"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="{% static "js/highcharts-theme.js" %}"></script>
 <script>
-{% bar_chart 'container' bars %}
+{% basic_column 'container' bars %}
 {% if pie %}
     {% pie_chart_with_legend 'pie1' pie %}
     {% pie_chart 'pie2' pie %}

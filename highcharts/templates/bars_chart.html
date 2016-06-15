@@ -8,13 +8,13 @@ $(function () {
         },
         xAxis: {
             title: {
-                text: '{{ title_x_axis }}'
+                text: '{{ title_xaxis }}'
             },
-            categories: [{% for label in x_label %}'{{ label }}',{% endfor %}]
+            categories: [{% for label in xlabel %}'{{ label }}',{% endfor %}]
         },
         yAxis: {
             title: {
-                text: '{{ title_y_axis }}'
+                text: '{{ title_yaxis }}'
             }
         },
         series: [
