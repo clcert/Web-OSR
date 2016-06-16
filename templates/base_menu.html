@@ -11,4 +11,14 @@
             <li><a href="{% url 'graphs/device' 80 %}">Device</a></li>
         </ul>
     </li>
+    <li class="treeview">
+              <a href="#"><i class="fa fa-line-chart"></i> <span>HTTPS</span> <i class="fa fa-angle-left pull-right"></i></a>
+              <ul class="treeview-menu">
+                <li><a href="{% url 'graphs/https/key-bits' 443 %}">Key Bits</a></li>
+{#                <li><a href="{% url 'graphs/https/validation' %}">Validation</a></li>#}
+{#                <li><a href="{% url 'graphs/https/signature' %}">Signature</a></li>#}
+{#                <li><a href="{% url 'graphs/https/cipher-suite' %}">Cipher Suite</a></li>#}
+{#                <li><a href="{% url 'graphs/https/tls-version' %}">TLS Version</a></li>#}
+              </ul>
+            </li>
 {% endblock %}
