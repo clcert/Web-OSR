@@ -71,6 +71,7 @@ def signature(request, port, scan_date=None):
                        'title': 'Signature',
                        'xaxis': 'Signature Algorithm',
                        'yaxis': 'Number of Handshake',
+                       'label_rotation': True,
                        'categories': [i for i in signature_values],
                        'values': [
                            {'name': 'https trusted', 'data': [i['total'] for i in filter_by_name(trusted, signature_values, 'signature', 'total')]},

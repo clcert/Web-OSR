@@ -9,16 +9,13 @@ $(function () {
             },
         {% endif %}
         xAxis: {
-            {% if title_xaxis %}
-                title: { text: '{{ title_xaxis }}' },
-            {% endif %}
+            {% if title_xaxis %}title: { text: '{{ title_xaxis }}' },{% endif %}
+            {% if label_rotation %}labels: { rotation: -45 },{% endif %}
             categories: [ {% for category in categories %}'{{ category }}',{% endfor %}],
             crosshair: true
         },
         yAxis: {
-            {% if title_yaxis %}
-            title: { text: '{{ title_yaxis }}'},
-            {% endif %}
+            {% if title_yaxis %} title: { text: '{{ title_yaxis }}'},{% endif %}
             min: 0
         },
         tooltip: {
