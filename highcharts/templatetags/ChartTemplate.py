@@ -52,5 +52,6 @@ def basic_column(div_id, data):
             'title': data.get('title'),
             'title_xaxis': data.get('xaxis'),
             'title_yaxis': data.get('yaxis'),
-            'xlabel': data.get('xvalues'),
+            'log_scale': data.get('log_scale'),
+            'categories': data.get('categories'),
             'values': data.get('values')}

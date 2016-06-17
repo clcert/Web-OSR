@@ -50,8 +50,8 @@ def http_server(request, port, scan_date=None, product=None):
                    'scan_list': [i.date for i in scan_date_list],
                    'bars': {
                        'title': 'Web Server Running (HTTP)', 'xaxis': 'Web Server', 'yaxis': 'Number of Servers',
-                       'xvalues': [i['product'] for i in web_server],
-                       'values': [{'name': 'port ' + port, 'yvalue': [i['total'] for i in web_server]}]},
+                       'categories': [i['product'] for i in web_server],
+                       'values': [{'name': 'port ' + port, 'data': [i['total'] for i in web_server]}]},
                    'pie': None
                    })
 
@@ -61,7 +61,7 @@ def http_server(request, port, scan_date=None, product=None):
         #                'scan_list': [i.date for i in zmap],
         #                'bars': {'title': 'Web Server Running (HTTP)', 'xaxis': 'Web Server', 'yaxis': 'Number of Servers',
         #                         'xvalues': [i[0] for i in web_server_frequency],
-        #                         'values': [{'name': 'port ' + port, 'yvalue': [i[1] for i in web_server_frequency]}]},
+        #                         'values': [{'name': 'port ' + port, 'data': [i[1] for i in web_server_frequency]}]},
         #                'pie': {'title': version, 'data': version_web_server(port, scan, version)}})
 
 
@@ -81,12 +81,12 @@ def http_server_all(request, scan_date):
                    'scan_date': scan_date,
                    'scan_list': [i.date for i in scan_date_list],
                    'bars': {'title': 'Web Server Running (HTTP)', 'xaxis': 'Web Server', 'yaxis': 'Number of Servers',
-                            'xvalues': [i['product'] for i in http80],
+                            'categories': [i['product'] for i in http80],
                             'values': [
-                                {'name': 'port 80', 'yvalue': [i['total'] for i in http80]},
-                                {'name': 'port 443', 'yvalue': [i['total'] for i in http443]},
-                                {'name': 'port 8000', 'yvalue': [i['total'] for i in http8000]},
-                                {'name': 'port 8080', 'yvalue': [i['total'] for i in http8080]}
+                                {'name': 'port 80', 'data': [i['total'] for i in http80]},
+                                {'name': 'port 443', 'data': [i['total'] for i in http443]},
+                                {'name': 'port 8000', 'data': [i['total'] for i in http8000]},
+                                {'name': 'port 8080', 'data': [i['total'] for i in http8080]}
                             ]}
                    })
 
@@ -106,8 +106,8 @@ def operating_system_server(request, port, scan_date=None):
                    'bars': {
                        'title': 'Operative System of Server (HTTP)', 'xaxis': 'Operative Systems',
                        'yaxis': 'Number of Servers',
-                       'xvalues': [i['os'] for i in operating_system],
-                       'values': [{'name': 'port ' + str(port), 'yvalue': [i['total'] for i in operating_system]}]}})
+                       'categories': [i['os'] for i in operating_system],
+                       'values': [{'name': 'port ' + str(port), 'data': [i['total'] for i in operating_system]}]}})
 
 
 def operating_system_server_all(request, scan_date):
@@ -127,11 +127,11 @@ def operating_system_server_all(request, scan_date):
                    'scan_list': [i.date for i in scan_date_list],
                    'bars': {'title': 'Operative System of Server (HTTP)', 'xaxis': 'Operative Systems',
                             'yaxis': 'Number of Servers',
-                            'xvalues': [i['os'] for i in os80],
-                            'values': [{'name': 'port 80', 'yvalue': [i['total'] for i in os80]},
-                                       {'name': 'port 443', 'yvalue': [i['total'] for i in os443]},
-                                       {'name': 'port 8000', 'yvalue': [i['total'] for i in os8000]},
-                                       {'name': 'port 8080', 'yvalue': [i['total'] for i in os8080]}]}})
+                            'categories': [i['os'] for i in os80],
+                            'values': [{'name': 'port 80', 'data': [i['total'] for i in os80]},
+                                       {'name': 'port 443', 'data': [i['total'] for i in os443]},
+                                       {'name': 'port 8000', 'data': [i['total'] for i in os8000]},
+                                       {'name': 'port 8080', 'data': [i['total'] for i in os8080]}]}})
 
 
 def device_type(request, port, scan_date=None):
@@ -149,8 +149,8 @@ def device_type(request, port, scan_date=None):
                    'bars': {
                        'title': 'Device Type of Server (HTTP)', 'xaxis': 'Type of Device',
                        'yaxis': 'Number of Servers',
-                       'xvalues': [i['type'] for i in device],
-                       'values': [{'name': 'port ' + str(port), 'yvalue': [i['total'] for i in device]}]}})
+                       'categories': [i['type'] for i in device],
+                       'values': [{'name': 'port ' + str(port), 'data': [i['total'] for i in device]}]}})
 
 
 def device_type_all(request, scan_date):
@@ -170,8 +170,8 @@ def device_type_all(request, scan_date):
                    'scan_list': [i.date for i in scan_date_list],
                    'bars': {'title': 'Device Type of Server (HTTP)', 'xaxis': 'Type of Device',
                             'yaxis': 'Number of Servers',
-                            'xvalues': [i['type'] for i in device80],
-                            'values': [{'name': 'port 80', 'yvalue': [i['total'] for i in device80]},
-                                       {'name': 'port 443', 'yvalue': [i['total'] for i in device443]},
-                                       {'name': 'port 8000', 'yvalue': [i['total'] for i in device8000]},
-                                       {'name': 'port 8080', 'yvalue': [i['total'] for i in device8080]}]}})
+                            'categories': [i['type'] for i in device80],
+                            'values': [{'name': 'port 80', 'data': [i['total'] for i in device80]},
+                                       {'name': 'port 443', 'data': [i['total'] for i in device443]},
+                                       {'name': 'port 8000', 'data': [i['total'] for i in device8000]},
+                                       {'name': 'port 8080', 'data': [i['total'] for i in device8080]}]}})

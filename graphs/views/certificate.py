@@ -8,7 +8,8 @@ from graphs.util import filter_by_name
 def certificate_key_bits(request, port, scan_date=None):
     scan_date_list = ZmapLog.objects.filter(port=port)
     if scan_date is None:
-            scan_date = scan_date_list.last().date
+            scan_date = scan_date_list.first().date
+            # scan_date = scan_date_list.last().date
 
     trusted = HTTPSKeyBits.objects.filter(port=port, date=scan_date, valid=True).values('bits').order_by('bits') \
         .annotate(total=Sum('total')).order_by('bits')[:10]
@@ -20,36 +21,17 @@ def certificate_key_bits(request, port, scan_date=None):
     return render(request, 'graphs/certificate.html',
                   {'page_title': 'HTTPs Protocol Key Bits', 'panel_title': 'HTTPS Certificates Key Bits',
                    'bars': {
-                       'title': 'Key Bits (HTTPS)', 'xaxis': 'Bits', 'yaxis': 'Number of Certificates',
-                       'xvalues': [i for i in key_bits],
+                       'title': 'Key Bits (HTTPS)',
+                       'xaxis': 'Bits',
+                       'yaxis': 'Number of Certificates',
+                       'categories': [i for i in key_bits],
                        'values': [
-                           {'name': 'https trusted', 'yvalue': [i['total'] for i in filter_by_name(trusted, key_bits, 'bits', 'total')]},
-                           {'name': 'https untrusted', 'yvalue': [i['total'] for i in filter_by_name(untrusted, key_bits, 'bits', 'total')]}
+                           {'name': 'https trusted', 'data': [i['total'] for i in filter_by_name(trusted, key_bits, 'bits', 'total')]},
+                           {'name': 'https untrusted', 'data': [i['total'] for i in filter_by_name(untrusted, key_bits, 'bits', 'total')]}
                        ]
                    }})
 
 
-
-
-# def certificate_key_bits(request):
-#     key_bits_443_trusted = accumulate(Https.objects(valid=True), 'key_bits', with_none=False)[:10]
-#     key_bits_443_untrusted = accumulate(Https.objects(valid=False), 'key_bits', with_none=False)[:10]
-#
-#     value_name = set([i[0] for i in key_bits_443_trusted]) | set([i[0] for i in key_bits_443_untrusted])
-#     key_bits_443_trusted = complete_bars_chart(value_name, key_bits_443_trusted)
-#     key_bits_443_untrusted = complete_bars_chart(value_name, key_bits_443_untrusted)
-#
-#     key_bits_443_trusted = sorted(key_bits_443_trusted, key=lambda tup: int(tup[0]))
-#     key_bits_443_untrusted = sorted(key_bits_443_untrusted, key=lambda tup: int(tup[0]))
-#
-#     return render(request, 'graphs/certificate.html',
-#                   {'page_title': 'HTTPs Protocol Key Bits', 'panel_title': 'HTTPS Certificates Key Bits',
-#                    'bars': {'title': 'Key Bits (HTTPS)', 'xaxis': 'Bits', 'yaxis': 'Number of Certificates',
-#                             'xvalues': [i[0] for i in key_bits_443_trusted],
-#                             'values': [{'name': 'https trusted', 'yvalue': [i[1] for i in key_bits_443_trusted]},
-#                                        {'name': 'https untrusted', 'yvalue': [i[1] for i in key_bits_443_untrusted]}]}})
-#
-#
 # def certificate_validation(request):
 #     key_bits_443 = accumulate(Https.objects(), 'validate', with_none=False)[:10]
 #

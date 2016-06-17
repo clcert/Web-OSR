@@ -12,7 +12,7 @@ $(function () {
             {% if title_xaxis %}
                 title: { text: '{{ title_xaxis }}' },
             {% endif %}
-            categories: [ {% for label in xlabel %}'{{ label }}',{% endfor %}],
+            categories: [ {% for category in categories %}'{{ category }}',{% endfor %}],
             crosshair: true
         },
         yAxis: {
@@ -39,7 +39,7 @@ $(function () {
             {% for elem in values %}
             {
             name: '{{ elem.name }}',
-            data: [{% for v in elem.yvalue %}{{ v }},{% endfor %}]
+            data: [{% for v in elem.data %}{{ v }},{% endfor %}],
             },
             {% endfor %}
         ],
