@@ -1,7 +1,7 @@
 from django.db.models import Sum
 from django.shortcuts import render
 
-from graphs.models import ZmapLog, HTTPSKeyBits, HTTPSSignature, HTTPSCipherSuite
+from graphs.models import ZmapLog, HTTPSKeyBits, HTTPSSignature, HTTPSCipherSuite, HTTPSTlsProtocol
 from graphs.util import filter_by_name
 
 
@@ -105,42 +105,32 @@ def cipher_suite(request, port, scan_date=None):
                    }})
 
 
-# def certificate_cipher_suite(request):
-#     cipher_suite_trusted = accumulate(Https.objects(valid=True), 'cipher_suite', with_none=False)[:10]
-#     cipher_suite_untrusted = accumulate(Https.objects(valid=False), 'cipher_suite', with_none=False)[:10]
-#
-#     value_name = set([i[0] for i in cipher_suite_trusted]) | set([i[0] for i in cipher_suite_untrusted])
-#     cipher_suite_trusted = complete_bars_chart(value_name, cipher_suite_trusted)
-#     cipher_suite_untrusted = complete_bars_chart(value_name, cipher_suite_untrusted)
-#
-#     cipher_suite_trusted = sorted(cipher_suite_trusted, key=lambda tup: tup[0])
-#     cipher_suite_untrusted = sorted(cipher_suite_untrusted, key=lambda tup: tup[0])
-#
-#     return render(request, 'graphs/certificate.html',
-#                   {'page_title': 'HTTPS Certificate Cipher Suites', 'panel_title': 'Scanned in 11/11/11',
-#                    'bars': {'title': 'Cipher Suites', 'xaxis': 'Cipher Suite', 'yaxis': 'Number of Handshake',
-#                             'xvalues': [i[0] for i in cipher_suite_trusted],
-#                             'values': [{'name': 'https trusted', 'yvalue': [i[1] for i in cipher_suite_trusted]},
-#                                        {'name': 'https untrusted', 'yvalue': [i[1] for i in cipher_suite_untrusted]}]}})
-#
-#
-# def certificate_tls_version(request):
-#     tls_version_trusted = accumulate(Https.objects(valid=True), 'tls_protocol', with_none=False)
-#     tls_version_untrusted = accumulate(Https.objects(valid=False), 'tls_protocol', with_none=False)
-#
-#     value_name = set([i[0] for i in tls_version_trusted]) | set([i[0] for i in tls_version_untrusted])
-#     tls_version_trusted = complete_bars_chart(value_name, tls_version_trusted)
-#     tls_version_untrusted = complete_bars_chart(value_name, tls_version_untrusted)
-#
-#     tls_version_trusted = sorted(tls_version_trusted, key=lambda tup: tup[0])
-#     tls_version_untrusted = sorted(tls_version_untrusted, key=lambda tup: tup[0])
-#
-#     return render(request, 'graphs/certificate.html',
-#                   {'page_title': 'HTTPS Certificate TLS Version', 'panel_title': 'Scanned in 11/11/11',
-#                    'bars': {'title': 'Cipher Suites', 'xaxis': 'TLS Version', 'yaxis': 'Number of Handshake',
-#                             'xvalues': [i[0] for i in tls_version_trusted],
-#                             'values': [{'name': 'https trusted', 'yvalue': [i[1] for i in tls_version_trusted]},
-#                                        {'name': 'https untrusted', 'yvalue': [i[1] for i in tls_version_untrusted]}]}})
+def tls_version(request, port, scan_date=None):
+    scan_date_list = ZmapLog.objects.filter(port=port)
+    if scan_date is None:
+        scan_date = scan_date_list.last().date
+
+    trusted = HTTPSTlsProtocol.objects.filter(port=port, date=scan_date, valid=True).values('protocol').order_by('protocol') \
+        .annotate(total=Sum('total')).order_by('protocol')
+    untrusted = HTTPSTlsProtocol.objects.filter(port=port, date=scan_date, valid=False).values('protocol').order_by('protocol') \
+        .annotate(total=Sum('total')).order_by('protocol')
+
+    tls_values = sorted(set([i['protocol'] for i in trusted]) | set([i['protocol'] for i in untrusted]))
+
+    return render(request, 'graphs/certificate.html',
+                  {'page_title': 'HTTPS Certificate TLS Version',
+                   'panel_title': 'Scanned in 11/11/11',
+                   'bars': {
+                       'title': 'Cipher Suites',
+                       'xaxis': 'TLS Version',
+                       'yaxis': 'Number of Handshake',
+                       'categories': [i for i in tls_values],
+                       'values': [
+                           {'name': 'https trusted', 'data': [i['total'] for i in filter_by_name(trusted, tls_values, 'protocol', 'total')]},
+                           {'name': 'https untrusted', 'data': [i['total'] for i in filter_by_name(untrusted, tls_values, 'protocol', 'total')]}
+                       ]
+                   }})
+
 
 
 

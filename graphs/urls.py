@@ -23,7 +23,8 @@ urlpatterns = [
     url(r'^https/signature/(?P<port>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)$', views.signature, name='graphs/https/signature'),
     url(r'^https/cipher-suite/(?P<port>[0-9]+)$', views.cipher_suite, name='graphs/https/cipher-suite'),
     url(r'^https/cipher-suite/(?P<port>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)$', views.cipher_suite, name='graphs/https/cipher-suite'),
-    # url(r'^https/tls_version$', views.certificate_tls_version, name='graphs/https/tls-version'),
+    url(r'^https/tls_version/(?P<port>[0-9]+)$', views.tls_version, name='graphs/https/tls-version'),
+    url(r'^https/tls_version/(?P<port>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)$', views.tls_version, name='graphs/https/tls-version'),
     # url(r'^search/ip', views.ip_search, name='search/ip'),
     # url(r'^search$', views.search, name='search'),
 ]

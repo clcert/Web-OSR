@@ -47,3 +47,15 @@ class HTTPSCipherSuite(models.Model):
     class Meta:
         db_table = 'https_cipher_suite'
         ordering = ['-total']
+
+
+class HTTPSTlsProtocol(models.Model):
+    port = models.IntegerField(primary_key=True)
+    date = models.DateField(primary_key=True)
+    valid = models.BooleanField(primary_key=True)
+    protocol = models.TextField(primary_key=True)
+    total = models.IntegerField()
+
+    class Meta:
+        db_table = 'https_tls_protocol'
+        ordering = ['-total']
