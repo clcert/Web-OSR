@@ -23,3 +23,15 @@ class HTTPSKeyBits(models.Model):
     class Meta:
         db_table = 'https_key_bits'
         ordering = ['-total']
+
+
+class HTTPSSignature(models.Model):
+    port = models.IntegerField(primary_key=True)
+    date = models.DateField(primary_key=True)
+    valid = models.BooleanField(primary_key=True)
+    signature = models.TextField(primary_key=True)
+    total = models.IntegerField()
+
+    class Meta:
+        db_table = 'https_signature'
+        ordering = ['-total']

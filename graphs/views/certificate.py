@@ -1,11 +1,11 @@
 from django.db.models import Sum
 from django.shortcuts import render
 
-from graphs.models import ZmapLog, HTTPSKeyBits
+from graphs.models import ZmapLog, HTTPSKeyBits, HTTPSSignature
 from graphs.util import filter_by_name
 
 
-def certificate_key_bits(request, port, scan_date=None):
+def key_bits(request, port, scan_date=None):
     scan_date_list = ZmapLog.objects.filter(port=port)
     if scan_date is None:
             scan_date = scan_date_list.first().date
@@ -16,7 +16,7 @@ def certificate_key_bits(request, port, scan_date=None):
     untrusted = HTTPSKeyBits.objects.filter(port=port, date=scan_date, valid=False).values('bits').order_by('bits') \
         .annotate(total=Sum('total')).order_by('bits')[:10]
 
-    key_bits = sorted(set([i['bits'] for i in trusted]) | set([i['bits'] for i in untrusted]))
+    key_bits_values = sorted(set([i['bits'] for i in trusted]) | set([i['bits'] for i in untrusted]))
 
     return render(request, 'graphs/certificate.html',
                   {'page_title': 'HTTPs Protocol Key Bits', 'panel_title': 'HTTPS Certificates Key Bits',
@@ -24,44 +24,61 @@ def certificate_key_bits(request, port, scan_date=None):
                        'title': 'Key Bits (HTTPS)',
                        'xaxis': 'Bits',
                        'yaxis': 'Number of Certificates',
-                       'categories': [i for i in key_bits],
+                       'categories': [i for i in key_bits_values],
                        'values': [
-                           {'name': 'https trusted', 'data': [i['total'] for i in filter_by_name(trusted, key_bits, 'bits', 'total')]},
-                           {'name': 'https untrusted', 'data': [i['total'] for i in filter_by_name(untrusted, key_bits, 'bits', 'total')]}
+                           {'name': 'https trusted', 'data': [i['total'] for i in filter_by_name(trusted, key_bits_values, 'bits', 'total')]},
+                           {'name': 'https untrusted', 'data': [i['total'] for i in filter_by_name(untrusted, key_bits_values, 'bits', 'total')]}
                        ]
                    }})
 
 
-# def certificate_validation(request):
-#     key_bits_443 = accumulate(Https.objects(), 'validate', with_none=False)[:10]
-#
-#     return render(request, 'graphs/certificate.html',
-#                   {'page_title': 'HTTPS Certificate Validation', 'panel_title': 'Scanned in 11/11/11',
-#                    'bars': {'title': 'Certificate Validation (HTTP)', 'xaxis': 'Validation',
-#                             'yaxis': 'Number of Certificates',
-#                             'xvalues': [i[0] for i in key_bits_443],
-#                             'values': [{'name': 'https', 'yvalue': [i[1] for i in key_bits_443]}]}})
-#
-#
-# def certificate_signature(request):
-#     signature_trusted = accumulate(Https.objects(valid=True), 'signature_algorithm', with_none=False)
-#     signature_untrusted = accumulate(Https.objects(valid=False), 'signature_algorithm', with_none=False)
-#
-#     value_name = set([i[0] for i in signature_trusted]) | set([i[0] for i in signature_untrusted])
-#     signature_trusted = complete_bars_chart(value_name, signature_trusted)
-#     signature_untrusted = complete_bars_chart(value_name, signature_untrusted)
-#
-#     signature_trusted = sorted(signature_trusted, key=lambda tup: tup[0])
-#     signature_untrusted = sorted(signature_untrusted, key=lambda tup: tup[0])
-#
-#     return render(request, 'graphs/certificate.html',
-#                   {'page_title': 'HTTPS Certificate Signature', 'panel_title': 'Scanned in 11/11/11',
-#                    'bars': {'title': 'Signature', 'xaxis': 'Signature Algorithm', 'yaxis': 'Number of Handshake',
-#                             'xvalues': [i[0] for i in signature_trusted],
-#                             'values': [{'name': 'https trusted', 'yvalue': [i[1] for i in signature_trusted]},
-#                                        {'name': 'https untrusted', 'yvalue': [i[1] for i in signature_untrusted]}]}})
-#
-#
+def validation(request, port, scan_date=None):
+    scan_date_list = ZmapLog.objects.filter(port=port)
+    if scan_date is None:
+        scan_date = scan_date_list.first().date
+        # scan_date = scan_date_list.last().date
+
+    certificate_validation = HTTPSKeyBits.objects.filter(port=port, date=scan_date).values('valid').order_by('valid') \
+        .annotate(total=Sum('total')).order_by('valid')
+
+    return render(request, 'graphs/certificate.html',
+                  {'page_title': 'HTTPS Certificate Validation', 'panel_title': 'Scanned in 11/11/11',
+                   'bars': {
+                       'title': 'Certificate Validation (HTTP)',
+                       'xaxis': 'Validation',
+                       'yaxis': 'Number of Certificates',
+                       'categories': [i['valid'] for i in certificate_validation],
+                       'values': [{'name': 'https', 'data': [i['total'] for i in certificate_validation]}]}})
+
+
+def signature(request, port, scan_date=None):
+    scan_date_list = ZmapLog.objects.filter(port=port)
+    if scan_date is None:
+        scan_date = scan_date_list.first().date
+        # scan_date = scan_date_list.last().date
+
+    trusted = HTTPSSignature.objects.filter(port=port, date=scan_date, valid=True).values('signature').order_by('signature') \
+        .annotate(total=Sum('total')).order_by('signature')[:10]
+    untrusted = HTTPSSignature.objects.filter(port=port, date=scan_date, valid=False).values('signature').order_by('signature') \
+        .annotate(total=Sum('total')).order_by('signature')[:10]
+
+    signature_values = sorted(set([i['signature'] for i in trusted]) | set([i['signature'] for i in untrusted]))
+
+    return render(request, 'graphs/certificate.html',
+                  {'page_title': 'HTTPS Certificate Signature',
+                   'panel_title': 'Scanned in 11/11/11',
+                   'bars': {
+                       'title': 'Signature',
+                       'xaxis': 'Signature Algorithm',
+                       'yaxis': 'Number of Handshake',
+                       'categories': [i for i in signature_values],
+                       'values': [
+                           {'name': 'https trusted', 'data': [i['total'] for i in filter_by_name(trusted, signature_values, 'signature', 'total')]},
+                           {'name': 'https untrusted', 'data': [i['total'] for i in filter_by_name(untrusted, signature_values, 'signature', 'total')]}
+                       ]
+                   }})
+
+
 # def certificate_cipher_suite(request):
 #     cipher_suite_trusted = accumulate(Https.objects(valid=True), 'cipher_suite', with_none=False)[:10]
 #     cipher_suite_untrusted = accumulate(Https.objects(valid=False), 'cipher_suite', with_none=False)[:10]
