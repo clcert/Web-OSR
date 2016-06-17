@@ -35,3 +35,15 @@ class HTTPSSignature(models.Model):
     class Meta:
         db_table = 'https_signature'
         ordering = ['-total']
+
+
+class HTTPSCipherSuite(models.Model):
+    port = models.IntegerField(primary_key=True)
+    date = models.DateField(primary_key=True)
+    valid = models.BooleanField(primary_key=True)
+    cipher_suite = models.TextField(primary_key=True)
+    total = models.IntegerField()
+
+    class Meta:
+        db_table = 'https_cipher_suite'
+        ordering = ['-total']
