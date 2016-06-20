@@ -58,15 +58,15 @@
                     <li><b>DNS Name: </b> {{ reverse }}</li>
                     <li><b></b></li>
                     {% if http80.metadata.device %}
-                        <li><b>Operative System: </b> {{ http80.metadata.device.os }} </li>
-                        <li><b>Operative System Version: </b> {{ http80.metadata.device.os_version }} </li>
-                        <li><b>Device Type: </b> {{ http80.metadata.device.type }} </li>
+                        {% if http80.metadata.device.os %}<li><b>Operative System: </b> {{ http80.metadata.device.os }} </li>{% endif %}
+                        {% if http80.metadata.device.os_version %}<li><b>Operative System Version: </b> {{ http80.metadata.device.os_version }} </li>{% endif %}
+                        {% if http80.metadata.device.type %}<li><b>Device Type: </b> {{ http80.metadata.device.type }} </li>{% endif %}
                     {% endif %}
 
                     {% if http80.metadata.service %}
-                        <li><b>Product: </b> {{ http80.metadata.service.product }} </li>
-                        <li><b>Product Manufacturer: </b> {{ http80.metadata.service.manufacturer  }} </li>
-                        <li><b>Product Version: </b> {{ http80.metadata.service.version  }} </li>
+                        {% if http80.metadata.service.product %}<li><b>Product: </b> {{ http80.metadata.service.product }} </li>{% endif %}
+                        {% if http80.metadata.service.manufacturer %}<li><b>Product Manufacturer: </b> {{ http80.metadata.service.manufacturer  }} </li>{% endif %}
+                        {% if http80.metadata.service.version %}<li><b>Product Version: </b> {{ http80.metadata.service.version  }} </li>{% endif %}
                     {% endif %}
 
                 </ul>

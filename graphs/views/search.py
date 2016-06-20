@@ -1,7 +1,7 @@
 import socket
 from geoip import geolite2
 from django.shortcuts import render
-from graphs.models import HTTP80
+from graphs.models import HTTP80, HTTP443, HTTP8000, HTTP8080
 from graphs.models.util import HTTP
 
 from django.http import HttpResponse, JsonResponse
@@ -84,20 +84,20 @@ def search(request):
     except IndexError:
         http80 = None
 
-    # try:
-    #     http443 = HTTP443.objects(ip=ip).order_by('-date')[date_position]
-    # except IndexError:
-    #     http443 = None
-    #
-    # try:
-    #     http8000 = HTTP8000.objects(ip=ip).order_by('-date')[date_position]
-    # except IndexError:
-    #     http8000 = None
-    #
-    # try:
-    #     http8080 = HTTP8080.objects(ip=ip).order_by('-date')[date_position]
-    # except IndexError:
-    #     http8080 = None
+    try:
+        http443 = HTTP(HTTP443.objects.filter(ip=ip).order_by('-date')[date_position].data)
+    except IndexError:
+        http443 = None
+
+    try:
+        http8000 = HTTP(HTTP8000.objects.filter(ip=ip).order_by('-date')[date_position].data)
+    except IndexError:
+        http8000 = None
+
+    try:
+        http8080 = HTTP(HTTP8080.objects.filter(ip=ip).order_by('-date')[date_position].data)
+    except IndexError:
+        http8080 = None
     #
     # try:
     #     https = Https.objects(ip=ip).order_by('-date')[date_position]
@@ -111,8 +111,8 @@ def search(request):
                    'long': long,
                    'datePosition': date_position,
                    'http80': http80,
-                   # 'http443': http443,
-                   # 'http8000': http8000,
-                   # 'http8080': http8080,
+                   'http443': http443,
+                   'http8000': http8000,
+                   'http8080': http8080,
                    # 'https': https
                    })
