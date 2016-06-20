@@ -17,8 +17,10 @@ def key_bits(request, port, scan_date=None):
 
     key_bits_values = sorted(set([i['bits'] for i in trusted]) | set([i['bits'] for i in untrusted]))
 
-    return render(request, 'graphs/certificate.html',
-                  {'page_title': 'HTTPs Protocol Key Bits', 'panel_title': 'HTTPS Certificates Key Bits',
+    return render(request, 'graphs/cert_key_bits.html',
+                  {'port': port,
+                   'scan_date': scan_date,
+                   'scan_list': [i.date for i in scan_date_list],
                    'bars': {
                        'title': 'Key Bits (HTTPS)',
                        'xaxis': 'Bits',
@@ -39,8 +41,10 @@ def validation(request, port, scan_date=None):
     certificate_validation = HTTPSKeyBits.objects.filter(port=port, date=scan_date).values('valid').order_by('valid') \
         .annotate(total=Sum('total')).order_by('valid')
 
-    return render(request, 'graphs/certificate.html',
-                  {'page_title': 'HTTPS Certificate Validation', 'panel_title': 'Scanned in 11/11/11',
+    return render(request, 'graphs/cert_validation.html',
+                  {'port': port,
+                   'scan_date': scan_date,
+                   'scan_list': [i.date for i in scan_date_list],
                    'bars': {
                        'title': 'Certificate Validation (HTTP)',
                        'xaxis': 'Validation',
@@ -61,9 +65,10 @@ def signature(request, port, scan_date=None):
 
     signature_values = sorted(set([i['signature'] for i in trusted]) | set([i['signature'] for i in untrusted]))
 
-    return render(request, 'graphs/certificate.html',
-                  {'page_title': 'HTTPS Certificate Signature',
-                   'panel_title': 'Scanned in 11/11/11',
+    return render(request, 'graphs/cert_signature.html',
+                  {'port': port,
+                   'scan_date': scan_date,
+                   'scan_list': [i.date for i in scan_date_list],
                    'bars': {
                        'title': 'Signature',
                        'xaxis': 'Signature Algorithm',
@@ -89,9 +94,10 @@ def cipher_suite(request, port, scan_date=None):
 
     cipher_suite_values = sorted(set([i['cipher_suite'] for i in trusted]) | set([i['cipher_suite'] for i in untrusted]))
 
-    return render(request, 'graphs/certificate.html',
-                  {'page_title': 'HTTPS Certificate Cipher Suites',
-                   'panel_title': 'Scanned in 11/11/11',
+    return render(request, 'graphs/cert_cipher_suite.html',
+                  {'port': port,
+                   'scan_date': scan_date,
+                   'scan_list': [i.date for i in scan_date_list],
                    'bars': {
                        'title': 'Cipher Suites',
                        'xaxis': 'Cipher Suite',
@@ -117,9 +123,10 @@ def tls_version(request, port, scan_date=None):
 
     tls_values = sorted(set([i['protocol'] for i in trusted]) | set([i['protocol'] for i in untrusted]))
 
-    return render(request, 'graphs/certificate.html',
-                  {'page_title': 'HTTPS Certificate TLS Version',
-                   'panel_title': 'Scanned in 11/11/11',
+    return render(request, 'graphs/cert_tls_version.html',
+                  {'port': port,
+                   'scan_date': scan_date,
+                   'scan_list': [i.date for i in scan_date_list],
                    'bars': {
                        'title': 'Cipher Suites',
                        'xaxis': 'TLS Version',
