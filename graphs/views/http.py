@@ -1,7 +1,7 @@
 from django.db.models import Count, Sum
 from django.shortcuts import render
-from graphs.models import ZmapLog, HTTP80, HTTP_PORT, HTTP443, HTTP8000, HTTP8080, HTTPServer, HTTPOS, HTTPType
-from graphs.util import count, filter_by_name
+from graphs.models import ZmapLog, HTTP80, HTTP443, HTTP8000, HTTP8080, HTTPServer, HTTPOS, HTTPType
+from graphs.util import filter_by_name
 
 
 def http_index(request):
