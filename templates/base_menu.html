@@ -2,23 +2,34 @@
 {% load staticfiles %}
 
 {% block menu %}
-    <li class="treeview">
-        <a href="#"><i class="fa fa-line-chart"></i> <span>HTTP</span> <i class="fa fa-angle-left pull-right"></i></a>
-        <ul class="treeview-menu">
-            <li><a href="{% url 'graphs/http-index' %}">Scans</a></li>
-            <li><a href="{% url 'graphs/server' 80 %}">HTTP Server</a></li>
-            <li><a href="{% url 'graphs/os' 80 %}">Operative Systems</a></li>
-            <li><a href="{% url 'graphs/device' 80 %}">Device</a></li>
-        </ul>
-    </li>
-    <li class="treeview">
-              <a href="#"><i class="fa fa-line-chart"></i> <span>HTTPS</span> <i class="fa fa-angle-left pull-right"></i></a>
-              <ul class="treeview-menu">
+    <form action="#" method="get" class="sidebar-form">
+        <div class="input-group">
+            <input type="text" name="question" class="form-control" placeholder="Search...">
+              <span class="input-group-btn">
+                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+              </span>
+        </div>
+    </form>
+
+    <ul class="sidebar-menu">
+        <li class="treeview">
+            <a href="#"><i class="fa fa-line-chart"></i> <span>HTTP</span> <i class="fa fa-angle-left pull-right"></i></a>
+            <ul class="treeview-menu">
+                <li><a href="{% url 'graphs/http-index' %}">Scans</a></li>
+                <li><a href="{% url 'graphs/server' 80 %}">HTTP Server</a></li>
+                <li><a href="{% url 'graphs/os' 80 %}">Operative Systems</a></li>
+                <li><a href="{% url 'graphs/device' 80 %}">Device</a></li>
+            </ul>
+        </li>
+        <li class="treeview">
+            <a href="#"><i class="fa fa-line-chart"></i> <span>HTTPS</span> <i class="fa fa-angle-left pull-right"></i></a>
+            <ul class="treeview-menu">
                 <li><a href="{% url 'graphs/https/key-bits' 443 %}">Key Bits</a></li>
                 <li><a href="{% url 'graphs/https/validation' 443 %}">Validation</a></li>
                 <li><a href="{% url 'graphs/https/signature' 443 %}">Signature</a></li>
                 <li><a href="{% url 'graphs/https/cipher-suite' 443 %}">Cipher Suite</a></li>
                 <li><a href="{% url 'graphs/https/tls-version' 443 %}">TLS Version</a></li>
-              </ul>
-            </li>
+            </ul>
+        </li>
+    </ul>
 {% endblock %}
