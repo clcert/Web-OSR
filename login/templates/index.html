@@ -7,26 +7,109 @@
 
 {% block content %}
     <div class="row">
-         <div class="col-md-2"></div>
-         <div class="col-md-8">
-             <div class="box">
-                <div class="box-header with-border">
-                    <h1>Monitoreo Activo</h1>
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+                <div class="inner">
+                    <h3>27</h3>
+                    <p><b>Puertos Escaneados</b></p>
                 </div>
-                 <div class="box-body">
-                     <p style="font-size:20px">Desde el Departamento de Ciencias de la Computación de la Universidad de Chile (DCC), nos encontramos
-                     monitoreando el estado de seguridad de la red chilena, con fines estadísticos. En el marco de este estudio,
-                     todos los equipos con IP publica asociados a Chile, son analizados a través de paquetes TCP-SYN. Este
-                     proceso no interfiere con el normal funcionamiento de las redes estudiadas. Si desea que sus equipos sean
-                     excluidos de este estudio, contactase con scan@clcert.cl</p>
-
-                     <p style="font-size:20px">La información obtenida en este estudio, se encuentra disponible a través de este sitio web, para su libre uso.</p>
-                     <div style="width: 50%; margin: 0 auto; ">
-                        <img src="{% static "image/uchile.png" %}" alt="Universidad de Chile" height="100%" width="100%"/>
-                     </div>
-                 </div>
-             </div>
+                <div class="icon">
+                    <i class="fa fa-server fa-fw" aria-hidden="true"></i>
+                </div>
+            </div>
         </div>
-        <div class="col-md-2"></div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-green">
+                <div class="inner">
+                    <h3>{{ http_scan_date|date:"d-M-Y" }}</h3>
+
+                    <p><b>Ultimo Escaneo HTTP</b></p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-file-code-o fa-fw" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-yellow">
+                <div class="inner">
+                    <h3>{{ https_scan_date|date:"d-M-Y" }}</h3>
+
+                    <p><b>Ultimo Escaneo HTTPS</b></p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-lock fa-fw" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-red">
+                <div class="inner">
+                    {#              <h3>{{ ssh_scan_date}}</h3>#}
+                    <h3>27-Ene-2016</h3>
+
+                    <p><b>Ultimo Escaneo SSH</b></p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-terminal fa-fw" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+        <!-- ./col -->
+    </div>
+    <div class="row">
+        {#         <div class="col-md-2"></div>#}
+        <div class="col-md-8">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h1 class="box-title">Monitoreo Activo</h1>
+                </div>
+                <div class="box-body">
+                    <p style="font-size:20px">Desde el Departamento de Ciencias de la Computación de la Universidad de Chile (DCC), nos encontramos
+                        monitoreando el estado de seguridad de la red chilena, con fines estadísticos. En el marco de este estudio,
+                        todos los equipos con IP publica asociados a Chile, son analizados a través de paquetes TCP-SYN. Este
+                        proceso no interfiere con el normal funcionamiento de las redes estudiadas. Si desea que sus equipos sean
+                        excluidos de este estudio, contactase con scan@clcert.cl</p>
+
+                    <p style="font-size:20px">La información obtenida en este estudio, se encuentra disponible a través de este sitio web, para su libre uso.</p>
+                    <div style="width: 50%; margin: 0 auto; ">
+                        <img src="{% static "image/uchile.png" %}" alt="Universidad de Chile" height="100%" width="100%"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h1 class="box-title">Ultimos Escaneos</h1>
+                </div>
+                <div class="box-body">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Puerto</th>
+                            <th>Protocolo</th>
+                            <th>Escaneo</th>
+                        </tr>
+                        {% for elem in scans %}
+                        <tr>
+                            <td>{{ elem.port }}</td>
+                            <td><span class="badge bg-light-blue">HTTP</span></td>
+                            <td>{{ elem.date|date:"d-m-Y" }}</td>
+                        </tr>
+                        {% endfor %}
+
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </div>
 {% endblock %}
