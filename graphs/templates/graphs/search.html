@@ -1,6 +1,7 @@
 {% extends "graphs/base.html" %}
 {% load staticfiles %}
 {% load modelTable %}
+<link rel="stylesheet" type="text/css" href="arrows.css">
 
 {% block scripts %}
     <script src="http://maps.googleapis.com/maps/api/js" xmlns="http://www.w3.org/1999/html"></script>
@@ -20,6 +21,7 @@ function initialize() {
 }
 google.maps.event.addDomListener(window, 'load', initialize);
 </script>
+
 </head>
 {% endblock %}
 
@@ -27,28 +29,51 @@ google.maps.event.addDomListener(window, 'load', initialize);
     <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-8">
-        <h1>Query: <small>{{ ip }}</small></h1>
+        <div class="row">
+            <form action="search" style="display: inline-block">
+                <input type="hidden" name="question" value='{{ ip }}'>
+                <input type="hidden" name="position" value='{{ datePosition }}'>
+                <input type="hidden" name="direction" value='left'>
+                <input type="submit" value="Antes">
+            </form>
+            <h1 style="display: inline-block">Query: <small>{{ ip }}</small></h1>
+            <form action="search" style="display: inline-block">
+                <input type="hidden" name="question" value='{{ ip }}'>
+                <input type="hidden" name="position" value='{{ datePosition }}'>
+                <input type="hidden" name="direction" value='right'>
+                <input type="submit" value="Después">
+            </form>
+        </div>
+
         <hr style="background-color: #3C8DBC; height: 2px">
         <div class="row">
             <div class="col-md-8">
                 <ul style="list-style-type: none">
                     <li><b>IP:</b> {{ ip }}</li>
                     <li><b>DNS Name: </b> {{ reverse }}</li>
-                    <li><b>Manufacturer: </b> PC Factory </li>
                     <li><b></b></li>
-                    <li><b>Operative System: </b> CentOS </li>
-                    <li><b>Operative System Version: </b> 14.3.5 </li>
-                    <li><b>Device Type: </b> Server </li>
+                    {% if http80.metadata.device %}
+                        <li><b>Operative System: </b> {{ http80.metadata.device.os }} </li>
+                        <li><b>Operative System Version: </b> {{ http80.metadata.device.os_version }} </li>
+                        <li><b>Device Type: </b> {{ http80.metadata.device.type }} </li>
+                    {% endif %}
+
+                    {% if http80.metadata.service %}
+                        <li><b>Product: </b> {{ http80.metadata.service.product }} </li>
+                        <li><b>Product Manufacturer: </b> {{ http80.metadata.service.manufacturer  }} </li>
+                        <li><b>Product Version: </b> {{ http80.metadata.service.version  }} </li>
+                    {% endif %}
+
                 </ul>
             </div>
             <div class="col-md-4">
                 <div id="map" style="height: 200px"></div>
             </div>
          </div>
+
         <div class="row">
             <div class="col-md-8">
                 <hr style="background-color: #3C8DBC; height: 2px">
-
                 {% if http80 %}
                     {% http_table 'http80' '80' http80 %}
                 {% endif %}
@@ -62,13 +87,13 @@ google.maps.event.addDomListener(window, 'load', initialize);
                 {% endif %}
 
                 {% if http8080 %}
-                    {% http_table 'http443' '8080' http8080 %}
+                    {% http_table 'http8080' '8080' http8080 %}
                 {% endif %}
 
                 <hr style="background-color: #3C8DBC; height: 2px">
 
                 {% if https %}
-                    {% certificate_table 'HTTPS  Certificate' 'https' '443' https %}
+                    {% certificate_table 'HTTPS  Certificate' 'https' '443' https ip %}
                 {% endif %}
 
             </div>
@@ -76,5 +101,5 @@ google.maps.event.addDomListener(window, 'load', initialize);
         </div>
     </div>
     <div class="col-md-2"></div>
-    </div>
+</div>
 {% endblock %}

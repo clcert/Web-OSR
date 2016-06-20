@@ -1,17 +1,19 @@
-<div class="panel panel-primary">
+<div class="panel panel-primary" id="certificateTable">
     <div class="panel-heading" style="background-color: #3C8DBC">
         <h4>
             <a role="button" data-toggle="collapse" href="#{{ id }}" aria-expanded="true" aria-controls="{{ id }}">
                 <span style="color: white"><b>{{ protocol }}</b> (port {{ port }})</span>
             </a>
+            <button style="float: right; color: black; " class="rightButton">></button>
+            <button style="float: right; color: black; " class="leftButton"><</button>
         </h4>
     </div>
     <div id="{{ id }}" class="panel-collapse collapse in">
-        <table class="table table-hover" >
+        <table id="cert_table" class="table table-hover table_certificate" >
             {% if date %}
             <tr>
                 <td><b>Date:</b></td>
-                <td>{{ date }}</td>
+                <td class="table_date_certificate">{{ date }}</td>
             </tr>
             {% endif %}
 
@@ -199,3 +201,238 @@
         </table>
     </div>
 </div>
+<script>
+
+    $('#certificateTable .leftButton').on('click', function(event){
+        event.preventDefault();
+        var tempDate = $('.table_date_certificate').html();
+        var data = "search/cert/{{ ip }}/".concat(tempDate).concat("/left");
+        console.log(data);
+        $.ajax({url : data, success: onSuccess});
+    });
+
+    $('#certificateTable .rightButton').on('click', function(event) {
+        event.preventDefault();
+        var tempDate = $('.table_date_certificate').html();
+        var data = "search/cert/{{ ip }}/".concat(tempDate).concat("/right");
+        console.log(data);
+        $.ajax({url : data, success: onSuccess});
+    });
+
+
+    function onSuccess(result){
+        reRenderCertificate(result);
+    }
+
+
+    function escapeHtml(unsafe) {
+        return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+     }
+
+    function reRenderCertificate(result){
+        console.log(result);
+        if ($.isEmptyObject(result)){
+            return;
+        }
+        $('.table_certificate').children().remove();
+        if(result.date){
+            $('.table_certificate').append('<tr> <td> <b>Date:</b></td> <td class="table_date_certificate">'
+                    .concat(result.date).concat('</td></tr>'));
+        }
+        if(result.error){
+            $('.table_certificate').append('<tr> <td> <b>Error:</b></td> <td>'
+                    .concat(result.error).concat('</td></tr>'));
+        }
+        if(result.valid){
+            $('.table_certificate').append('<tr> <td> <b>Valid Certificate:</b></td> <td>'
+                    .concat(result.valid).concat('<span class="label label-success">')
+                            .concat(result.valid).concat('</span></td>'));
+        }
+        if(result.tls_protocol){
+            $('.table_certificate').append('<tr> <td> <b>TLS Protocol:</b></td> <td>'
+                    .concat(result.tls_protocol).concat('</td></tr>'));
+        }
+        if(result.cipher_suite){
+            $('.table_certificate').append('<tr> <td> <b>Cipher Suite:</b></td> <td>'
+                    .concat(result.cipher_suite).concat('</td></tr>'));
+        }
+        if(result.certificate_authority){
+            $('.table_certificate').append('<tr> <td> <b>Certificate Authority:</b></td> <td>'
+                    .concat(result.certificate_authority).concat('</td></tr>'));
+        }
+        if(result.signature_algorithm){
+            $('.table_certificate').append('<tr> <td> <b>Signature Algorithm:</b></td> <td>'
+                    .concat(result.signature_algorithm).concat('</td></tr>'));
+        }
+        if(result.key_bits){
+            $('.table_certificate').append('<tr> <td> <b>Key Bits:</b></td> <td>'
+                    .concat(result.key_bits).concat('</td></tr>'));
+        }
+
+        if(result.protocols) {
+            $('.table_certificate').append('<tr><td><b>Supported Ciphers Suites:</b></td><td></td></tr>');
+            {# TLS 1.2 #}
+            $('.table_certificate').append('<tr><td style="text-align: center"><b>TLS V1.2</b></td><td>');
+            if (result.protocols.TLS_12) {
+                $('.table_certificate').append(
+                        '<span class="label label-success">'.concat(result.protocols.TLS_12).concat('</span>'));
+            }
+            else {
+                $('.table_certificate').append(
+                        '<span class="label label-danger">'.concat(result.protocols.TLS_12).concat('</span>'));
+            }
+            $('.table_certificate').append('</td></tr>');
+            {# TLS 1.1 #}
+            $('.table_certificate').append('<tr><td style="text-align: center"><b>TLS V1.1</b></td><td>');
+            if (result.protocols.TLS_11) {
+                $('.table_certificate').append(
+                        '<span class="label label-success">'.concat(result.protocols.TLS_11).concat('</span>'));
+            }
+            else {
+                $('.table_certificate').append(
+                        '<span class="label label-danger">'.concat(result.protocols.TLS_11).concat('</span>'));
+            }
+            $('.table_certificate').append('</td></tr>');
+            {# TLS 1.0 #}
+            $('.table_certificate').append('<tr><td style="text-align: center"><b>TLS V1.0</b></td><td>');
+            if (result.protocols.TLS_10) {
+                $('.table_certificate').append(
+                        '<span class="label label-success">'.concat(result.protocols.TLS_10).concat('</span>'));
+            }
+            else {
+                $('.table_certificate').append(
+                        '<span class="label label-danger">'.concat(result.protocols.TLS_10).concat('</span>'));
+            }
+            $('.table_certificate').append('</td></tr>');
+            {# SSL 3.0 #}
+            $('.table_certificate').append('<tr><td style="text-align: center"><b>SSL V3.0</b></td><td>');
+            if (result.protocols.SSL_30) {
+                $('.table_certificate').append(
+                        '<span class="label label-success">'.concat(result.protocols.SSL_30).concat('</span>'));
+            }
+            else {
+                $('.table_certificate').append(
+                        '<span class="label label-danger">'.concat(result.protocols.SSL_30).concat('</span>'));
+            }
+            $('.table_certificate').append('</td></tr>');
+        }
+        if(result.ciphers_suites) {
+            $('.table_certificate').append('<tr><td><b>Supported Ciphers Suites:</b></td><td></td></tr>');
+
+
+            {# Nulls #}
+            $('.table_certificate').append('<tr><td style="text-align: center"><b>Null Ciphers</b></td><td>');
+            if (result.ciphers_suites.null_ciphers) {
+                $('.table_certificate').append(result.ciphers_suites.null_ciphers);
+            }
+            else {
+                $('.table_certificate').append('Not Supported');
+            }
+            $('.table_certificate').append('</td></tr>');
+
+
+            {# Anon Nulls #}
+            $('.table_certificate').append('<tr><td style="text-align: center"><b>Anonymous Null Ciphers</b></td><td>');
+            if (result.ciphers_suites.anonymous_null_ciphers) {
+                $('.table_certificate').append(result.ciphers_suites.anonymous_null_ciphers);
+            }
+            else {
+                $('.table_certificate').append('Not Supported');
+            }
+            $('.table_certificate').append('</td></tr>');
+
+
+            {# Anon DH #}
+            $('.table_certificate').append('<tr><td style="text-align: center"><b>Anonymous DH Ciphers</b></td><td>');
+            if (result.ciphers_suites.anonymous_dh_ciphers) {
+                $('.table_certificate').append(result.ciphers_suites.anonymous_dh_ciphers);
+            }
+            else {
+                $('.table_certificate').append('Not Supported');
+            }
+            $('.table_certificate').append('</td></tr>');
+
+
+            {# export 40 #}
+            $('.table_certificate').append('<tr><td style="text-align: center"><b>Export 40 Ciphers</b></td><td>');
+            if (result.ciphers_suites.export_40_ciphers) {
+                $('.table_certificate').append(result.ciphers_suites.export_40_ciphers);
+            }
+            else {
+                $('.table_certificate').append('Not Supported');
+            }
+            $('.table_certificate').append('</td></tr>');
+
+
+            {# low #}
+            $('.table_certificate').append('<tr><td style="text-align: center"><b>Low Ciphers</b></td><td>');
+            if (result.ciphers_suites.low_ciphers) {
+                $('.table_certificate').append(result.ciphers_suites.low_ciphers);
+            }
+            else {
+                $('.table_certificate').append('Not Supported');
+            }
+            $('.table_certificate').append('</td></tr>');
+
+
+            {# medium #}
+            $('.table_certificate').append('<tr><td style="text-align: center"><b>Medium Ciphers</b></td><td>');
+            if (result.ciphers_suites.medium_ciphers) {
+                $('.table_certificate').append(result.ciphers_suites.medium_ciphers);
+            }
+            else {
+                $('.table_certificate').append('Not Supported');
+            }
+            $('.table_certificate').append('</td></tr>')
+
+
+            {# DES3 #}
+            $('.table_certificate').append('<tr><td style="text-align: center"><b>DES3 Ciphers</b></td><td>');
+            if (result.ciphers_suites.des3_ciphers) {
+                $('.table_certificate').append(result.ciphers_suites.des3_ciphers);
+            }
+            else {
+                $('.table_certificate').append('Not Supported');
+            }
+            $('.table_certificate').append('</td></tr>');
+
+
+            {# high #}
+            $('.table_certificate').append('<tr><td style="text-align: center"><b>High Ciphers</b></td><td>');
+            if (result.ciphers_suites.high_ciphers) {
+                $('.table_certificate').append(result.ciphers_suites.high_ciphers);
+            }
+            else {
+                $('.table_certificate').append('Not Supported');
+            }
+            $('.table_certificate').append('</td></tr>');
+
+
+            {# freak #}
+            $('.table_certificate').append('<tr><td style="text-align: center"><b>FREAK</b></td><td>');
+            if (result.ciphers_suites.freak) {
+                $('.table_certificate').append(result.ciphers_suites.freak);
+            }
+            else {
+                $('.table_certificate').append('Not Supported');
+            }
+            $('.table_certificate').append('</td></tr>');
+
+
+            {# low #}
+            $('.table_certificate').append('<tr><td style="text-align: center"><b>LogJam</b></td><td>');
+            if (result.ciphers_suites.logjam) {
+                $('.table_certificate').append(result.ciphers_suites.logjam);
+            }
+            else {
+                $('.table_certificate').append('Not Supported');
+            }
+            $('.table_certificate').append('</td></tr>');
+        }
+    }
+</script>
