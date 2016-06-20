@@ -12,16 +12,17 @@ def http_table(id, port, http_data):
 
     return {'id': id,
             'port': port,
+            'ip': http_data.ip,
             'date': http_data.date,
             'error': http_data.error,
-            'response': http_data.response,
-            'server': http_data.server,
-            'content_type': http_data.content_type,
-            'www_authenticate': http_data.www_authenticate,
-            'header': http_data.header,
-            'index': http_data.index,
-            'service': service,
-            'ip': http_data.ip,
+            'response': http_data.status,
+            # 'server': http_data.server,
+            # 'content_type': http_data.content_type,
+            # 'www_authenticate': http_data.www_authenticate,
+            'header': http_data.parse_header,
+            'index': http_data.raw_index,
+            # 'service': service,
+            # 'ip': http_data.ip,
             }
 
 
