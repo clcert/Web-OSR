@@ -41,10 +41,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrapform',
+    'highcharts',
     'graphs',
     'login',
-    'highcharts',
     'django.contrib.admin',
+    'compressor',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -106,8 +107,18 @@ MONGODB = {
 
 # Static Files
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, 'static'),
 )
+
+# Static Finder
+STATICFILES_FINDERS = (
+    'compressor.finders.CompressorFinder',
+)
+
+COMPRESS_ENABLED = True
+
+COMPRESS_CSS_FILTERS = ["compressor.filters.cssmin.CSSMinFilter"]
+COMPRESS_JS_FILTERS = ["compressor.filters.jsmin.JSMinFilter"]
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -142,4 +153,9 @@ EMAIL_USE_TLS = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
+
+# Compress
+COMPRESS_URL = STATIC_URL
+COMPRESS_ROOT = STATIC_ROOT
