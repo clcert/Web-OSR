@@ -46,25 +46,23 @@
             </tr>
             {% endif %}
 
-            {% if service %}
-                {%  if service.manufacturer %}
-                <tr>
-                    <td><b>Manufacturer:</b></td>
-                    <td class="table_service_manufacturer">{{ service.manufacturer }}</td>
-                </tr>
-                {% endif %}
-                {%  if service.product %}
-                <tr>
-                    <td><b>Product:</b></td>
-                    <td class="table_service_product">{{ service.product }}</td>
-                </tr>
-                {% endif %}
-                {%  if service.version %}
-                <tr>
-                    <td><b>Version:</b></td>
-                    <td class="table_service_version">{{ service.version }}</td>
-                </tr>
-                {% endif %}
+            {%  if service.manufacturer %}
+            <tr>
+                <td><b>Manufacturer:</b></td>
+                <td class="table_service_manufacturer">{{ service.manufacturer }}</td>
+            </tr>
+            {% endif %}
+            {%  if service.product %}
+            <tr>
+                <td><b>Product:</b></td>
+                <td class="table_service_product">{{ service.product }}</td>
+            </tr>
+            {% endif %}
+            {%  if service.version %}
+            <tr>
+                <td><b>Version:</b></td>
+                <td class="table_service_version">{{ service.version }}</td>
+            </tr>
             {% endif %}
 
         </table>

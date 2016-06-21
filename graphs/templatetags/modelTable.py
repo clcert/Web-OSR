@@ -6,10 +6,11 @@ register = template.Library()
 
 @register.inclusion_tag('tables/http_tables.html')
 def http_table(id, port, http_data):
-    if http_data.metadata is not None:
-        service = http_data.metadata.service
-    else:
-        service = None
+    # if http_data.metadata is not None:
+    #     service = http_data.metadata.service
+    # else:
+    #     service = None
+
     return {'id': id,
             'port': port,
             'ip': http_data.ip,
@@ -18,9 +19,8 @@ def http_table(id, port, http_data):
             'response': http_data.status,
             'header': http_data.parse_header,
             'index': http_data.raw_index,
-            # 'service': service,
+            'service': http_data.metadata.service,
             }
-
 
 
 @register.inclusion_tag("tables/certificate_table.html")

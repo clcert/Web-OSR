@@ -53,7 +53,7 @@
         <hr style="background-color: #3C8DBC; height: 2px">
         <div class="row">
             <div class="col-md-8">
-                <ul style="list-style-type: none">
+                <ul style="list-style-type: none; font-size:20px">
                     <li><b>IP:</b> {{ ip }}</li>
                     <li><b>DNS Name: </b> {{ reverse }}</li>
                     <li><b></b></li>
@@ -62,13 +62,6 @@
                         {% if http80.metadata.device.os_version %}<li><b>Operative System Version: </b> {{ http80.metadata.device.os_version }} </li>{% endif %}
                         {% if http80.metadata.device.type %}<li><b>Device Type: </b> {{ http80.metadata.device.type }} </li>{% endif %}
                     {% endif %}
-
-                    {% if http80.metadata.service %}
-                        {% if http80.metadata.service.product %}<li><b>Product: </b> {{ http80.metadata.service.product }} </li>{% endif %}
-                        {% if http80.metadata.service.manufacturer %}<li><b>Product Manufacturer: </b> {{ http80.metadata.service.manufacturer  }} </li>{% endif %}
-                        {% if http80.metadata.service.version %}<li><b>Product Version: </b> {{ http80.metadata.service.version  }} </li>{% endif %}
-                    {% endif %}
-
                 </ul>
             </div>
             <div class="col-md-4">
