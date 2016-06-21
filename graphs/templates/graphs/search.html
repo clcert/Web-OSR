@@ -1,9 +1,9 @@
 {% extends "base_menu.html" %}
 {% load staticfiles %}
 {% load modelTable %}
-{#<link rel="stylesheet" type="text/css" href="arrows.css">#}
 
 {% block scripts %}
+    <script src="{% static "js/ajax_table.js" %}"></script>
     <script>
         function initMap() {
             var myLatlng = new google.maps.LatLng({{ lat|stringformat:"f" }}, {{ long|stringformat:"f" }});
