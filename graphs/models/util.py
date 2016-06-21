@@ -6,7 +6,7 @@ class DeviceMetadata(object):
             device = {}
 
         self.manufacturer = device.get('manufacturer')
-        self.product = device.get('device')
+        self.product = device.get('product')
         self.os = device.get('os')
         self.os_version = device.get('os_version')
         self.type = device.get('type')
@@ -19,7 +19,7 @@ class ServiceMetadata(object):
             service = {}
 
         self.manufacturer = service.get('manufacturer')
-        self.product = service.get('device')
+        self.product = service.get('product')
         self.version = service.get('version')
 
 
