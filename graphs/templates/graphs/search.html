@@ -36,15 +36,13 @@
                 <div class="btn-group">
                     <form action="search" style="display: inline-block">
                         <input type="hidden" name="question" value='{{ ip }}'>
-                        <input type="hidden" name="position" value='{{ datePosition }}'>
-                        <input type="hidden" name="direction" value='left'>
+                        <input type="hidden" name="position" value='{{ date_position|add:1 }}'>
                         <button class="btn btn-primary" type="submit"><i class="fa fa-chevron-left" aria-hidden="true"></i> Anterior</button>
                     </form>
                     <form action="search" style="display: inline-block">
                         <input type="hidden" name="question" value='{{ ip }}'>
-                        <input type="hidden" name="position" value='{{ datePosition }}'>
-                        <input type="hidden" name="direction" value='right'>
-                        <button class="btn btn-primary" type="submit">Siguiente <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+                        <input type="hidden" name="position" value='{{ date_position|add:"-1" }}'>
+                        <button class="btn btn-primary" type="submit" {% ifequal date_position 0 %}disabled="disabled"{% endifequal %}>Siguiente <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
                     </form>
                 </div>
             </div>

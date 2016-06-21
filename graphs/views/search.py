@@ -1,25 +1,13 @@
 import socket
 from geoip import geolite2
 from django.shortcuts import render
-from graphs.models import HTTP80, HTTP443, HTTP8000, HTTP8080
+from graphs.models import HTTP80, HTTP443, HTTP8000, HTTP8080, HTTP_PORT
 from graphs.models.util import HTTP
 
 from django.http import HttpResponse, JsonResponse
 
 
 # def search_partial(request, port, ip, date, direction=None):
-#     if port == '80':
-#         http_model = Http80
-#
-#     if port == '443':
-#         http_model = Http443
-#
-#     if port == '8000':
-#         http_model = Http8000
-#
-#     if port == '8080':
-#         http_model = Http8080
-#
 #     params = {'ip': ip}
 #     if direction == 'left':
 #         direction = '-date'
@@ -27,10 +15,9 @@ from django.http import HttpResponse, JsonResponse
 #     else:
 #         direction = 'date'
 #         params['date__gt'] = date
-#     try:
-#         data = http_model.objects(**params).order_by(direction).first()
-#     except IndexError:
-#         data = {}
+#
+#     data = HTTP_PORT[port].objects().filter.order_by(direction).first()
+#
 #     if data is None:
 #         return JsonResponse({})
 #     return HttpResponse(data.to_json(), content_type="application/json")
@@ -56,16 +43,13 @@ from django.http import HttpResponse, JsonResponse
 
 
 def search(request):
-    ip = request.GET[u'question']
-    if u'position' not in request.GET:
+    ip = request.GET['question']
+
+    if 'position' not in request.GET:
         date_position = 0
     else:
-        date_position = int(request.GET[u'position'])
-        direction = request.GET[u'direction']
-        if direction == 'left':
-            date_position += 1
-        else:
-            date_position -= 1
+        date_position = int(request.GET['position'])
+
         if date_position < 0:
             date_position = 0
 
@@ -109,7 +93,7 @@ def search(request):
                    'reverse': reversed_dns[0],
                    'lat': lat,
                    'long': long,
-                   'datePosition': date_position,
+                   'date_position': date_position,
                    'http80': http80,
                    'http443': http443,
                    'http8000': http8000,
