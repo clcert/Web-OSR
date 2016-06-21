@@ -122,3 +122,4 @@ mydatabase
 
 # Created by .ignore support plugin (hsz.mobi)
 /web/accounts.py
+/static/CACHE/
