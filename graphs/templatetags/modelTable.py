@@ -1,4 +1,5 @@
 from django import template
+from datetime import datetime
 
 register = template.Library()
 
@@ -9,21 +10,17 @@ def http_table(id, port, http_data):
         service = http_data.metadata.service
     else:
         service = None
-
     return {'id': id,
             'port': port,
             'ip': http_data.ip,
-            'date': http_data.date,
+            'scan_date': datetime.strptime(http_data.date, '%Y-%m-%d').date(),
             'error': http_data.error,
             'response': http_data.status,
-            # 'server': http_data.server,
-            # 'content_type': http_data.content_type,
-            # 'www_authenticate': http_data.www_authenticate,
             'header': http_data.parse_header,
             'index': http_data.raw_index,
             # 'service': service,
-            # 'ip': http_data.ip,
             }
+
 
 
 @register.inclusion_tag("tables/certificate_table.html")
