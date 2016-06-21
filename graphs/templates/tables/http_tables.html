@@ -12,7 +12,7 @@
             {% if scan_date %}
                 <tr>
                     <td><b>Date:</b></td>
-                    <td class="table_date_{{ port }}">{{ scan_date }}</td>
+                    <td class="table_date_{{ port }}">{{ scan_date|date:"Y-m-d" }}</td>
                 </tr>
             {% endif %}
 
@@ -74,7 +74,7 @@
 
     $('.httpTable_{{ port }} .leftButton').on('click', function(event){
         event.preventDefault();
-        var tempDate = "{{ scan_date|date:"Y-m-d" }}";
+        var tempDate = $('.table_date_{{ port }}').html();
         var data = "search/{{ port }}/{{ ip }}/".concat(tempDate).concat("/left");
         $.ajax({url : data, success: function(result){
             reRenderTable(result, {{ port }});
@@ -83,7 +83,7 @@
 
     $('.httpTable_{{ port }} .rightButton').on('click', function(event) {
         event.preventDefault();
-        var tempDate = "{{ scan_date|date:"Y-m-d" }}";
+        var tempDate = $('.table_date_{{ port }}').html();
         var data = "search/{{ port }}/{{ ip }}/".concat(tempDate).concat("/right");
         $.ajax({url : data, success: function(result){
             reRenderTable(result, {{ port }});
@@ -118,24 +118,20 @@
             $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Error:</b></td> <td> <span class="label label-danger table_error">'
                     .concat(result.error).concat('</span></td></tr>'));
         }
-        if(result.response){
+        if(result.status){
             $('.tabla_'.concat(tablePort)).append('<tr> <td><b>Response:</b></td> <td class="table_response">'
-                    .concat(result.response.toString()).concat('<span class="label label-success">Ok</span></td></tr>'));
+                    .concat(result.status.toString()));
         }
-        if(result.server){
-            $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Server:</b></td> <td class="table_server">'.concat(result.server).concat('</td></tr>'));
+        if(result.parse_header){
+            var header = "";
+            for( var key in result.parse_header ) {
+                header = header.concat(key).concat(': ').concat(result.parse_header[key]).concat('<br>');
+            }
+            $('.tabla_'.concat(tablePort)).append('<tr><td><b>Header:</b></td><td class="table_header">'.concat(header).concat('</td></tr>'));
         }
-        if(result.content_type){
-            $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Content Type:</b></td> <td class="table_content_type">'.concat(result.content_type).concat('</td></tr>'));
-        }
-        if(result.www_authenticate){
-            $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>WWW Authenticate:</b></td> <td class="table_auth">'.concat(result.www_authenticate).concat('</td></tr>'));
-        }
-        if(result.header){
-            $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Header:</b></td> <td class="table_header">'.concat(JSON.stringify(result.header)).concat('</td></tr>'));
-        }
-        if(result.index){
-            $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Index:</b></td> <td class="table_index">'.concat(escapeHtml(result.index)).concat('</td></tr>'));
+        if(result.raw_index){
+            $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Index:</b></td> <td class="table_index">'
+                    .concat(escapeHtml(result.raw_index).substring(0,1000)).concat('</td></tr>'));
         }
 
         if(result.metadata){

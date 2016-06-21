@@ -1,3 +1,4 @@
+import json
 import socket
 from geoip import geolite2
 from django.shortcuts import render
@@ -10,13 +11,15 @@ from django.http import HttpResponse, JsonResponse
 def search_partial(request, port, ip, date, direction=None):
 
     if direction == 'left':
-        data = HTTP(HTTP_PORT[port].objects.filter(ip=ip, date__lt=date).order_by('-date').first().data)
+        scan = HTTP_PORT[port].objects.filter(ip=ip, date__lt=date).order_by('-date').first()
     else:
-        data = HTTP(HTTP_PORT[port].objects.filter(ip=ip, date__gt=date).order_by('date').first().data)
+        scan = HTTP_PORT[port].objects.filter(ip=ip, date__gt=date).order_by('date').first()
 
-    if data is None:
+    if scan is None:
         return JsonResponse({})
-    return HttpResponse(data.to_json(), content_type="application/json")
+
+    scan = HTTP(scan.data)
+    return HttpResponse(json.dumps(scan.to_json()), content_type="application/json")
 #
 #
 # def search_partial_cert(request, ip, date, direction=None):
