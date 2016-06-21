@@ -7,20 +7,16 @@ from graphs.models.util import HTTP
 from django.http import HttpResponse, JsonResponse
 
 
-# def search_partial(request, port, ip, date, direction=None):
-#     params = {'ip': ip}
-#     if direction == 'left':
-#         direction = '-date'
-#         params['date__lt'] = date
-#     else:
-#         direction = 'date'
-#         params['date__gt'] = date
-#
-#     data = HTTP_PORT[port].objects().filter.order_by(direction).first()
-#
-#     if data is None:
-#         return JsonResponse({})
-#     return HttpResponse(data.to_json(), content_type="application/json")
+def search_partial(request, port, ip, date, direction=None):
+
+    if direction == 'left':
+        data = HTTP(HTTP_PORT[port].objects.filter(ip=ip, date__lt=date).order_by('-date').first().data)
+    else:
+        data = HTTP(HTTP_PORT[port].objects.filter(ip=ip, date__gt=date).order_by('date').first().data)
+
+    if data is None:
+        return JsonResponse({})
+    return HttpResponse(data.to_json(), content_type="application/json")
 #
 #
 # def search_partial_cert(request, ip, date, direction=None):

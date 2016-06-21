@@ -1,7 +1,7 @@
 {% extends "base_menu.html" %}
 {% load staticfiles %}
 {% load modelTable %}
-<link rel="stylesheet" type="text/css" href="arrows.css">
+{#<link rel="stylesheet" type="text/css" href="arrows.css">#}
 
 {% block scripts %}
     <script>
@@ -54,7 +54,6 @@
                 <ul style="list-style-type: none; font-size:20px">
                     <li><b>IP:</b> {{ ip }}</li>
                     <li><b>DNS Name: </b> {{ reverse }}</li>
-                    <li><b></b></li>
                     {% if http80.metadata.device %}
                         {% if http80.metadata.device.os %}<li><b>Operative System: </b> {{ http80.metadata.device.os }} </li>{% endif %}
                         {% if http80.metadata.device.os_version %}<li><b>Operative System Version: </b> {{ http80.metadata.device.os_version }} </li>{% endif %}

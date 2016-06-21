@@ -10,17 +10,17 @@
     <div class="box-body">
         <table id='tabla' class="table table-hover tabla_{{ port }}" >
             {% if scan_date %}
-            <tr>
-                <td><b>Date:</b></td>
-                <td class="table_date_{{ port }}">{{ scan_date }}</td>
-            </tr>
+                <tr>
+                    <td><b>Date:</b></td>
+                    <td class="table_date_{{ port }}">{{ scan_date }}</td>
+                </tr>
             {% endif %}
 
             {% if error %}
-            <tr>
-                <td><b>Error:</b></td>
-                <td><span class="label label-danger table_error">{{ error }}</span></td>
-            </tr>
+                <tr>
+                    <td><b>Error:</b></td>
+                    <td><span class="label label-danger table_error">{{ error }}</span></td>
+                </tr>
             {% endif %}
 
             {% if response %}
@@ -31,126 +31,126 @@
             {% endif %}
 
             {% if header %}
-            <tr>
-                <td><b>Header:</b></td>
-                <td class="table_header">
-                    {% for key, value in header.items %}
-                    {{ key }}: {{ value }}<br>
-                    {% endfor %}
-                </td>
-            </tr>
+                <tr>
+                    <td><b>Header:</b></td>
+                    <td class="table_header">
+                        {% for key, value in header.items %}
+                            {{ key }}: {{ value }}<br>
+                        {% endfor %}
+                    </td>
+                </tr>
             {% endif %}
 
             {% if index %}
-            <tr>
-                <td><b>Index:</b></td>
-                <td class="table_index">{{ index | truncatechars_html:50}}</td>
-            </tr>
+                <tr>
+                    <td><b>Index:</b></td>
+                    <td class="table_index">{{ index | truncatechars_html:50}}</td>
+                </tr>
             {% endif %}
 
             {%  if service.manufacturer %}
-            <tr>
-                <td><b>Manufacturer:</b></td>
-                <td class="table_service_manufacturer">{{ service.manufacturer }}</td>
-            </tr>
+                <tr>
+                    <td><b>Manufacturer:</b></td>
+                    <td class="table_service_manufacturer">{{ service.manufacturer }}</td>
+                </tr>
             {% endif %}
             {%  if service.product %}
-            <tr>
-                <td><b>Product:</b></td>
-                <td class="table_service_product">{{ service.product }}</td>
-            </tr>
+                <tr>
+                    <td><b>Product:</b></td>
+                    <td class="table_service_product">{{ service.product }}</td>
+                </tr>
             {% endif %}
             {%  if service.version %}
-            <tr>
-                <td><b>Version:</b></td>
-                <td class="table_service_version">{{ service.version }}</td>
-            </tr>
+                <tr>
+                    <td><b>Version:</b></td>
+                    <td class="table_service_version">{{ service.version }}</td>
+                </tr>
             {% endif %}
 
         </table>
     </div>
 </div>
-{#<script>#}
-{##}
-{#    $('.httpTable_{{ port }} .leftButton').on('click', function(event){#}
-{#        event.preventDefault();#}
-{#        var tempDate = $('.table_date_{{ port }}').html();#}
-{#        var data = "search/{{ port }}/{{ ip }}/".concat(tempDate).concat("/left");#}
-{#        $.ajax({url : data, success: function(result){#}
-{#            reRenderTable(result, {{ port }});#}
-{#        }});#}
-{#    });#}
-{##}
-{#    $('.httpTable_{{ port }} .rightButton').on('click', function(event) {#}
-{#        event.preventDefault();#}
-{#        var tempDate = $('.table_date_{{ port }}').html();#}
-{#        var data = "search/{{ port }}/{{ ip }}/".concat(tempDate).concat("/right");#}
-{#        $.ajax({url : data, success: function(result){#}
-{#            reRenderTable(result, {{ port }});#}
-{#        }});#}
-{#    });#}
-{##}
-{##}
-{#    function onSuccess(result){#}
-{#        reRenderTable(result);#}
-{#    }#}
-{##}
-{##}
-{#    function escapeHtml(unsafe) {#}
-{#        return unsafe#}
-{#                .replace(/&/g, "&amp;")#}
-{#                .replace(/</g, "&lt;")#}
-{#                .replace(/>/g, "&gt;")#}
-{#                .replace(/"/g, "&quot;")#}
-{#                .replace(/'/g, "&#039;");#}
-{#     }#}
-{##}
-{#    function reRenderTable(result, tablePort){#}
-{#        if ($.isEmptyObject(result)){#}
-{#            return;#}
-{#        }#}
-{#        $('.tabla_'.concat(tablePort)).children().remove();#}
-{#        if(result.date){#}
-{#            $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Date:</b></td> <td class="table_date_'#}
-{#                    .concat(tablePort).concat('">').concat(result.date).concat('</td></tr>'));#}
-{#        }#}
-{#        if(result.error){#}
-{#            $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Error:</b></td> <td> <span class="label label-danger table_error">'#}
-{#                    .concat(result.error).concat('</span></td></tr>'));#}
-{#        }#}
-{#        if(result.response){#}
-{#            $('.tabla_'.concat(tablePort)).append('<tr> <td><b>Response:</b></td> <td class="table_response">'#}
-{#                    .concat(result.response.toString()).concat('<span class="label label-success">Ok</span></td></tr>'));#}
-{#        }#}
-{#        if(result.server){#}
-{#            $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Server:</b></td> <td class="table_server">'.concat(result.server).concat('</td></tr>'));#}
-{#        }#}
-{#        if(result.content_type){#}
-{#            $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Content Type:</b></td> <td class="table_content_type">'.concat(result.content_type).concat('</td></tr>'));#}
-{#        }#}
-{#        if(result.www_authenticate){#}
-{#            $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>WWW Authenticate:</b></td> <td class="table_auth">'.concat(result.www_authenticate).concat('</td></tr>'));#}
-{#        }#}
-{#        if(result.header){#}
-{#            $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Header:</b></td> <td class="table_header">'.concat(JSON.stringify(result.header)).concat('</td></tr>'));#}
-{#        }#}
-{#        if(result.index){#}
-{#            $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Index:</b></td> <td class="table_index">'.concat(escapeHtml(result.index)).concat('</td></tr>'));#}
-{#        }#}
-{##}
-{#        if(result.metadata){#}
-{#            if(result.metadata.service.manufacturer){#}
-{#                $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Manufacturer:</b></td> <td class="table_service_manufacturer">'#}
-{#                        .concat(result.metadata.service.manufacturer).concat('</td></tr>'));#}
-{#            }#}
-{#            if(result.metadata.service.product){#}
-{#                $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Product:</b></td> <td class="table_service_product">'#}
-{#                        .concat(result.metadata.service.product).concat('</td></tr>'));#}
-{#            }#}
-{#            if(result.metadata.service.version){#}
-{#                $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Version:</b></td> <td class="table_service_version">'#}
-{#                        .concat(result.metadata.service.version).concat('</td></tr>'));#}
-{#            }#}
-{#        }#}
-{#    }#}
-{#</script>#}
+<script>
+
+    $('.httpTable_{{ port }} .leftButton').on('click', function(event){
+        event.preventDefault();
+        var tempDate = "{{ scan_date|date:"Y-m-d" }}";
+        var data = "search/{{ port }}/{{ ip }}/".concat(tempDate).concat("/left");
+        $.ajax({url : data, success: function(result){
+            reRenderTable(result, {{ port }});
+        }});
+    });
+
+    $('.httpTable_{{ port }} .rightButton').on('click', function(event) {
+        event.preventDefault();
+        var tempDate = "{{ scan_date|date:"Y-m-d" }}";
+        var data = "search/{{ port }}/{{ ip }}/".concat(tempDate).concat("/right");
+        $.ajax({url : data, success: function(result){
+            reRenderTable(result, {{ port }});
+        }});
+    });
+
+
+    function onSuccess(result){
+        reRenderTable(result);
+    }
+
+
+    function escapeHtml(unsafe) {
+        return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+    }
+
+    function reRenderTable(result, tablePort){
+        if ($.isEmptyObject(result)){
+            return;
+        }
+        $('.tabla_'.concat(tablePort)).children().remove();
+        if(result.date){
+            $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Date:</b></td> <td class="table_date_'
+                    .concat(tablePort).concat('">').concat(result.date).concat('</td></tr>'));
+        }
+        if(result.error){
+            $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Error:</b></td> <td> <span class="label label-danger table_error">'
+                    .concat(result.error).concat('</span></td></tr>'));
+        }
+        if(result.response){
+            $('.tabla_'.concat(tablePort)).append('<tr> <td><b>Response:</b></td> <td class="table_response">'
+                    .concat(result.response.toString()).concat('<span class="label label-success">Ok</span></td></tr>'));
+        }
+        if(result.server){
+            $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Server:</b></td> <td class="table_server">'.concat(result.server).concat('</td></tr>'));
+        }
+        if(result.content_type){
+            $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Content Type:</b></td> <td class="table_content_type">'.concat(result.content_type).concat('</td></tr>'));
+        }
+        if(result.www_authenticate){
+            $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>WWW Authenticate:</b></td> <td class="table_auth">'.concat(result.www_authenticate).concat('</td></tr>'));
+        }
+        if(result.header){
+            $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Header:</b></td> <td class="table_header">'.concat(JSON.stringify(result.header)).concat('</td></tr>'));
+        }
+        if(result.index){
+            $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Index:</b></td> <td class="table_index">'.concat(escapeHtml(result.index)).concat('</td></tr>'));
+        }
+
+        if(result.metadata){
+            if(result.metadata.service.manufacturer){
+                $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Manufacturer:</b></td> <td class="table_service_manufacturer">'
+                        .concat(result.metadata.service.manufacturer).concat('</td></tr>'));
+            }
+            if(result.metadata.service.product){
+                $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Product:</b></td> <td class="table_service_product">'
+                        .concat(result.metadata.service.product).concat('</td></tr>'));
+            }
+            if(result.metadata.service.version){
+                $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Version:</b></td> <td class="table_service_version">'
+                        .concat(result.metadata.service.version).concat('</td></tr>'));
+            }
+        }
+    }
+</script>
