@@ -24,10 +24,17 @@
             </tr>
             {% endif %}
 
-            {% if valid != None %}
+            {% if validate != None %}
                 <tr>
-                    <td><b>Valid Certificate:</b></td>
-                    <td>{{ valid }} <span class="label label-success">{{ valid }}</span></td>
+                    <td><b>Validate Certificate:</b></td>
+                    <td>{{ validate }}</td>
+                </tr>
+            {% endif %}
+
+            {% if validation_error %}
+                <tr>
+                    <td><b>Validation Error:</b></td>
+                    <td>{{ validation_error }}</td>
                 </tr>
             {% endif %}
 
@@ -45,72 +52,91 @@
             </tr>
             {% endif %}
 
-            {% if certificate_authority %}
-            <tr>
-                <td><b>Certificate Authority:</b></td>
-                <td>{{ certificate_authority }}</td>
-            </tr>
+            {% if chain %}
+                {% for cert in chain %}
+                    {% if cert.subject %}
+                           <tr>
+                            <td><b>Certificate Receiver:</b></td>
+                            <td>{{ cert.subject.common_name }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if cert.issuer %}
+                        <tr>
+                            <td><b>Certificate Authority:</b></td>
+                            <td>{{ cert.issuer.common_name }}</td>
+                        </tr>
+                    {% endif %}
+
+                {% endfor %}
             {% endif %}
 
-            {% if signature_algorithm %}
-            <tr>
-                <td><b>Signature Algorithm:</b></td>
-                <td>{{ signature_algorithm }}</td>
-            </tr>
-            {% endif %}
 
-            {% if key_bits %}
-            <tr>
-                <td><b>Key Bits:</b></td>
-                <td>{{ key_bits }}</td>
-            </tr>
-            {% endif %}
-            
-            {% if protocols %}
+{#            {% if certificate_authority %}#}
+{#            <tr>#}
+{#                <td><b>Certificate Authority:</b></td>#}
+{#                <td>{{ certificate_authority }}</td>#}
+{#            </tr>#}
+{#            {% endif %}#}
+{##}
+{#            {% if signature_algorithm %}#}
+{#            <tr>#}
+{#                <td><b>Signature Algorithm:</b></td>#}
+{#                <td>{{ signature_algorithm }}</td>#}
+{#            </tr>#}
+{#            {% endif %}#}
+
+{#            {% if key_bits %}#}
+{#            <tr>#}
+{#                <td><b>Key Bits:</b></td>#}
+{#                <td>{{ key_bits }}</td>#}
+{#            </tr>#}
+{#            {% endif %}#}
+{#            #}
+            {% if supported_protocols %}
             <tr><td><b>Supported Protocols:</b></td><td></td></tr>
                 <tr>
                     <td style="text-align: center"><b>TLS V1.2</b></td>
-                    <td>{% if protocols.TLS_12 %}
-                        <span class="label label-success">{{ protocols.TLS_12 }}</span>
+                    <td>{% if supported_protocols.TLS_12 %}
+                        <span class="label label-success">{{ supported_protocols.TLS_12 }}</span>
                         {% else %}
-                        <span class="label label-danger">{{ protocols.TLS_12 }}</span>
+                        <span class="label label-danger">{{ supported_protocols.TLS_12 }}</span>
                         {% endif %}
                     </td>
                 </tr>
                 <tr>
                     <td style="text-align: center"><b>TLS V1.1</b></td>
-                    <td>{% if protocols.TLS_11 %}
-                        <span class="label label-success">{{ protocols.TLS_11 }}</span>
+                    <td>{% if supported_protocols.TLS_11 %}
+                        <span class="label label-success">{{ supported_protocols.TLS_11 }}</span>
                         {% else %}
-                        <span class="label label-danger">{{ protocols.TLS_11 }}</span>
+                        <span class="label label-danger">{{ supported_protocols.TLS_11 }}</span>
                         {% endif %}
                     </td>
                 </tr>
                 <tr>
                     <td style="text-align: center"><b>TLS V1.0</b></td>
-                    <td>{% if protocols.TLS_10 %}
-                        <span class="label label-success">{{ protocols.TLS_10 }}</span>
+                    <td>{% if supported_protocols.TLS_10 %}
+                        <span class="label label-success">{{ supported_protocols.TLS_10 }}</span>
                         {% else %}
-                        <span class="label label-danger">{{ protocols.TLS_10 }}</span>
+                        <span class="label label-danger">{{ supported_protocols.TLS_10 }}</span>
                         {% endif %}
                     </td>
                 </tr>
                 <tr>
                     <td style="text-align: center"><b>SSL V3.0</b></td>
-                    <td>{% if protocols.SSL_30 %}
-                        <span class="label label-success">{{ protocols.SSL_30 }}</span>
+                    <td>{% if supported_protocols.SSL_30 %}
+                        <span class="label label-success">{{ supported_protocols.SSL_30 }}</span>
                         {% else %}
-                        <span class="label label-danger">{{ protocols.SSL_30 }}</span>
+                        <span class="label label-danger">{{ supported_protocols.SSL_30 }}</span>
                         {% endif %}
                     </td>
                 </tr>
             {% endif %}
-            {% if ciphers_suites %}
+            {% if supported_cipher_suites %}
             <tr><td><b>Supported Ciphers Suites:</b></td><td></td></tr>
             <tr>
                 <td style="text-align: center"><b>Null Ciphers</b></td>
-                <td>{% if ciphers_suites.null_ciphers %}
-                    {{ ciphers_suites.null_ciphers }}
+                <td>{% if supported_cipher_suites.null_ciphers %}
+                    {{ supported_cipher_suites.null_ciphers }}
                     {% else %}
                     Not Supported
                     {% endif %}
@@ -118,8 +144,8 @@
             </tr>
             <tr>
                 <td style="text-align: center"><b>Anonymous Null Ciphers</b></td>
-                <td>{% if ciphers_suites.anonymous_null_ciphers %}
-                    {{ ciphers_suites.anonymous_null_ciphers }}
+                <td>{% if supported_cipher_suites.anonymous_null_ciphers %}
+                    {{ supported_cipher_suites.anonymous_null_ciphers }}
                     {% else %}
                     Not Supported
                     {% endif %}
@@ -127,8 +153,8 @@
             </tr>
             <tr>
                 <td style="text-align: center"><b>Anonymous DH Ciphers</b></td>
-                <td>{% if ciphers_suites.anonymous_dh_ciphers %}
-                    {{ ciphers_suites.anonymous_dh_ciphers }}
+                <td>{% if supported_cipher_suites.anonymous_dh_ciphers %}
+                    {{ supported_cipher_suites.anonymous_dh_ciphers }}
                     {% else %}
                     Not Supported
                     {% endif %}
@@ -136,8 +162,8 @@
             </tr>
             <tr>
                 <td style="text-align: center"><b>Export 40 Ciphers</b></td>
-                <td>{% if ciphers_suites.export_40_ciphers %}
-                    {{ ciphers_suites.export_40_ciphers }}
+                <td>{% if supported_cipher_suites.export_40_ciphers %}
+                    {{ supported_cipher_suites.export_40_ciphers }}
                     {% else %}
                     Not Supported
                     {% endif %}
@@ -145,8 +171,8 @@
             </tr>
             <tr>
                 <td style="text-align: center"><b>Low Ciphers</b></td>
-                <td>{% if ciphers_suites.low_ciphers %}
-                    {{ ciphers_suites.low_ciphers }}
+                <td>{% if supported_cipher_suites.low_ciphers %}
+                    {{ supported_cipher_suites.low_ciphers }}
                     {% else %}
                     Not Supported
                     {% endif %}
@@ -154,8 +180,8 @@
             </tr>
             <tr>
                 <td style="text-align: center"><b>Medium Ciphers</b></td>
-                <td>{% if ciphers_suites.medium_ciphers %}
-                    {{ ciphers_suites.medium_ciphers }}
+                <td>{% if supported_cipher_suites.medium_ciphers %}
+                    {{ supported_cipher_suites.medium_ciphers }}
                     {% else %}
                     Not Supported
                     {% endif %}
@@ -163,8 +189,8 @@
             </tr>
             <tr>
                 <td style="text-align: center"><b>DES3 Ciphers</b></td>
-                <td>{% if ciphers_suites.des3_ciphers %}
-                    {{ ciphers_suites.des3_ciphers }}
+                <td>{% if supported_cipher_suites.des3_ciphers %}
+                    {{ supported_cipher_suites.des3_ciphers }}
                     {% else %}
                     Not Supported
                     {% endif %}
@@ -172,8 +198,8 @@
             </tr>
             <tr>
                 <td style="text-align: center"><b>High Ciphers</b></td>
-                <td>{% if ciphers_suites.high_ciphers %}
-                    {{ ciphers_suites.high_ciphers }}
+                <td>{% if supported_cipher_suites.high_ciphers %}
+                    {{ supported_cipher_suites.high_ciphers }}
                     {% else %}
                     Not Supported
                     {% endif %}
@@ -181,8 +207,8 @@
             </tr>
             <tr>
                 <td style="text-align: center"><b>FREAK</b></td>
-                <td>{% if ciphers_suites.freak %}
-                    {{ ciphers_suites.freak }}
+                <td>{% if supported_cipher_suites.freak %}
+                    {{ supported_cipher_suites.freak }}
                     {% else %}
                     Not Supported
                     {% endif %}
@@ -190,8 +216,8 @@
             </tr>
             <tr>
                 <td style="text-align: center"><b>LogJam</b></td>
-                <td>{% if ciphers_suites.logjam %}
-                    {{ ciphers_suites.logjam }}
+                <td>{% if supported_cipher_suites.logjam %}
+                    {{ supported_cipher_suites.logjam }}
                     {% else %}
                     Not Supported
                     {% endif %}

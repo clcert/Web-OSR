@@ -2,8 +2,8 @@ import json
 import socket
 from geoip import geolite2
 from django.shortcuts import render
-from graphs.models import HTTP80, HTTP443, HTTP8000, HTTP8080, HTTP_PORT
-from graphs.models.util import HTTP
+from graphs.models import HTTP80, HTTP443, HTTP8000, HTTP8080, HTTP_PORT, Certificate
+from graphs.models.util import HTTP, HTTPS
 
 from django.http import HttpResponse, JsonResponse
 
@@ -20,25 +20,20 @@ def search_partial(request, port, ip, date, direction=None):
 
     scan = HTTP(scan.data)
     return HttpResponse(json.dumps(scan.to_json()), content_type="application/json")
-#
-#
-# def search_partial_cert(request, ip, date, direction=None):
-#     http_model = Https
-#
-#     params = {'ip': ip}
-#     if direction == 'left':
-#         direction = '-date'
-#         #params['date__lt'] = date
-#     else:
-#         direction = 'date'
-#         #params['date__gt'] = date
-#     try:
-#         data = http_model.objects(**params).order_by(direction).first()
-#     except IndexError:
-#         data = {}
-#     if data is None:
-#         return JsonResponse({})
-#     return HttpResponse(data.to_json(), content_type="application/json")
+
+
+def search_partial_cert(request, port, ip, date, direction=None):
+
+    if direction == 'left':
+        scan = Certificate.objects.filter(port=port, ip=ip, date__lt=date).order_by('-date').first()
+    else:
+        scan = Certificate.objects.filter(port=port, ip=ip, date__gt=date).order_by('date').first()
+
+    if scan is None:
+        return JsonResponse({})
+
+    scan = HTTPS(scan.date)
+    return HttpResponse(json.dumps(scan.to_json), content_type="application/json")
 
 
 def search(request):
@@ -81,11 +76,11 @@ def search(request):
         http8080 = HTTP(HTTP8080.objects.filter(ip=ip).order_by('-date')[date_position].data)
     except IndexError:
         http8080 = None
-    #
-    # try:
-    #     https = Https.objects(ip=ip).order_by('-date')[date_position]
-    # except IndexError:
-    #     https = None
+
+    try:
+        https = HTTPS(Certificate.objects.filter(ip=ip).order_by('-date')[date_position].data)
+    except IndexError:
+        https = None
 
     return render(request, 'graphs/search.html',
                   {'ip': ip,
@@ -97,5 +92,5 @@ def search(request):
                    'http443': http443,
                    'http8000': http8000,
                    'http8080': http8080,
-                   # 'https': https
+                   'https': https
                    })

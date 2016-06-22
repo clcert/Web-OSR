@@ -107,6 +107,9 @@ class TLSProtocols(object):
 class CipherSuites(object):
 
     def __init__(self, ciphers):
+        if ciphers is None:
+            ciphers = {}
+
         self.null_ciphers = ciphers.get('null_ciphers')
         self.anonymous_null_ciphers = ciphers.get('anonymous_null_ciphers')
         self.anonymous_dh_ciphers = ciphers.get('anonymous_dh_ciphers')
@@ -132,6 +135,91 @@ class CipherSuites(object):
             'logjam': self.logjam
         }
 
-# class Certificate(object):
-#
-#     def __init__(self, data):
+
+class SubjectIssuer(object):
+
+    def __init__(self, subiss):
+        if subiss is None:
+            subiss = {}
+
+        self.raw_information = subiss.get('raw_information')
+        self.country_name = subiss.get('country_name')
+        self.province_name = subiss.get('province_name')
+        self.locality_name = subiss.get('locality_name')
+        self.organization_name = subiss.get('organization_name')
+        self.organization_unit_name = subiss.get('organization_unit_name')
+        self.common_name = subiss.get('common_name')
+        self.email_address = subiss.get('email_address')
+
+    def to_json(self):
+        return {
+            'raw_information': self.raw_information,
+            'country_name': self.country_name,
+            'province_name': self.province_name,
+            'locality_name': self.locality_name,
+            'organization_name': self.organization_name,
+            'organization_unit_name': self.organization_unit_name,
+            'common_name': self.common_name,
+            'email_address': self.email_address,
+        }
+
+
+class Certificate():
+
+    def __init__(self, certificate):
+        if certificate is None:
+            certificate = {}
+
+        self.subject = SubjectIssuer(certificate.get('subject'))
+        self.issuer = SubjectIssuer(certificate.get('issuer'))
+        self.not_before = certificate.get('not_before')
+        self.not_after = certificate.get('not_after')
+        self.key_bits = certificate.get('key_bits')
+        self.signature_algorithm = certificate.get('signature_algorithm')
+        self.pem_cert = certificate.get('pem_cert')
+
+    def to_json(self):
+        return {
+            'subject': self.subject,
+            'issuer': self.issuer,
+            'not_before': self.not_before,
+            'not_after': self.not_after,
+            'key_bits': self.key_bits,
+            'signature_algorithm': self.signature_algorithm,
+            'pem_cert': self.pem_cert
+        }
+
+
+class HTTPS(object):
+
+    def __init__(self, data):
+        self.ip = data.get('ip')
+        self.date = data.get('date')
+        self.schema_version = data.get('schema_version')
+        self.error = data.get('error')
+        self.validate = data.get('validate')
+        self.validation_error = data.get('validation_error')
+        self.tls_protocol = data.get('tls_protocol')
+        self.cipher_suite = data.get('cipher_suite')
+        self.supported_protocols = TLSProtocols(data.get('supported_protocols'))
+        self.supported_cipher_suites = CipherSuites(data.get('supported_cipher_suites'))
+        self.beast_cipher = data.get('beast_cipher')
+        self.heartbleed_data = data.get('heartbleed_data')
+        self.chain = [Certificate(i) for i in data.get('chain')]
+
+    def to_json(self):
+        return {
+            'ip': self.ip,
+            'date': self.date,
+            'schema_version': self.schema_version,
+            'error': self.error,
+            'validate': self.validate,
+            'validation_error': self.validation_error,
+            'tls_protocol': self.tls_protocol,
+            'cipher_suite': self.cipher_suite,
+            'supported_protocols': self.supported_protocols,
+            'supported_cipher_suites': self.supported_cipher_suites,
+            'beast_cipher': self.beast_cipher,
+            'heartbleed_data': self.heartbleed_data,
+            'chain': self.chain
+        }
