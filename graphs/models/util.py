@@ -83,3 +83,55 @@ class HTTP(object):
             'metadata': self.metadata.to_json()
         }
 
+
+class TLSProtocols(object):
+
+    def __init__(self, protocols):
+        if protocols is None:
+            protocols = {}
+
+        self.TLS_12 = protocols.get('TLS_12')
+        self.TLS_11 = protocols.get('TLS_11')
+        self.TLS_10 = protocols.get('TLS_10')
+        self.SSL_30 = protocols.get('SSL_30')
+
+    def to_json(self):
+        return {
+            'TLS_12': self.TLS_12,
+            'TLS_11': self.TLS_11,
+            'TLS_10': self.TLS_10,
+            'SSL_30': self.SSL_30
+        }
+
+
+class CipherSuites(object):
+
+    def __init__(self, ciphers):
+        self.null_ciphers = ciphers.get('null_ciphers')
+        self.anonymous_null_ciphers = ciphers.get('anonymous_null_ciphers')
+        self.anonymous_dh_ciphers = ciphers.get('anonymous_dh_ciphers')
+        self.export_40_ciphers = ciphers.get('export_40_ciphers')
+        self.low_ciphers = ciphers.get('low_ciphers')
+        self.medium_ciphers = ciphers.get('medium_ciphers')
+        self.des3_ciphers = ciphers.get('des3_ciphers')
+        self.high_ciphers = ciphers.get('high_ciphers')
+        self.freak = ciphers.get('freak')
+        self.logjam = ciphers.get('logjam')
+
+    def to_json(self):
+        return {
+            'null_ciphers': self.null_ciphers,
+            'anonymous_null_ciphers': self.anonymous_null_ciphers,
+            'anonymous_dh_ciphers': self.anonymous_dh_ciphers,
+            'export_40_ciphers': self.export_40_ciphers,
+            'low_ciphers': self.low_ciphers,
+            'medium_ciphers': self.medium_ciphers,
+            'des3_ciphers': self.des3_ciphers,
+            'high_ciphers': self.high_ciphers,
+            'freak': self.freak,
+            'logjam': self.logjam
+        }
+
+# class Certificate(object):
+#
+#     def __init__(self, data):
