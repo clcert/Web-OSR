@@ -71,22 +71,6 @@
     </div>
 </div>
 <script>
-
-    $('.httpTable_{{ port }} .leftButton').on('click', function(event){
-        event.preventDefault();
-        var tempDate = $('.table_date_{{ port }}').html();
-        var data = "search/{{ port }}/{{ ip }}/".concat(tempDate).concat("/left");
-        $.ajax({url : data, success: function(result){
-            reRenderTable(result, {{ port }});
-        }});
-    });
-
-    $('.httpTable_{{ port }} .rightButton').on('click', function(event) {
-        event.preventDefault();
-        var tempDate = $('.table_date_{{ port }}').html();
-        var data = "search/{{ port }}/{{ ip }}/".concat(tempDate).concat("/right");
-        $.ajax({url : data, success: function(result){
-            reRenderTable(result, {{ port }});
-        }});
-    });
+    $('.httpTable_{{ port }} .leftButton').on('click', Left('{{ port }}', '{{ ip }}'));
+    $('.httpTable_{{ port }} .rightButton').on('click', Right('{{ port }}', '{{ ip }}'));
 </script>

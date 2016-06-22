@@ -2,7 +2,6 @@ function onSuccess(result){
     reRenderTable(result);
 }
 
-
 function escapeHtml(unsafe) {
     return unsafe
         .replace(/&/g, "&amp;")
@@ -54,5 +53,29 @@ function reRenderTable(result, tablePort){
             $('.tabla_'.concat(tablePort)).append('<tr> <td> <b>Version:</b></td> <td class="table_service_version">'
                 .concat(result.metadata.service.version).concat('</td></tr>'));
         }
+    }
+}
+
+function Left(port, ip) {
+    return function(event) {
+        event.defaultPrevented;
+        var tmp_date = $('.table_date_'.concat(port)).html();
+        var data = 'search/'.concat(port, '/', ip, '/', tmp_date, '/left');
+        $.ajax({
+            url: data, success: function (result) {
+                reRenderTable(result, port);
+            }
+        });
+    }
+}
+
+function Right(port, ip) {
+    return function(event) {
+        event.defaultPrevented;
+        var tmp_date = $('.table_date_'.concat(port)).html();
+        var data = 'search/'.concat(port, '/', ip, '/', tmp_date, '/right');
+        $.ajax({url : data, success: function(result){
+            reRenderTable(result, port);
+        }});
     }
 }
