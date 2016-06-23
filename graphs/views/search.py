@@ -22,18 +22,17 @@ def search_partial(request, port, ip, date, direction=None):
     return HttpResponse(json.dumps(scan.to_json()), content_type="application/json")
 
 
-def search_partial_cert(request, port, ip, date, direction=None):
-
+def search_partial_cert(request, ip, date, direction=None):
     if direction == 'left':
-        scan = Certificate.objects.filter(port=port, ip=ip, date__lt=date).order_by('-date').first()
+        scan = Certificate.objects.filter(ip=ip, date__lt=date).order_by('-date').first()
     else:
-        scan = Certificate.objects.filter(port=port, ip=ip, date__gt=date).order_by('date').first()
+        scan = Certificate.objects.filter(ip=ip, date__gt=date).order_by('date').first()
 
     if scan is None:
         return JsonResponse({})
 
-    scan = HTTPS(scan.date)
-    return HttpResponse(json.dumps(scan.to_json), content_type="application/json")
+    scan = HTTPS(scan.data)
+    return HttpResponse(json.dumps(scan.to_json()), content_type="application/json")
 
 
 def search(request):
