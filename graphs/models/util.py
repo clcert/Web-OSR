@@ -164,7 +164,7 @@ class SubjectIssuer(object):
         }
 
 
-class Certificate():
+class Certificate(object):
 
     def __init__(self, certificate):
         if certificate is None:
@@ -180,8 +180,8 @@ class Certificate():
 
     def to_json(self):
         return {
-            'subject': self.subject,
-            'issuer': self.issuer,
+            'subject': self.subject.to_json(),
+            'issuer': self.issuer.to_json(),
             'not_before': self.not_before,
             'not_after': self.not_after,
             'key_bits': self.key_bits,
@@ -217,9 +217,9 @@ class HTTPS(object):
             'validation_error': self.validation_error,
             'tls_protocol': self.tls_protocol,
             'cipher_suite': self.cipher_suite,
-            'supported_protocols': self.supported_protocols,
-            'supported_cipher_suites': self.supported_cipher_suites,
+            'supported_protocols': self.supported_protocols.to_json(),
+            'supported_cipher_suites': self.supported_cipher_suites.to_json(),
             'beast_cipher': self.beast_cipher,
             'heartbleed_data': self.heartbleed_data,
-            'chain': self.chain
+            'chain': [cert.to_json() for cert in self.chain]
         }
