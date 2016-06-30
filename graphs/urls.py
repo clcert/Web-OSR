@@ -28,7 +28,6 @@ urlpatterns = [
     url(r'^search$', views.search, name='search'),
     url(r'^search/(?P<port>[0-9]+)/(?P<ip>([0-9]{1,3}\.){3}[0-9]{1,3})/(?P<date>\d+-\d+-\d+)/(?P<direction>[\w]+)$', views.search_partial, name='search/partial'),
     url(r'^search/cert/(?P<ip>([0-9]{1,3}\.){3}[0-9]{1,3})/(?P<date>[\w\-]+)/(?P<direction>[\w]+)$', views.search_partial_cert, name='search/cert/partial'),
-    # url(r'^search/ip', views.ip_search, name='search/ip'),
     # url(r'^asn$', views.asn, name='graphs/asn'),
 ]
 
