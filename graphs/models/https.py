@@ -2,7 +2,7 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 
-class Certificate(models.Model):
+class HTTPS443(models.Model):
     ip = models.GenericIPAddressField(primary_key=True)
     date = models.DateField(primary_key=True)
     success = models.BooleanField()

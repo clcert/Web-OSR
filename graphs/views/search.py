@@ -2,7 +2,7 @@ import json
 import socket
 from geoip import geolite2
 from django.shortcuts import render
-from graphs.models import HTTP80, HTTP443, HTTP8000, HTTP8080, HTTP_PORT, Certificate
+from graphs.models import HTTP80, HTTP443, HTTP8000, HTTP8080, HTTP_PORT, HTTPS443
 from graphs.models.util import HTTP, HTTPS
 
 from django.http import HttpResponse, JsonResponse
@@ -24,9 +24,9 @@ def search_partial(request, port, ip, date, direction=None):
 
 def search_partial_cert(request, ip, date, direction=None):
     if direction == 'left':
-        scan = Certificate.objects.filter(ip=ip, date__lt=date).order_by('-date').first()
+        scan = HTTPS443.objects.filter(ip=ip, date__lt=date).order_by('-date').first()
     else:
-        scan = Certificate.objects.filter(ip=ip, date__gt=date).order_by('date').first()
+        scan = HTTPS443.objects.filter(ip=ip, date__gt=date).order_by('date').first()
 
     if scan is None:
         return JsonResponse({})
@@ -77,7 +77,7 @@ def search(request):
         http8080 = None
 
     try:
-        https = HTTPS(Certificate.objects.filter(ip=ip).order_by('-date')[date_position].data)
+        https = HTTPS(HTTPS443.objects.filter(ip=ip).order_by('-date')[date_position].data)
     except IndexError:
         https = None
 
