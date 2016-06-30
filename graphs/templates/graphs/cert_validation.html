@@ -1,0 +1,53 @@
+{% extends "base_menu.html" %}
+{% load staticfiles %}
+{% load ChartTemplate %}
+
+{% block title %}
+   OSR - Protocolo HTTPS
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static "js/highcharts.js" %}"></script>
+<script src="{% static "js/highcharts-theme.js" %}"></script>
+<script>
+    {% basic_column 'container' bars %}
+</script>
+{% endblock %}
+
+{#{% block header %}#}
+{#    <h1>Protocolo HTTPS</h1>#}
+{#{% endblock %}#}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-10">
+        <div class="box">
+            <div class="box-header with-border">
+                <h1 class="box-title">Protocolo HTTPS - Certificados Validos ({{ scan_date }})</h1>
+            </div>
+            <div class="box-body">
+                <div id="container" style="height: 700px"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2">
+        <div class="box">
+            <div class="box-header with-border">
+                <h1 class="box-title">Opciones</h1>
+            </div>
+            <div class="box-body">
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                        Fecha de Escaneo
+                        <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        {% for scan in scan_list %}
+                            <li><a href="{% url "graphs/https/validation" port scan %}">{{ scan }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

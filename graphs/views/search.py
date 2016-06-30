@@ -1,75 +1,51 @@
+import json
 import socket
 from geoip import geolite2
 from django.shortcuts import render
-from graphs.models import Http80, Http443, Http8080, Http8000, Https
+from graphs.models import HTTP80, HTTP443, HTTP8000, HTTP8080, HTTP_PORT, HTTPS443
+from graphs.models.util import HTTP, HTTPS
+
 from django.http import HttpResponse, JsonResponse
-import json
 
 
 def search_partial(request, port, ip, date, direction=None):
-    if port == '80':
-        http_model = Http80
 
-    if port == '443':
-        http_model = Http443
-
-    if port == '8000':
-        http_model = Http8000
-
-    if port == '8080':
-        http_model = Http8080
-
-    params = {'ip': ip}
     if direction == 'left':
-        direction = '-date'
-        params['date__lt'] = date
+        scan = HTTP_PORT[port].objects.filter(ip=ip, date__lt=date).order_by('-date').first()
     else:
-        direction = 'date'
-        params['date__gt'] = date
-    try:
-        data = http_model.objects(**params).order_by(direction).first()
-    except IndexError:
-        data = {}
-    if data is None:
+        scan = HTTP_PORT[port].objects.filter(ip=ip, date__gt=date).order_by('date').first()
+
+    if scan is None:
         return JsonResponse({})
-    return HttpResponse(data.to_json(), content_type="application/json")
+
+    scan = HTTP(scan.data)
+    return HttpResponse(json.dumps(scan.to_json()), content_type="application/json")
 
 
 def search_partial_cert(request, ip, date, direction=None):
-    http_model = Https
-
-    params = {'ip': ip}
     if direction == 'left':
-        direction = '-date'
-        #params['date__lt'] = date
+        scan = HTTPS443.objects.filter(ip=ip, date__lt=date).order_by('-date').first()
     else:
-        direction = 'date'
-        #params['date__gt'] = date
-    try:
-        data = http_model.objects(**params).order_by(direction).first()
-    except IndexError:
-        data = {}
-    if data is None:
+        scan = HTTPS443.objects.filter(ip=ip, date__gt=date).order_by('date').first()
+
+    if scan is None:
         return JsonResponse({})
-    return HttpResponse(data.to_json(), content_type="application/json")
+
+    scan = HTTPS(scan.data)
+    return HttpResponse(json.dumps(scan.to_json()), content_type="application/json")
 
 
 def search(request):
-    ip = request.GET[u'question']
-    if u'position' not in request.GET:
+    ip = request.GET['question']
+
+    if 'position' not in request.GET:
         date_position = 0
     else:
-        date_position = int(request.GET[u'position'])
-        direction = request.GET[u'direction']
-        if direction == 'left':
-            date_position += 1
-        else:
-            date_position -= 1
+        date_position = int(request.GET['position'])
+
         if date_position < 0:
             date_position = 0
 
-    # latest date is 0, increasing position goes back in time
-    # ip = '201.220.232.16'
     try:
         reversed_dns = socket.gethostbyaddr(ip)
     except socket.herror:
@@ -81,26 +57,27 @@ def search(request):
         lat, long = None, None
 
     try:
-        http80 = Http80.objects(ip=ip).order_by('-date')[date_position]
+        http80 = HTTP(HTTP80.objects.filter(ip=ip).order_by('-date')[date_position].data)
     except IndexError:
         http80 = None
+
     try:
-        http443 = Http443.objects(ip=ip).order_by('-date')[date_position]
+        http443 = HTTP(HTTP443.objects.filter(ip=ip).order_by('-date')[date_position].data)
     except IndexError:
         http443 = None
 
     try:
-        http8000 = Http8000.objects(ip=ip).order_by('-date')[date_position]
+        http8000 = HTTP(HTTP8000.objects.filter(ip=ip).order_by('-date')[date_position].data)
     except IndexError:
         http8000 = None
 
     try:
-        http8080 = Http8080.objects(ip=ip).order_by('-date')[date_position]
+        http8080 = HTTP(HTTP8080.objects.filter(ip=ip).order_by('-date')[date_position].data)
     except IndexError:
         http8080 = None
 
     try:
-        https = Https.objects(ip=ip).order_by('-date')[date_position]
+        https = HTTPS(HTTPS443.objects.filter(ip=ip).order_by('-date')[date_position].data)
     except IndexError:
         https = None
 
@@ -109,9 +86,10 @@ def search(request):
                    'reverse': reversed_dns[0],
                    'lat': lat,
                    'long': long,
-                   'datePosition': date_position,
+                   'date_position': date_position,
                    'http80': http80,
                    'http443': http443,
                    'http8000': http8000,
                    'http8080': http8080,
-                   'https': https})
+                   'https': https
+                   })
