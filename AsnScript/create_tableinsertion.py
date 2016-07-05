@@ -1,5 +1,7 @@
 print("running create_tableinsertion.py")
 output = open('insert_asn_data.sql', 'w')
+output.write('DROP TABLE IF EXISTS asn;\nCREATE TABLE asn (\n\tnumber integer,\n\tname text,\n\tblocks inet[]\n);\n')
+output.write('ALTER TABLE asn OWNER TO postgres;\n')
 with open('grouped_asn_names_blocks') as f:
     lines = f.read().splitlines()
     for line in lines:  # at this point line is actually a line from the file

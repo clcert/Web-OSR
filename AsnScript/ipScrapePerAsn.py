@@ -18,12 +18,16 @@ with open('chilean_asn1.csv') as f:
         html_doc = page.content
         soup = BeautifulSoup(html_doc, 'html.parser')
         for link in soup.find_all('a'):
-            if asn in link.get('href'):
-                auxstring = '/'+as_base+asn+'/'
-                line = re.sub(auxstring, '', link.get('href'))
-                printstring = asn+','+line+'\n'
-                if 'AS' not in printstring:
-                    output.write(printstring)
+            try:
+                if asn in link.get('href'):
+                    auxstring = '/'+as_base+asn+'/'
+                    line = re.sub(auxstring, '', link.get('href'))
+                    printstring = asn+','+line+'\n'
+                    if 'AS' not in printstring:
+                        output.write(printstring)
+            except TypeError:
+                pass
 
+                
 print('ipScrapePerAsn.py script finished')
 
