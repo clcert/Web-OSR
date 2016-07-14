@@ -56,3 +56,13 @@ def basic_column(div_id, data):
             'log_scale': data.get('log_scale'),
             'categories': data.get('categories'),
             'values': data.get('values')}
+
+
+@register.inclusion_tag('charts/log_bars_chart.html')
+def log_bars_chart(div_id, data):
+    return {'id': div_id,
+            'title': data['title'],
+            'title_x_axis': data['xaxis'],
+            'title_y_axis': data['yaxis'],
+            'x_label': data['xvalues'],
+            'values': data['values']}
