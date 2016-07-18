@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from graphs.models import asn
-from django.http import HttpResponse
 import operator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -25,7 +24,7 @@ def top_asn(request):
               {'page_title': 'Top Autonomous Systems',
                'panel_title': 'Number of ip addresses per ASN',
                'bars': {'title': 'Number of ip addresses per ASN', 'yaxis': 'Number of ips', 'xaxis': 'Autonomous Systems',
-                                                                    # yaxis y xaxis estan cambiados en el chart
+                        # yaxis y xaxis estan cambiados en el chart
                         'xvalues': [i.name.split(',')[0] + str(i.number) for i in partial_data],
                         'values': [{'name': "Number of assigned ip addresses ", 'yvalue': [i.block_size for i in partial_data]}]},
                         'partial_data': partial_data,
