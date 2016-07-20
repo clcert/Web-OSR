@@ -1,7 +1,9 @@
 from django.shortcuts import render
-from graphs.models import asn
+from graphs.models import asn, ZmapLog, AsnHTTPServer
+from django.db.models import Sum
 import operator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import HttpResponse
 
 
 def top_asn(request):
@@ -30,3 +32,32 @@ def top_asn(request):
                         'partial_data': partial_data,
 
                })
+
+
+def asn_search(request):
+    return render(request, 'graphs/asn_search.html',
+                  {
+                      'panel_title': "Acabas de buscar " + str(request.GET['question'])
+                  })
+
+
+def http_server_asn(request, asn, port, scan_date="2016-01-04", product=None):
+    scan_date_list = ZmapLog.objects.filter(port=port)
+    if scan_date is None:
+        scan_date = scan_date_list.last().date
+    # if product:
+    #     version_server = HTTPServer.objects.filter(port=port, date=scan_date, product=product)[:9]
+
+    web_server = AsnHTTPServer.objects.filter(asn=asn, port=port, date=scan_date).values('product').order_by('product')\
+        .annotate(total=Sum('total')).order_by('-total')[:10]
+
+    return render(request, 'graphs/http_server.html',
+                  {'port': port,
+                   'scan_date': scan_date,
+                   'scan_list': [i.date for i in scan_date_list],
+                   'bars': {
+                       'title': 'Web Server Running (HTTP) on Autonomous System %s' % asn, 'xaxis': 'Web Server', 'yaxis': 'Number of Servers',
+                       'categories': [i['product'] for i in web_server],
+                       'values': [{'name': 'port ' + port, 'data': [i['total'] for i in web_server]}]},
+                   'pie': None
+                   })

@@ -25,6 +25,16 @@
         <a href="#"><i class="fa fa-line-chart"></i> <span>ASN</span> <i class="fa fa-angle-left pull-right"></i></a>
         <ul class="treeview-menu">
             <li><a href="{% url 'asn/top-asn' %}">Top ASN</a></li>
+            <li><a href="{% url 'graphs/asn/server' 80 %}">HTTP Servers by ASN</a></li>
+            {% comment %}
+            <li><a href="{% url 'graphs/asn/os' 80 %}">Operative Systems by ASN</a></li>
+            <li><a href="{% url 'graphs/asn/device' 80 %}">Devices type by ASN</a></li>
+            <li><a href="{% url 'graphs/asn/https/key-bits' 443 %}">Key Bits by ASN</a></li>
+            <li><a href="{% url 'graphs/asn/https/validation' 443 %}">Validation by ASN</a></li>
+            <li><a href="{% url 'graphs/asn/https/signature' 443 %}">Signature by ASN</a></li>
+            <li><a href="{% url 'graphs/asn/https/cipher-suite' 443 %}">Cipher Suite by ASN</a></li>
+            <li><a href="{% url 'graphs/asn/https/tls-version' 443 %}">TLS Version by ASN</a></li>
+            {% endcomment %}
         </ul>
     </li>
 {% endblock %}
