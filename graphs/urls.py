@@ -29,6 +29,10 @@ urlpatterns = [
     url(r'^search/(?P<port>[0-9]+)/(?P<ip>([0-9]{1,3}\.){3}[0-9]{1,3})/(?P<date>\d+-\d+-\d+)/(?P<direction>[\w]+)$', views.search_partial, name='search/partial'),
     url(r'^search/cert/(?P<ip>([0-9]{1,3}\.){3}[0-9]{1,3})/(?P<date>[\w\-]+)/(?P<direction>[\w]+)$', views.search_partial_cert, name='search/cert/partial'),
     url(r'^asn/top$', views.top_asn, name='asn/top-asn'),
+    url(r'^web-server/all/as(?P<number>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)$', views.http_server_all, name='graphs/asn/server/all'),
+    url(r'^web-server/(?P<port>[0-9]+)$', views.http_server, name='graphs/asn/server'),
+    url(r'^web-server/(?P<port>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)$', views.http_server, name='graphs/asn/server'),
+    url(r'^web-server/(?P<port>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)/(?P<product>[\w\s]+)$', views.http_server, name='graphs/asn/server'),
     # url(r'^asn$', views.asn, name='graphs/asn'),
 ]
 

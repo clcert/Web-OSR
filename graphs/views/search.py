@@ -4,12 +4,11 @@ from geoip import geolite2
 from django.shortcuts import render
 from graphs.models import HTTP80, HTTP443, HTTP8000, HTTP8080, HTTP_PORT, HTTPS443
 from graphs.models.util import HTTP, HTTPS
-
 from django.http import HttpResponse, JsonResponse
+from asn import asn_search
 
 
 def search_partial(request, port, ip, date, direction=None):
-
     if direction == 'left':
         scan = HTTP_PORT[port].objects.filter(ip=ip, date__lt=date).order_by('-date').first()
     else:
@@ -36,6 +35,18 @@ def search_partial_cert(request, ip, date, direction=None):
 
 
 def search(request):
+    search_string = request.GET['question']
+    if str(search_string).startswith(u"AS"):
+        return search_autonomous_system(request)
+    else:
+        return search_ip(request)
+
+
+def search_autonomous_system(request):
+    return asn_search(request)
+
+
+def search_ip(request):
     ip = request.GET['question']
 
     if 'position' not in request.GET:
@@ -93,3 +104,4 @@ def search(request):
                    'http8080': http8080,
                    'https': https
                    })
+

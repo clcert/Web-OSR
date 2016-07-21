@@ -58,7 +58,7 @@ def basic_column(div_id, data):
             'values': data.get('values')}
 
 
-@register.inclusion_tag('charts/log_bars_chart.html')
+@register.inclusion_tag('log_bars_chart.html')
 def log_bars_chart(div_id, data):
     return {'id': div_id,
             'title': data['title'],
