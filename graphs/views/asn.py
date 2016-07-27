@@ -47,6 +47,30 @@ def http_server_asn_search(request):
     return render(request, 'graphs/http_server_asn.html')
 
 
+def http_server_asn(request, number, port, scan_date=None, product=None):
+    scan_date_list = ZmapLog.objects.filter(port=port)
+    if scan_date is None:
+        scan_date = scan_date_list.last().date
+
+    # if product:
+    #     version_server = HTTPServer.objects.filter(port=port, date=scan_date, product=product)[:9]
+
+    web_server = AsnHTTPServer.objects.filter(asn=number, port=port, date=scan_date).values('product').order_by('product')\
+        .annotate(total=Sum('total')).order_by('-total')[:10]
+
+    return render(request, 'graphs/http_server_asn.html',
+                  {'port': port,
+                   'number': number,
+                   'scan_date': scan_date,
+                   'scan_list': [i.date for i in scan_date_list],
+                   'bars': {
+                       'title': 'Web Server Running (HTTP) on Autonomous System %s' % number, 'xaxis': 'Web Server', 'yaxis': 'Number of Servers',
+                       'categories': [i['product'] for i in web_server],
+                       'values': [{'name': 'port ' + port, 'data': [i['total'] for i in web_server]}]},
+                   'pie': None
+                   })
+
+
 def http_server_all_asn(request, number=None, scan_date=None):
     scan_date_list = ZmapLog.objects.filter(port=80)
     if scan_date is None:
@@ -83,26 +107,4 @@ def http_server_all_asn(request, number=None, scan_date=None):
                                 {'name': 'port 8000', 'data': [i['total'] for i in http8000]},
                                 {'name': 'port 8080', 'data': [i['total'] for i in http8080]}
                             ]}
-                   })
-
-
-def http_server_asn(request, asn, port, scan_date="2016-01-04", product=None):
-    scan_date_list = ZmapLog.objects.filter(port=port)
-    if scan_date is None:
-        scan_date = scan_date_list.last().date
-    # if product:
-    #     version_server = HTTPServer.objects.filter(port=port, date=scan_date, product=product)[:9]
-
-    web_server = AsnHTTPServer.objects.filter(asn=asn, port=port, date=scan_date).values('product').order_by('product')\
-        .annotate(total=Sum('total')).order_by('-total')[:10]
-
-    return render(request, 'graphs/http_server.html',
-                  {'port': port,
-                   'scan_date': scan_date,
-                   'scan_list': [i.date for i in scan_date_list],
-                   'bars': {
-                       'title': 'Web Server Running (HTTP) on Autonomous System %s' % asn, 'xaxis': 'Web Server', 'yaxis': 'Number of Servers',
-                       'categories': [i['product'] for i in web_server],
-                       'values': [{'name': 'port ' + port, 'data': [i['total'] for i in web_server]}]},
-                   'pie': None
                    })

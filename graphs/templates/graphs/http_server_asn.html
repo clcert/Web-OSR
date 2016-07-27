@@ -58,13 +58,11 @@
                         <div class="panel-heading">Web Server Options</div>
                         <div class="panel-body">
                             <ul class="nav nav-pills nav-stacked">
-                            {% comment %}
-                                <li role="presentation" {% if port == '80' %}class="active"{% endif %}><a href="{% url "graphs/server" 80  scan_date %}">Port 80</a></li>
-                                <li role="presentation" {% if port == '443' %}class="active"{% endif %}><a href="{% url "graphs/server" 443 scan_date %}">Port 443</a></li>
-                                <li role="presentation" {% if port == '8000' %}class="active"{% endif %}><a href="{% url "graphs/server" 8000 scan_date %}">Port 8000</a></li>
-                                <li role="presentation" {% if port == '8080' %}class="active"{% endif %}><a href="{% url "graphs/server" 8080 scan_date %}">Port 8080</a></li>
-                                <li role="presentation" {% if port == 'all' %}class="active"{% endif %}><a href="{% url "graphs/server/all" scan_date %}">All</a></li>
-                            {% endcomment %}
+                                <li role="presentation" {% if port == '80' %}class="active"{% endif %}><a href="{% url "graphs/asn/server" number 80  scan_date %}">Port 80</a></li>
+                                <li role="presentation" {% if port == '443' %}class="active"{% endif %}><a href="{% url "graphs/asn/server" number 443 scan_date %}">Port 443</a></li>
+                                <li role="presentation" {% if port == '8000' %}class="active"{% endif %}><a href="{% url "graphs/asn/server" number 8000 scan_date %}">Port 8000</a></li>
+                                <li role="presentation" {% if port == '8080' %}class="active"{% endif %}><a href="{% url "graphs/asn/server" number 8080 scan_date %}">Port 8080</a></li>
+                                <li role="presentation" {% if port == 'all' %}class="active"{% endif %}><a href="{% url "graphs/asn/server/all" number scan_date %}">All</a></li>
                             </ul>
                             {% ifnotequal port 'all' %}
                                 <hr>
@@ -75,7 +73,7 @@
                                         <span class="caret"></span></button>
                                     <ul class="dropdown-menu">
                                         {% for name in bars.xvalues %}
-                                            <li><a href="{% url "graphs/server" port scan_date name %}">{{ name }}</a>
+                                            <li><a href="{% url "graphs/asn/server" number port scan_date name %}">{{ name }}</a>
                                             </li>
                                         {% endfor %}
                                     </ul>
@@ -88,7 +86,7 @@
                                         <span class="caret"></span></button>
                                     <ul class="dropdown-menu">
                                         {% for scan in scan_list %}
-                                            <li><a href="{% url "graphs/server" port scan %}">{{ scan }}</a></li>
+                                            <li><a href="{% url "graphs/asn/server" number port scan %}">{{ scan }}</a></li>
                                         {% endfor %}
                                     </ul>
                                 </div>

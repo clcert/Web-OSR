@@ -33,8 +33,9 @@ urlpatterns = [
     url(r'^web-server/all/as/$', views.http_server_asn_search, name='graphs/asn/server'),
     url(r'^web-server/all/as/(?P<number>[0-9]+)$', views.http_server_all_asn, name='graphs/asn/server/all'),
     url(r'^web-server/all/as/(?P<number>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)$', views.http_server_all_asn, name='graphs/asn/server/all'),
-    url(r'^web-server/as(?P<number>[0-9]+)/(?P<port>[0-9]+)$', views.http_server, name='graphs/asn/server'),
-    # url(r'^web-server/(?P<port>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)$', views.http_server, name='graphs/asn/server'),
+    url(r'^web-server/as/(?P<number>[0-9]+)/(?P<port>[0-9]+)$', views.http_server_asn, name='graphs/asn/server'),
+    url(r'^web-server/as/(?P<number>[0-9]+)/(?P<port>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)$', views.http_server_asn, name='graphs/asn/server'),
+    # product version hasn't been implemented yet (i think?)
     # url(r'^web-server/(?P<port>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)/(?P<product>[\w\s]+)$', views.http_server, name='graphs/asn/server'),
     # url(r'^asn$', views.asn, name='graphs/asn'),
 ]
