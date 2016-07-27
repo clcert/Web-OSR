@@ -3,7 +3,9 @@ from graphs.models import asn, ZmapLog, AsnHTTPServer
 from django.db.models import Sum
 import operator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import HttpResponse
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseRedirect
+from graphs.util import filter_by_name
 
 
 def top_asn(request):
@@ -39,6 +41,49 @@ def asn_search(request):
                   {
                       'panel_title': "Acabas de buscar " + str(request.GET['question'])
                   })
+
+
+def http_server_asn_search(request):
+    return render(request, 'graphs/http_server_asn.html')
+
+
+def http_server_all_asn(request, number=None, scan_date=None):
+    scan_date_list = ZmapLog.objects.filter(port=80)
+    if scan_date is None:
+        # NO FUNCIONARA HASTA QUE TENGAMOS TODOS LOS DATOS TRANSFORMEITED!
+        # Para ver como queda usar first() en vez de last()
+        scan_date = scan_date_list.last().date
+    if not number:
+        try:
+            number = int(request.POST['number'])
+            print reverse('graphs/asn/server/all', kwargs={'number': number, 'scan_date': scan_date})
+            return HttpResponseRedirect(reverse('graphs/asn/server/all', kwargs={'number': number, 'scan_date': scan_date}))
+        except ValueError:
+            return HttpResponseRedirect(reverse('graphs/asn/server/all'))
+
+    http80 = AsnHTTPServer.objects.filter(asn=number, port=80, date=scan_date).values('product').order_by('product') \
+                 .annotate(total=Sum('total')).order_by('-total')[:10]
+    http443 = filter_by_name(AsnHTTPServer.objects.filter(asn=number, port=443, date=scan_date).values('product').order_by('product') \
+                             .annotate(total=Sum('total')), [i['product'] for i in http80], 'product', 'total')
+    http8000 = filter_by_name(AsnHTTPServer.objects.filter(asn=number, port=8000, date=scan_date).values('product').order_by('product') \
+                              .annotate(total=Sum('total')), [i['product'] for i in http80], 'product', 'total')
+    http8080 = filter_by_name(AsnHTTPServer.objects.filter(asn=number, port=8080, date=scan_date).values('product').order_by('product') \
+                              .annotate(total=Sum('total')), [i['product'] for i in http80], 'product', 'total')
+
+    return render(request, 'graphs/http_server_asn.html',
+                  {'port': 'all',
+                   'number': number,
+                   'scan_date': scan_date,
+                   'scan_list': [i.date for i in scan_date_list],
+                   'bars': {'title': 'Web Server Running (HTTP) on Autonomous System %s' % number, 'xaxis': 'Web Server', 'yaxis': 'Number of Servers',
+                            'categories': [i['product'] for i in http80],
+                            'values': [
+                                {'name': 'port 80', 'data': [i['total'] for i in http80]},
+                                {'name': 'port 443', 'data': [i['total'] for i in http443]},
+                                {'name': 'port 8000', 'data': [i['total'] for i in http8000]},
+                                {'name': 'port 8080', 'data': [i['total'] for i in http8080]}
+                            ]}
+                   })
 
 
 def http_server_asn(request, asn, port, scan_date="2016-01-04", product=None):
