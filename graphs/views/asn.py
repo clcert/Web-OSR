@@ -281,8 +281,48 @@ def validation_asn(request, port, number=None, scan_date=None):
                    'scan_date': scan_date,
                    'scan_list': [i.date for i in scan_date_list],
                    'bars': {
-                       'title': 'Certificate Validation (HTTP)',
+                       'title': 'Certificate Validation (HTTP) on Autonomous System %s' % number,
                        'xaxis': 'Validation',
                        'yaxis': 'Number of Certificates',
                        'categories': [i['valid'] for i in certificate_validation],
                        'values': [{'name': 'https', 'data': [i['total'] for i in certificate_validation]}]}})
+
+
+def signature_asn_search(request, port=443):
+    if request.POST.get('number'):
+        try:
+            number = int(request.POST['number'])
+            return validation_asn(request, port, number)
+        except ValueError:
+            pass
+    return render(request, 'graphs/cert_signature_asn.html')
+
+
+def signature_asn(request, port, number=None, scan_date=None):
+    scan_date_list = ZmapLog.objects.filter(port=port)
+    if scan_date is None:
+        scan_date = scan_date_list.last().date
+
+    trusted = AsnHTTPSSignature.objects.filter(asn=number, port=port, date=scan_date, valid=True).values('signature').order_by('signature') \
+        .annotate(total=Sum('total')).order_by('signature')[:10]
+    untrusted = AsnHTTPSSignature.objects.filter(asn=number, port=port, date=scan_date, valid=False).values('signature').order_by('signature') \
+        .annotate(total=Sum('total')).order_by('signature')[:10]
+
+    signature_values = sorted(set([i['signature'] for i in trusted]) | set([i['signature'] for i in untrusted]))
+
+    return render(request, 'graphs/cert_signature_asn.html',
+                  {'port': port,
+                   'number': number,
+                   'scan_date': scan_date,
+                   'scan_list': [i.date for i in scan_date_list],
+                   'bars': {
+                       'title': 'Signature on Autonomous System %s' % number,
+                       'xaxis': 'Signature Algorithm',
+                       'yaxis': 'Number of Handshake',
+                       'label_rotation': -45,
+                       'categories': [i for i in signature_values],
+                       'values': [
+                           {'name': 'https trusted', 'data': [i['total'] for i in filter_by_name(trusted, signature_values, 'signature', 'total')]},
+                           {'name': 'https untrusted', 'data': [i['total'] for i in filter_by_name(untrusted, signature_values, 'signature', 'total')]}
+                       ]
+                   }})
