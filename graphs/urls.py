@@ -55,6 +55,10 @@ urlpatterns = [
     url(r'^https/cipher-suite/(?P<port>[0-9]+)/as$', views.cipher_suite_asn_search, name='graphs/https/asn/cipher-suite'),
     url(r'^https/cipher-suite/(?P<port>[0-9]+)/as/(?P<number>[0-9]+)$', views.cipher_suite_asn, name='graphs/https/asn/cipher-suite'),
     url(r'^https/cipher-suite/(?P<port>[0-9]+)/as/(?P<number>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)$', views.cipher_suite_asn, name='graphs/https/asn/cipher-suite'),
+    url(r'^https/tls_version/(?P<port>[0-9]+)/as$', views.tls_version_asn_search, name='graphs/https/asn/tls-version'),
+    url(r'^https/tls_version/(?P<port>[0-9]+)/as/(?P<number>[0-9]+)$', views.tls_version_asn, name='graphs/https/asn/tls-version'),
+    url(r'^https/tls_version/(?P<port>[0-9]+)/as/(?P<number>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)$', views.tls_version_asn, name='graphs/https/asn/tls-version'),
+    url(r'^search$', views.search, name='search'),
     # product version hasn't been implemented yet (i think?)
     # url(r'^web-server/(?P<port>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)/(?P<product>[\w\s]+)$', views.http_server, name='graphs/asn/server'),
     # url(r'^asn$', views.asn, name='graphs/asn'),

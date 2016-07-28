@@ -366,3 +366,43 @@ def cipher_suite_asn(request, port, number=None, scan_date=None):
                            {'name': 'https untrusted', 'data': [i['total'] for i in filter_by_name(untrusted, cipher_suite_values, 'cipher_suite', 'total')]}
                        ]
                    }})
+
+
+def tls_version_asn_search(request, port=443):
+    if request.POST.get('number'):
+        try:
+            number = int(request.POST['number'])
+            return tls_version_asn(request, port, number)
+        except ValueError:
+            pass
+    return render(request, 'graphs/cert_tls_version_asn.html')
+
+
+def tls_version_asn(request, port, number=None, scan_date=None):
+    scan_date_list = ZmapLog.objects.filter(port=port)
+    if scan_date is None:
+        scan_date = scan_date_list.last().date
+
+    trusted = AsnHTTPSTlsProtocol.objects.filter(asn=number, port=port, date=scan_date, valid=True).values('protocol').order_by('protocol') \
+        .annotate(total=Sum('total')).order_by('protocol')
+    untrusted = AsnHTTPSTlsProtocol.objects.filter(asn=number, port=port, date=scan_date, valid=False).values('protocol').order_by('protocol') \
+        .annotate(total=Sum('total')).order_by('protocol')
+
+    tls_values = sorted(set([i['protocol'] for i in trusted]) | set([i['protocol'] for i in untrusted]))
+
+    return render(request, 'graphs/cert_tls_version_asn.html',
+                  {'port': port,
+                   'number': number,
+                   'scan_date': scan_date,
+                   'scan_list': [i.date for i in scan_date_list],
+                   'bars': {
+                       'title': 'Cipher Suites on Autonomous System %s' % number,
+                       'xaxis': 'TLS Version',
+                       'yaxis': 'Number of Handshake',
+                       'categories': [i for i in tls_values],
+                       'values': [
+                           {'name': 'https trusted', 'data': [i['total'] for i in filter_by_name(trusted, tls_values, 'protocol', 'total')]},
+                           {'name': 'https untrusted', 'data': [i['total'] for i in filter_by_name(untrusted, tls_values, 'protocol', 'total')]}
+                       ]
+                   }})
+
