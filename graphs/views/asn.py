@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from graphs.models import asn, ZmapLog, AsnHTTPServer, AsnHTTPOS, AsnHTTPType
+from graphs.models import asn, ZmapLog, AsnHTTPServer, AsnHTTPOS, AsnHTTPType, AsnHTTPSKeyBits, AsnHTTPSCipherSuite, AsnHTTPSSignature, AsnHTTPSTlsProtocol
 from django.db.models import Sum
 import operator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -217,4 +217,42 @@ def operating_system_server_asn_all(request, number, scan_date):
                                        {'name': 'port 8000', 'data': [i['total'] for i in os8000]},
                                        {'name': 'port 8080', 'data': [i['total'] for i in os8080]}]}})
 
+
+def key_bits_asn_search(request, port=443):
+    if request.POST.get('number'):
+        try:
+            number = int(request.POST['number'])
+            return key_bits_asn(request, port, number)
+        except ValueError:
+            pass
+    return render(request, 'graphs/cert_key_bits_asn.html')
+
+
+def key_bits_asn(request, port, number=None, scan_date=None):
+    scan_date_list = ZmapLog.objects.filter(port=port)
+    if scan_date is None:
+            scan_date = scan_date_list.last().date
+
+    trusted = AsnHTTPSKeyBits.objects.filter(asn=number, port=port, date=scan_date, valid=True).values('bits').order_by('bits') \
+        .annotate(total=Sum('total')).order_by('bits')[:10]
+    untrusted = AsnHTTPSKeyBits.objects.filter(asn=number, port=port, date=scan_date, valid=False).values('bits').order_by('bits') \
+        .annotate(total=Sum('total')).order_by('bits')[:10]
+
+    key_bits_values = sorted(set([i['bits'] for i in trusted]) | set([i['bits'] for i in untrusted]))
+
+    return render(request, 'graphs/cert_key_bits_asn.html',
+                  {'port': port,
+                   'number': number,
+                   'scan_date': scan_date,
+                   'scan_list': [i.date for i in scan_date_list],
+                   'bars': {
+                       'title': 'Key Bits (HTTPS) on Autonomous System %s' % number,
+                       'xaxis': 'Bits',
+                       'yaxis': 'Number of Certificates',
+                       'categories': [i for i in key_bits_values],
+                       'values': [
+                           {'name': 'https trusted', 'data': [i['total'] for i in filter_by_name(trusted, key_bits_values, 'bits', 'total')]},
+                           {'name': 'https untrusted', 'data': [i['total'] for i in filter_by_name(untrusted, key_bits_values, 'bits', 'total')]}
+                       ]
+                   }})
 
