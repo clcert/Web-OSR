@@ -5,7 +5,6 @@ from django.shortcuts import render
 from graphs.models import HTTP80, HTTP443, HTTP8000, HTTP8080, HTTP_PORT, HTTPS443
 from graphs.models.util import HTTP, HTTPS
 from django.http import HttpResponse, JsonResponse
-from asn import asn_search
 
 
 def search_partial(request, port, ip, date, direction=None):

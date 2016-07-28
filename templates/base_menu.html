@@ -26,8 +26,8 @@
         <ul class="treeview-menu">
             <li><a href="{% url 'asn/top-asn' %}">Top ASN</a></li>
             <li><a href="{% url 'graphs/asn/server' %}">HTTP Servers by ASN</a></li>
-            {% comment %}
             <li><a href="{% url 'graphs/asn/os' 80 %}">Operative Systems by ASN</a></li>
+            {% comment %}
             <li><a href="{% url 'graphs/asn/device' 80 %}">Devices type by ASN</a></li>
             <li><a href="{% url 'graphs/asn/https/key-bits' 443 %}">Key Bits by ASN</a></li>
             <li><a href="{% url 'graphs/asn/https/validation' 443 %}">Validation by ASN</a></li>
