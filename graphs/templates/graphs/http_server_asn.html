@@ -25,7 +25,7 @@
     <div class="col-lg-10">
 
         <!-- search form for AS Number -->
-            <form action="{% url 'graphs/asn/server/search' %}" method="post" class="navbar-form">
+            <form action="{% url 'graphs/asn/server' %}" method="post" class="navbar-form">
                 {% csrf_token %}
             <div class="input-group">
               <input type="text" name="number" class="form-control" placeholder="Buscar AS e.g. 23140">

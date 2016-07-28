@@ -44,6 +44,12 @@ def asn_search(request):
 
 
 def http_server_asn_search(request):
+    if request.POST.get('number'):
+        try:
+            number = int(request.POST['number'])
+            return http_server_all_asn(request, number)
+        except ValueError:
+            pass
     return render(request, 'graphs/http_server_asn.html')
 
 
