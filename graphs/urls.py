@@ -39,6 +39,10 @@ urlpatterns = [
     url(r'^operative-system/all/as/(?P<number>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)$', views.operating_system_server_asn_all, name='graphs/asn/os/all'),
     url(r'^operative-system/(?P<port>[0-9]+)/as/(?P<number>[0-9]+)$', views.operating_system_server_asn, name='graphs/asn/os'),
     url(r'^operative-system/(?P<port>[0-9]+)/as/(?P<number>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)$', views.operating_system_server_asn, name='graphs/asn/os'),
+    url(r'^device/(?P<port>[0-9]+)/as$', views.device_type_asn_search, name='graphs/asn/device'),
+    url(r'^device/all/as/(?P<number>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)$', views.device_type_asn_all, name='graphs/asn/device/all'),
+    url(r'^device/(?P<port>[0-9]+)/as/(?P<number>[0-9]+)$', views.device_type_asn, name='graphs/asn/device'),
+    url(r'^device/(?P<port>[0-9]+)/as/(?P<number>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)$', views.device_type_asn, name='graphs/asn/device'),
     # product version hasn't been implemented yet (i think?)
     # url(r'^web-server/(?P<port>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)/(?P<product>[\w\s]+)$', views.http_server, name='graphs/asn/server'),
     # url(r'^asn$', views.asn, name='graphs/asn'),

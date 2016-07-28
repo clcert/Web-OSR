@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from graphs.models import asn, ZmapLog, AsnHTTPServer, AsnHTTPOS
+from graphs.models import asn, ZmapLog, AsnHTTPServer, AsnHTTPOS, AsnHTTPType
 from django.db.models import Sum
 import operator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -107,6 +107,60 @@ def http_server_all_asn(request, number=None, scan_date=None):
                                 {'name': 'port 8080', 'data': [i['total'] for i in http8080]}
                             ]}
                    })
+
+
+def device_type_asn_search(request, port=80):
+    if request.POST.get('number'):
+        try:
+            number = int(request.POST['number'])
+            return device_type_asn(request, port, number)
+        except ValueError:
+            pass
+    return render(request, 'graphs/http_device_type_asn.html')
+
+
+def device_type_asn(request, port, number=None, scan_date=None):
+    scan_date_list = ZmapLog.objects.filter(port=port)
+    if scan_date is None:
+        scan_date = scan_date_list.last().date
+
+    device = AsnHTTPType.objects.filter(asn=number, port=port, date=scan_date).values('type').order_by('type') \
+        .annotate(total=Sum('total')).order_by('-total')[:10]
+    return render(request, 'graphs/http_device_type_asn.html',
+                  {'port': port,
+                   'number': number,
+                   'scan_date': scan_date,
+                   'scan_list': [i.date for i in scan_date_list],
+                   'bars': {
+                       'title': 'Device Type of Server (HTTP) on Autonomous System %s' % number, 'xaxis': 'Type of Device',
+                       'yaxis': 'Number of Servers',
+                       'categories': [i['type'] for i in device],
+                       'values': [{'name': 'port ' + str(port), 'data': [i['total'] for i in device]}]}})
+
+
+def device_type_asn_all(request, number, scan_date):
+    scan_date_list = ZmapLog.objects.filter(port=80)
+    device80 = AsnHTTPType.objects.filter(asn=number, port=80, date=scan_date).values('type').order_by('type') \
+                            .annotate(total=Sum('total')).order_by('-total')[:10]
+    device443 = filter_by_name(AsnHTTPType.objects.filter(asn=number, port=443, date=scan_date).values('type').order_by('type') \
+                           .annotate(total=Sum('total')).order_by('-total'), [i['type'] for i in device80], 'type', 'total')
+    device8000 = filter_by_name(AsnHTTPType.objects.filter(asn=number, port=8000, date=scan_date).values('type').order_by('type') \
+                            .annotate(total=Sum('total')).order_by('-total'), [i['type'] for i in device80], 'type', 'total')
+    device8080 = filter_by_name(AsnHTTPType.objects.filter(asn=number, port=8080, date=scan_date).values('type').order_by('type') \
+                            .annotate(total=Sum('total')).order_by('-total'), [i['type'] for i in device80], 'type', 'total')
+
+    return render(request, 'graphs/http_device_type_asn.html',
+                  {'port': 'all',
+                   'number': number,
+                   'scan_date': scan_date,
+                   'scan_list': [i.date for i in scan_date_list],
+                   'bars': {'title': 'Device Type of Server (HTTP) on Autonomous System %s' % number, 'xaxis': 'Type of Device',
+                            'yaxis': 'Number of Servers',
+                            'categories': [i['type'] for i in device80],
+                            'values': [{'name': 'port 80', 'data': [i['total'] for i in device80]},
+                                       {'name': 'port 443', 'data': [i['total'] for i in device443]},
+                                       {'name': 'port 8000', 'data': [i['total'] for i in device8000]},
+                                       {'name': 'port 8080', 'data': [i['total'] for i in device8080]}]}})
 
 
 def operating_system_server_asn_search(request, port=80):
