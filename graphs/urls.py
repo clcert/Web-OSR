@@ -52,6 +52,9 @@ urlpatterns = [
     url(r'^https/signature/(?P<port>[0-9]+)/as$', views.signature_asn_search, name='graphs/https/asn/signature'),
     url(r'^https/signature/(?P<port>[0-9]+)/as/(?P<number>[0-9]+)$', views.signature_asn, name='graphs/https/asn/signature'),
     url(r'^https/signature/(?P<port>[0-9]+)/as/(?P<number>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)$', views.signature_asn, name='graphs/https/asn/signature'),
+    url(r'^https/cipher-suite/(?P<port>[0-9]+)/as$', views.cipher_suite_asn_search, name='graphs/https/asn/cipher-suite'),
+    url(r'^https/cipher-suite/(?P<port>[0-9]+)/as/(?P<number>[0-9]+)$', views.cipher_suite_asn, name='graphs/https/asn/cipher-suite'),
+    url(r'^https/cipher-suite/(?P<port>[0-9]+)/as/(?P<number>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)$', views.cipher_suite_asn, name='graphs/https/asn/cipher-suite'),
     # product version hasn't been implemented yet (i think?)
     # url(r'^web-server/(?P<port>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)/(?P<product>[\w\s]+)$', views.http_server, name='graphs/asn/server'),
     # url(r'^asn$', views.asn, name='graphs/asn'),

@@ -326,3 +326,43 @@ def signature_asn(request, port, number=None, scan_date=None):
                            {'name': 'https untrusted', 'data': [i['total'] for i in filter_by_name(untrusted, signature_values, 'signature', 'total')]}
                        ]
                    }})
+
+
+def cipher_suite_asn_search(request, port=443):
+    if request.POST.get('number'):
+        try:
+            number = int(request.POST['number'])
+            return cipher_suite_asn(request, port, number)
+        except ValueError:
+            pass
+    return render(request, 'graphs/cert_cipher_suite_asn.html')
+
+
+def cipher_suite_asn(request, port, number=None, scan_date=None):
+    scan_date_list = ZmapLog.objects.filter(port=port)
+    if scan_date is None:
+        scan_date = scan_date_list.last().date
+
+    trusted = AsnHTTPSCipherSuite.objects.filter(asn=number, port=port, date=scan_date, valid=True).values('cipher_suite').order_by('cipher_suite') \
+        .annotate(total=Sum('total')).order_by('cipher_suite')
+    untrusted = AsnHTTPSCipherSuite.objects.filter(asn=number, port=port, date=scan_date, valid=False).values('cipher_suite').order_by('cipher_suite') \
+        .annotate(total=Sum('total')).order_by('cipher_suite')
+
+    cipher_suite_values = sorted(set([i['cipher_suite'] for i in trusted]) | set([i['cipher_suite'] for i in untrusted]))
+
+    return render(request, 'graphs/cert_cipher_suite_asn.html',
+                  {'port': port,
+                   'number': number,
+                   'scan_date': scan_date,
+                   'scan_list': [i.date for i in scan_date_list],
+                   'bars': {
+                       'title': 'Cipher Suites on Autonomous System %s' % number,
+                       'xaxis': 'Cipher Suite',
+                       'yaxis': 'Number of Handshake',
+                       'label_rotation': -90,
+                       'categories': [i for i in cipher_suite_values],
+                       'values': [
+                           {'name': 'https trusted', 'data': [i['total'] for i in filter_by_name(trusted, cipher_suite_values, 'cipher_suite', 'total')]},
+                           {'name': 'https untrusted', 'data': [i['total'] for i in filter_by_name(untrusted, cipher_suite_values, 'cipher_suite', 'total')]}
+                       ]
+                   }})
