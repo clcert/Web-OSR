@@ -46,6 +46,9 @@ urlpatterns = [
     url(r'^https/key-bits/(?P<port>[0-9]+)/as$', views.key_bits_asn_search, name='graphs/https/asn/key-bits'),
     url(r'^https/key-bits/(?P<port>[0-9]+)/as/(?P<number>[0-9]+)$', views.key_bits_asn, name='graphs/https/asn/key-bits'),
     url(r'^https/key-bits/(?P<port>[0-9]+)/as/(?P<number>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)$', views.key_bits_asn, name='graphs/https/asn/key-bits'),
+    url(r'^https/validation/(?P<port>[0-9]+)/as$', views.validation_asn_search, name='graphs/https/asn/validation'),
+    url(r'^https/validation/(?P<port>[0-9]+)/as/(?P<number>[0-9]+)$', views.validation_asn, name='graphs/https/asn/validation'),
+    url(r'^https/validation/(?P<port>[0-9]+)/as/(?P<number>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)$', views.validation_asn, name='graphs/https/asn/validation'),
     # product version hasn't been implemented yet (i think?)
     # url(r'^web-server/(?P<port>[0-9]+)/(?P<scan_date>\d+-\d+-\d+)/(?P<product>[\w\s]+)$', views.http_server, name='graphs/asn/server'),
     # url(r'^asn$', views.asn, name='graphs/asn'),

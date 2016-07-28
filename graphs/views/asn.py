@@ -256,3 +256,33 @@ def key_bits_asn(request, port, number=None, scan_date=None):
                        ]
                    }})
 
+
+def validation_asn_search(request, port=443):
+    if request.POST.get('number'):
+        try:
+            number = int(request.POST['number'])
+            return validation_asn(request, port, number)
+        except ValueError:
+            pass
+    return render(request, 'graphs/cert_validation_asn.html')
+
+
+def validation_asn(request, port, number=None, scan_date=None):
+    scan_date_list = ZmapLog.objects.filter(port=port)
+    if scan_date is None:
+        scan_date = scan_date_list.last().date
+
+    certificate_validation = AsnHTTPSKeyBits.objects.filter(asn=number, port=port, date=scan_date).values('valid').order_by('valid') \
+        .annotate(total=Sum('total')).order_by('valid')
+
+    return render(request, 'graphs/cert_validation_asn.html',
+                  {'port': port,
+                   'number': number,
+                   'scan_date': scan_date,
+                   'scan_list': [i.date for i in scan_date_list],
+                   'bars': {
+                       'title': 'Certificate Validation (HTTP)',
+                       'xaxis': 'Validation',
+                       'yaxis': 'Number of Certificates',
+                       'categories': [i['valid'] for i in certificate_validation],
+                       'values': [{'name': 'https', 'data': [i['total'] for i in certificate_validation]}]}})
