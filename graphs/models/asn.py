@@ -57,7 +57,7 @@ class AsnHTTPType(models.Model):
     total = models.IntegerField()
 
     class Meta:
-        db_table = 'http_type_asn_asn'
+        db_table = 'http_type_asn'
         ordering = ['-total']
 
 

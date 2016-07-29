@@ -1,0 +1,145 @@
+{% extends "base_menu.html" %}
+{% load staticfiles %}
+{% load ChartTemplate %}
+
+{% block title %}
+   {{ page_title }}
+{% endblock %}
+
+{% block scripts %}
+    {% if number %}
+        <script src="{% static "js/highcharts.js" %}"></script>
+        <script src="{% static "js/highcharts-theme.js" %}"></script>
+        <script>
+        {% basic_column 'container' bars %}
+        {% if pie %}
+            {% pie_chart_with_legend 'pie1' pie %}
+            {% pie_chart 'pie2' pie %}
+        {% endif %}
+        </script>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-10">
+
+        <!-- search form for AS Number -->
+            <form action="{% url 'graphs/asn/server' %}" method="post" class="navbar-form">
+                {% csrf_token %}
+            <div class="input-group">
+              <input type="text" name="number" class="form-control" placeholder="Buscar AS e.g. 23140">
+              <span class="input-group-btn">
+                <button type="submit" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+              </span>
+                </div>
+            </form>
+            <!-- /.search form -->
+        {% if not number %}
+            <div class="panel panel-info">
+            <div class="panel-heading">Búsqueda de servidor por sistema autónomo</div>
+            <p style="color: red;">
+                No se ha ingresado sistema autónomo o número no válido. Debe ingresar SÓLO el número de sistema autónomo.
+            </p>
+            </div>
+        {% endif %}
+        {% if number %}
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">Web Server</div>
+                        <div class="panel-body">
+                            <div id="container" style="height: 700px"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">Web Server Options</div>
+                        <div class="panel-body">
+                            <ul class="nav nav-pills nav-stacked">
+                                <li role="presentation" {% if port == '80' %}class="active"{% endif %}><a href="{% url "graphs/asn/server" number 80  scan_date %}">Port 80</a></li>
+                                <li role="presentation" {% if port == '443' %}class="active"{% endif %}><a href="{% url "graphs/asn/server" number 443 scan_date %}">Port 443</a></li>
+                                <li role="presentation" {% if port == '8000' %}class="active"{% endif %}><a href="{% url "graphs/asn/server" number 8000 scan_date %}">Port 8000</a></li>
+                                <li role="presentation" {% if port == '8080' %}class="active"{% endif %}><a href="{% url "graphs/asn/server" number 8080 scan_date %}">Port 8080</a></li>
+                                <li role="presentation" {% if port == 'all' %}class="active"{% endif %}><a href="{% url "graphs/asn/server/all" number scan_date %}">All</a></li>
+                            </ul>
+                            {% ifnotequal port 'all' %}
+                                <hr>
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle" type="button"
+                                            data-toggle="dropdown">
+                                        Web Server Version
+                                        <span class="caret"></span></button>
+                                    <ul class="dropdown-menu">
+                                        {% for name in bars.xvalues %}
+                                            <li><a href="{% url "graphs/asn/server" number port scan_date name %}">{{ name }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <hr>
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle" type="button"
+                                            data-toggle="dropdown">
+                                        Date of Scan
+                                        <span class="caret"></span></button>
+                                    <ul class="dropdown-menu">
+                                        {% for scan in scan_list %}
+                                            <li><a href="{% url "graphs/asn/server" number port scan %}">{{ scan }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% else %}
+                                <hr>
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle" type="button"
+                                            data-toggle="dropdown">
+                                        Date of Scan
+                                        <span class="caret"></span></button>
+                                    <ul class="dropdown-menu">
+                                        {% for scan in scan_list %}
+                                            <li><a href="{% url "graphs/asn/server/all" number scan %}">{{ scan }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endifnotequal %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if port != 'all' and pie.data != None %}
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">Web Server Version</div>
+                            <div class="panel-body">
+                                <div id="pie1"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">Web Server Version</div>
+                            <div class="panel-body">
+                                <div id="pie2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="row">
+                <div class="col-lg-6">
+
+                </div>
+                <div class="col-lg-6">
+
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
