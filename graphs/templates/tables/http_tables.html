@@ -1,88 +1,76 @@
-<div class="panel panel-primary">
-    <div class="panel-heading" style="background-color: #3C8DBC">
-        <h4>
-            <a role="button" data-toggle="collapse" href="#{{ id }}" aria-expanded="true" aria-controls="{{ id }}">
-                <span style="color: white"><b>HTTP</b> (port {{ port }})</span>
-            </a>
-        </h4>
+<div class="box box-primary httpTable_{{ port }}" id="httpTable">
+    <div class="box-header with-border">
+        <h3 class="box-title"><b>HTTP</b> (port {{ port }})</h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool leftButton"><i class="fa fa-chevron-left"></i></button>
+            <button type="button" class="btn btn-box-tool rightButton"><i class="fa fa-chevron-right"></i></button>
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+        </div>
     </div>
-    <div id="{{ id }}" class="panel-collapse collapse in">
-        <table class="table table-hover" >
-            {% if date %}
-            <tr>
-                <td><b>Date:</b></td>
-                <td>{{ date }}</td>
-            </tr>
+    <div class="box-body">
+        <table id='tabla' class="table table-hover tabla_{{ port }}" >
+            {% if scan_date %}
+                <tr>
+                    <td><b>Date:</b></td>
+                    <td class="table_date_{{ port }}">{{ scan_date|date:"Y-m-d" }}</td>
+                </tr>
             {% endif %}
 
             {% if error %}
-            <tr>
-                <td><b>Error:</b></td>
-                <td><span class="label label-danger">{{ error }}</span></td>
-            </tr>
+                <tr>
+                    <td><b>Error:</b></td>
+                    <td><span class="label label-danger table_error">{{ error }}</span></td>
+                </tr>
             {% endif %}
 
             {% if response %}
                 <tr>
                     <td><b>Response:</b></td>
-                    <td>{{ response }} <span class="label label-success">Ok</span></td>
+                    <td class="table_response">{{ response }}</td>
                 </tr>
-            {% endif %}
-
-            {% if server %}
-            <tr>
-                <td><b>Server:</b></td>
-                <td>{{ server }}</td>
-            </tr>
-            {% endif %}
-
-            {% if content_type %}
-            <tr>
-                <td><b>Content Type:</b></td>
-                <td>{{ content_type }}</td>
-            </tr>
-            {% endif %}
-
-            {% if www_authenticate %}
-            <tr>
-                <td><b>WWW Authenticate:</b></td>
-                <td>{{ www_authenticate }}</td>
-            </tr>
             {% endif %}
 
             {% if header %}
-            <tr>
-                <td><b>Header:</b></td>
-                <td>{{ header }}</td>
-            </tr>
+                <tr>
+                    <td><b>Header:</b></td>
+                    <td class="table_header">
+                        {% for key, value in header.items %}
+                            {{ key }}: {{ value }}<br>
+                        {% endfor %}
+                    </td>
+                </tr>
             {% endif %}
 
             {% if index %}
-            <tr>
-                <td><b>Index:</b></td>
-                <td>{{ index | truncatechars_html:50}}</td>
-            </tr>
+                <tr>
+                    <td><b>Index:</b></td>
+                    <td class="table_index">{{ index | truncatechars_html:50}}</td>
+                </tr>
             {% endif %}
-            {% if service %}
-                {%  if service.manufacturer %}
+
+            {%  if service.manufacturer %}
                 <tr>
                     <td><b>Manufacturer:</b></td>
-                    <td>{{ service.manufacturer }}</td>
+                    <td class="table_service_manufacturer">{{ service.manufacturer }}</td>
                 </tr>
-                {% endif %}
-                {%  if service.product %}
+            {% endif %}
+            {%  if service.product %}
                 <tr>
                     <td><b>Product:</b></td>
-                    <td>{{ service.product }}</td>
+                    <td class="table_service_product">{{ service.product }}</td>
                 </tr>
-                {% endif %}
-                {%  if service.version %}
+            {% endif %}
+            {%  if service.version %}
                 <tr>
                     <td><b>Version:</b></td>
-                    <td>{{ service.version }}</td>
+                    <td class="table_service_version">{{ service.version }}</td>
                 </tr>
-                {% endif %}
             {% endif %}
+
         </table>
     </div>
 </div>
+<script>
+    $('.httpTable_{{ port }} .leftButton').on('click', LeftHTTP('{{ port }}', '{{ ip }}'));
+    $('.httpTable_{{ port }} .rightButton').on('click', RightHTTP('{{ port }}', '{{ ip }}'));
+</script>

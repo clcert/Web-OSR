@@ -16,10 +16,16 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
-from graphs.views import index
+# from graphs.views import index
+from registration.forms import RegistrationFormUniqueEmail
+from registration.views import RegistrationView
+
+from login.views import index
 
 urlpatterns = [
     url(r'^$', index, name='index'),
+    url(r'^accounts/register/', RegistrationView.as_view(form_class=RegistrationFormUniqueEmail), name='registration_register'),
+    url(r'^accounts/', include('registration.backends.hmac.urls')),
     url(r'^graphs/', include('graphs.urls')),
     url(r'^admin/', include(admin.site.urls)),
 ]

@@ -1,3 +1,9 @@
 mongoengine
-django
+django>=1.9
+django-registration
+django-bootstrap-form
+django_compressor
 python-geoip-geolite2
+cssmin
+jsmin
+psycopg2>=2.5.4

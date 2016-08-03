@@ -1,0 +1,49 @@
+{% extends "base_menu.html" %}
+{% load staticfiles %}
+{% load ChartTemplate %}
+
+{% block title %}
+   {{ page_title }}
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static "js/highcharts.js" %}"></script>
+<script src="{% static "js/highcharts-theme.js" %}"></script>
+<script>
+    {% log_bars_chart 'container' bars %}
+</script>
+{% endblock %}
+
+{#{% block header %}#}
+{#    <h1></h1>#}
+{#{% endblock %}#}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-10">
+        <div class="panel panel-info">
+            <div class="panel-heading">{{ panel_title }}</div>
+            <div class="panel-body">
+                <div id="container" style="height: 700px"></div>
+                <div class="text-center">
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if partial_data.has_previous %}
+                            <a href="?page={{ partial_data.previous_page_number }}">previous</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Page {{ partial_data.number }} of {{ partial_data.paginator.num_pages }}
+                        </span>
+
+                        {% if partial_data.has_next %}
+                            <a href="?page={{ partial_data.next_page_number }}">next</a>
+                        {% endif %}
+                    </span>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

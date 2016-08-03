@@ -1,80 +1,104 @@
-{% extends "graphs/base.html" %}
+{% extends "base_menu.html" %}
 {% load staticfiles %}
 {% load modelTable %}
 
 {% block scripts %}
-    <script src="http://maps.googleapis.com/maps/api/js" xmlns="http://www.w3.org/1999/html"></script>
-<script>
-function initialize() {
-  var mapProp = {
-    center:new google.maps.LatLng({{ lat }},{{ long }}),
-    zoom:12,
-    mapTypeId:google.maps.MapTypeId.ROADMAP
-  };
-  var map = new google.maps.Map(document.getElementById("map"),mapProp);
-  var marker = new google.maps.Marker({
-    position: { lat:{{ lat }}, lng:{{ long }}} ,
-    map: map
-  });
+    <script src="{% static "js/ajax_table.js" %}"></script>
+    <script>
+        function initMap() {
+            var myLatlng = new google.maps.LatLng({{ lat|stringformat:"f" }}, {{ long|stringformat:"f" }});
+            var mapOptions = {
+                zoom: 12,
+                center: myLatlng
+            }
+            var map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
-}
-google.maps.event.addDomListener(window, 'load', initialize);
-</script>
-</head>
+            var marker = new google.maps.Marker({
+                position: myLatlng,
+                map: map
+            });
+        }
+    </script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCK2aIESlqn2fjk6twmrP0KYulOstxaXas&callback=initMap">
+    </script>
+{% endblock %}
+
+{% block title %}
+    Busqueda - Observatorio de Seguridad de la Red Chilena
 {% endblock %}
 
 {% block content %}
     <div class="row">
-    <div class="col-md-2"></div>
-    <div class="col-md-8">
-        <h1>Query: <small>{{ ip }}</small></h1>
-        <hr style="background-color: #3C8DBC; height: 2px">
-        <div class="row">
-            <div class="col-md-8">
-                <ul style="list-style-type: none">
-                    <li><b>IP:</b> {{ ip }}</li>
-                    <li><b>DNS Name: </b> {{ reverse }}</li>
-                    <li><b>Manufacturer: </b> PC Factory </li>
-                    <li><b></b></li>
-                    <li><b>Operative System: </b> CentOS </li>
-                    <li><b>Operative System Version: </b> 14.3.5 </li>
-                    <li><b>Device Type: </b> Server </li>
-                </ul>
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-6">
+                    <h1>Query: <small>{{ ip }}</small></h1>
+                </div>
+                <div class="col-md-6">
+                    <div class="btn-group">
+                        <form action="search" style="display: inline-block">
+                            <input type="hidden" name="question" value='{{ ip }}'>
+                            <input type="hidden" name="position" value='{{ date_position|add:1 }}'>
+                            <button class="btn btn-primary" type="submit"><i class="fa fa-chevron-left" aria-hidden="true"></i> Anterior</button>
+                        </form>
+                        <form action="search" style="display: inline-block">
+                            <input type="hidden" name="question" value='{{ ip }}'>
+                            <input type="hidden" name="position" value='{{ date_position|add:"-1" }}'>
+                            <button class="btn btn-primary" type="submit" {% ifequal date_position 0 %}disabled="disabled"{% endifequal %}>Siguiente <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4">
-                <div id="map" style="height: 200px"></div>
+
+            <hr style="background-color: #3C8DBC; height: 2px">
+            <div class="row">
+                <div class="col-md-8">
+                    <ul style="list-style-type: none; font-size:20px">
+                        <li><b>IP:</b> {{ ip }}</li>
+                        <li><b>DNS Name: </b> {{ reverse }}</li>
+                        {% if http80.metadata.device %}
+                            {% if http80.metadata.device.os %}<li><b>Operative System: </b> {{ http80.metadata.device.os }} </li>{% endif %}
+                            {% if http80.metadata.device.os_version %}<li><b>Operative System Version: </b> {{ http80.metadata.device.os_version }} </li>{% endif %}
+                            {% if http80.metadata.device.type %}<li><b>Device Type: </b> {{ http80.metadata.device.type }} </li>{% endif %}
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <div id="map" style="height: 200px"></div>
+                </div>
             </div>
-         </div>
-        <div class="row">
-            <div class="col-md-8">
-                <hr style="background-color: #3C8DBC; height: 2px">
 
-                {% if http80 %}
-                    {% http_table 'http80' '80' http80 %}
-                {% endif %}
+            <div class="row">
+                <div class="col-md-8">
+                    <hr style="background-color: #3C8DBC; height: 2px">
+                    {% if http80 %}
+                        {% http_table 'http80' '80' http80 %}
+                    {% endif %}
 
-                {% if http443 %}
-                    {% http_table 'http443' '443' http443 %}
-                {% endif %}
+                    {% if http443 %}
+                        {% http_table 'http443' '443' http443 %}
+                    {% endif %}
 
-                {% if http8000 %}
-                    {% http_table 'http8000' '8000' http8000 %}
-                {% endif %}
+                    {% if http8000 %}
+                        {% http_table 'http8000' '8000' http8000 %}
+                    {% endif %}
 
-                {% if http8080 %}
-                    {% http_table 'http443' '8080' http8080 %}
-                {% endif %}
+                    {% if http8080 %}
+                        {% http_table 'http8080' '8080' http8080 %}
+                    {% endif %}
 
-                <hr style="background-color: #3C8DBC; height: 2px">
+                    <hr style="background-color: #3C8DBC; height: 2px">
 
-                {% if https %}
-                    {% certificate_table 'HTTPS  Certificate' 'https' '443' https %}
-                {% endif %}
+                    {% if https %}
+                        {% certificate_table 'https443' '443' 'HTTPS' https  %}
+                    {% endif %}
 
+                </div>
+                <div class="col-md-4"></div>
             </div>
-            <div class="col-md-4"></div>
         </div>
-    </div>
-    <div class="col-md-2"></div>
+        <div class="col-md-2"></div>
     </div>
 {% endblock %}
