@@ -226,8 +226,10 @@ def operating_system_server_asn_all(request, number, scan_date):
 
 def key_bits_asn_search(request, port=443):
     if request.POST.get('number'):
-        try:
-            number = int(request.POST['number'])
+        try: # transforma el string 12345;13450 a [12345, 13450]
+            number = request.POST['number']
+            number = number.split(';')
+            number = map(int, number)
             return key_bits_asn(request, port, number)
         except ValueError:
             pass
@@ -239,9 +241,9 @@ def key_bits_asn(request, port, number=None, scan_date=None):
     if scan_date is None:
             scan_date = scan_date_list.last().date
 
-    trusted = AsnHTTPSKeyBits.objects.filter(asn=number, port=port, date=scan_date, valid=True).values('bits').order_by('bits') \
+    trusted = filter_multiple_numbers(number, AsnHTTPSKeyBits.objects).filter(port=port, date=scan_date, valid=True).values('bits').order_by('bits') \
         .annotate(total=Sum('total')).order_by('bits')[:10]
-    untrusted = AsnHTTPSKeyBits.objects.filter(asn=number, port=port, date=scan_date, valid=False).values('bits').order_by('bits') \
+    untrusted = filter_multiple_numbers(number, AsnHTTPSKeyBits.objects).filter(port=port, date=scan_date, valid=False).values('bits').order_by('bits') \
         .annotate(total=Sum('total')).order_by('bits')[:10]
 
     key_bits_values = sorted(set([i['bits'] for i in trusted]) | set([i['bits'] for i in untrusted]))
@@ -265,8 +267,10 @@ def key_bits_asn(request, port, number=None, scan_date=None):
 
 def validation_asn_search(request, port=443):
     if request.POST.get('number'):
-        try:
-            number = int(request.POST['number'])
+        try: # transforma el string 12345;13450 a [12345, 13450]
+            number = request.POST['number']
+            number = number.split(';')
+            number = map(int, number)
             return validation_asn(request, port, number)
         except ValueError:
             pass
@@ -277,8 +281,7 @@ def validation_asn(request, port, number=None, scan_date=None):
     scan_date_list = ZmapLog.objects.filter(port=port)
     if scan_date is None:
         scan_date = scan_date_list.last().date
-
-    certificate_validation = AsnHTTPSKeyBits.objects.filter(asn=number, port=port, date=scan_date).values('valid').order_by('valid') \
+    certificate_validation = filter_multiple_numbers(number, AsnHTTPSKeyBits.objects).filter(port=port, date=scan_date).values('valid').order_by('valid') \
         .annotate(total=Sum('total')).order_by('valid')
 
     return render(request, 'graphs/cert_validation_asn.html',
@@ -296,9 +299,11 @@ def validation_asn(request, port, number=None, scan_date=None):
 
 def signature_asn_search(request, port=443):
     if request.POST.get('number'):
-        try:
-            number = int(request.POST['number'])
-            return validation_asn(request, port, number)
+        try: # transforma el string 12345;13450 a [12345, 13450]
+            number = request.POST['number']
+            number = number.split(';')
+            number = map(int, number)
+            return signature_asn(request, port, number)
         except ValueError:
             pass
     return render(request, 'graphs/cert_signature_asn.html')
@@ -308,10 +313,9 @@ def signature_asn(request, port, number=None, scan_date=None):
     scan_date_list = ZmapLog.objects.filter(port=port)
     if scan_date is None:
         scan_date = scan_date_list.last().date
-
-    trusted = AsnHTTPSSignature.objects.filter(asn=number, port=port, date=scan_date, valid=True).values('signature').order_by('signature') \
+    trusted = filter_multiple_numbers(number, AsnHTTPSSignature.objects).filter(port=port, date=scan_date, valid=True).values('signature').order_by('signature') \
         .annotate(total=Sum('total')).order_by('signature')[:10]
-    untrusted = AsnHTTPSSignature.objects.filter(asn=number, port=port, date=scan_date, valid=False).values('signature').order_by('signature') \
+    untrusted = filter_multiple_numbers(number, AsnHTTPSSignature.objects).filter(port=port, date=scan_date, valid=False).values('signature').order_by('signature') \
         .annotate(total=Sum('total')).order_by('signature')[:10]
 
     signature_values = sorted(set([i['signature'] for i in trusted]) | set([i['signature'] for i in untrusted]))
@@ -336,8 +340,10 @@ def signature_asn(request, port, number=None, scan_date=None):
 
 def cipher_suite_asn_search(request, port=443):
     if request.POST.get('number'):
-        try:
-            number = int(request.POST['number'])
+        try: # transforma el string 12345;13450 a [12345, 13450]
+            number = request.POST['number']
+            number = number.split(';')
+            number = map(int, number)
             return cipher_suite_asn(request, port, number)
         except ValueError:
             pass
@@ -348,10 +354,9 @@ def cipher_suite_asn(request, port, number=None, scan_date=None):
     scan_date_list = ZmapLog.objects.filter(port=port)
     if scan_date is None:
         scan_date = scan_date_list.last().date
-
-    trusted = AsnHTTPSCipherSuite.objects.filter(asn=number, port=port, date=scan_date, valid=True).values('cipher_suite').order_by('cipher_suite') \
+    trusted = filter_multiple_numbers(number, AsnHTTPSCipherSuite.objects).filter(port=port, date=scan_date, valid=True).values('cipher_suite').order_by('cipher_suite') \
         .annotate(total=Sum('total')).order_by('cipher_suite')
-    untrusted = AsnHTTPSCipherSuite.objects.filter(asn=number, port=port, date=scan_date, valid=False).values('cipher_suite').order_by('cipher_suite') \
+    untrusted = filter_multiple_numbers(number, AsnHTTPSCipherSuite.objects).filter(port=port, date=scan_date, valid=False).values('cipher_suite').order_by('cipher_suite') \
         .annotate(total=Sum('total')).order_by('cipher_suite')
 
     cipher_suite_values = sorted(set([i['cipher_suite'] for i in trusted]) | set([i['cipher_suite'] for i in untrusted]))
@@ -376,8 +381,10 @@ def cipher_suite_asn(request, port, number=None, scan_date=None):
 
 def tls_version_asn_search(request, port=443):
     if request.POST.get('number'):
-        try:
-            number = int(request.POST['number'])
+        try: # transforma el string 12345;13450 a [12345, 13450]
+            number = request.POST['number']
+            number = number.split(';')
+            number = map(int, number)
             return tls_version_asn(request, port, number)
         except ValueError:
             pass
@@ -388,10 +395,9 @@ def tls_version_asn(request, port, number=None, scan_date=None):
     scan_date_list = ZmapLog.objects.filter(port=port)
     if scan_date is None:
         scan_date = scan_date_list.last().date
-
-    trusted = AsnHTTPSTlsProtocol.objects.filter(asn=number, port=port, date=scan_date, valid=True).values('protocol').order_by('protocol') \
+    trusted = filter_multiple_numbers(number, AsnHTTPSTlsProtocol.objects).filter(port=port, date=scan_date, valid=True).values('protocol').order_by('protocol') \
         .annotate(total=Sum('total')).order_by('protocol')
-    untrusted = AsnHTTPSTlsProtocol.objects.filter(asn=number, port=port, date=scan_date, valid=False).values('protocol').order_by('protocol') \
+    untrusted = filter_multiple_numbers(number, AsnHTTPSTlsProtocol.objects).filter(port=port, date=scan_date, valid=False).values('protocol').order_by('protocol') \
         .annotate(total=Sum('total')).order_by('protocol')
 
     tls_values = sorted(set([i['protocol'] for i in trusted]) | set([i['protocol'] for i in untrusted]))
