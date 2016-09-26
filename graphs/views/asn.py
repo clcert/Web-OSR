@@ -44,7 +44,6 @@ def http_server_asn_search(request):
             number = request.POST['number']
             number = number.split(';')
             number = map(int, number)
-            print number
             return http_server_all_asn(request, number)
         except ValueError:
             pass
@@ -171,8 +170,10 @@ def device_type_asn_all(request, number, scan_date):
 
 def operating_system_server_asn_search(request, port=80):
     if request.POST.get('number'):
-        try:
-            number = int(request.POST['number'])
+        try: # transforma el string 12345;13450 a [12345, 13450]
+            number = request.POST['number']
+            number = number.split(';')
+            number = map(int, number)
             return operating_system_server_asn(request, port, number)
         except ValueError:
             pass
@@ -183,8 +184,7 @@ def operating_system_server_asn(request, port=80, number=None, scan_date=None):
     scan_date_list = ZmapLog.objects.filter(port=port)
     if scan_date is None:
         scan_date = scan_date_list.last().date
-
-    operating_system = AsnHTTPOS.objects.filter(asn=number, port=port, date=scan_date).values('os').order_by('os') \
+    operating_system = filter_multiple_numbers(number, AsnHTTPOS.objects).filter(port=port, date=scan_date).values('os').order_by('os') \
         .annotate(total=Sum('total')).order_by('-total')[:10]
 
     return render(request, 'graphs/http_operative_systems_asn.html',
@@ -201,13 +201,13 @@ def operating_system_server_asn(request, port=80, number=None, scan_date=None):
 
 def operating_system_server_asn_all(request, number, scan_date):
     scan_date_list = ZmapLog.objects.filter(port=80)
-    os80 = AsnHTTPOS.objects.filter(asn=number, port=80, date=scan_date).values('os').order_by('os') \
+    os80 = filter_multiple_numbers(number, AsnHTTPOS.objects).filter(port=80, date=scan_date).values('os').order_by('os') \
         .annotate(total=Sum('total')).order_by('-total')[:10]
-    os443 = filter_by_name(AsnHTTPOS.objects.filter(asn=number, port=443, date=scan_date).values('os').order_by('os') \
+    os443 = filter_by_name(filter_multiple_numbers(number, AsnHTTPOS.objects).filter(port=443, date=scan_date).values('os').order_by('os') \
         .annotate(total=Sum('total')).order_by('-total'), [i['os'] for i in os80], 'os', 'total')
-    os8000 = filter_by_name(AsnHTTPOS.objects.filter(asn=number, port=8000, date=scan_date).values('os').order_by('os') \
+    os8000 = filter_by_name(filter_multiple_numbers(number, AsnHTTPOS.objects).filter(port=8000, date=scan_date).values('os').order_by('os') \
         .annotate(total=Sum('total')).order_by('-total'), [i['os'] for i in os80], 'os', 'total')
-    os8080 = filter_by_name(AsnHTTPOS.objects.filter(asn=number, port=8080, date=scan_date).values('os').order_by('os') \
+    os8080 = filter_by_name(filter_multiple_numbers(number, AsnHTTPOS.objects).filter(port=8080, date=scan_date).values('os').order_by('os') \
         .annotate(total=Sum('total')).order_by('-total'), [i['os'] for i in os80], 'os', 'total')
 
     return render(request, 'graphs/http_operative_systems_asn.html',
