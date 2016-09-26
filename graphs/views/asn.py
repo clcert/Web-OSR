@@ -1,11 +1,13 @@
 from django.shortcuts import render
-from graphs.models import asn, ZmapLog, AsnHTTPServer, AsnHTTPOS, AsnHTTPType, AsnHTTPSKeyBits, AsnHTTPSCipherSuite, AsnHTTPSSignature, AsnHTTPSTlsProtocol
+from graphs.models import asn, ZmapLog, AsnHTTPServer, AsnHTTPOS, AsnHTTPType, AsnHTTPSKeyBits, AsnHTTPSCipherSuite, AsnHTTPSSignature, AsnHTTPSTlsProtocol, Asn
 from django.db.models import Sum
+from django.db.models import Q
 import operator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from graphs.util import filter_by_name
+import ast
 
 
 def top_asn(request):
@@ -38,8 +40,11 @@ def top_asn(request):
 
 def http_server_asn_search(request):
     if request.POST.get('number'):
-        try:
-            number = int(request.POST['number'])
+        try: # transforma el string 12345;13450 a [12345, 13450]
+            number = request.POST['number']
+            number = number.split(';')
+            number = map(int, number)
+            print number
             return http_server_all_asn(request, number)
         except ValueError:
             pass
@@ -53,8 +58,8 @@ def http_server_asn(request, number, port, scan_date=None, product=None):
 
     # if product:
     #     version_server = HTTPServer.objects.filter(port=port, date=scan_date, product=product)[:9]
-
-    web_server = AsnHTTPServer.objects.filter(asn=number, port=port, date=scan_date).values('product').order_by('product')\
+    print number
+    web_server = filter_multiple_numbers(number, AsnHTTPServer.objects).filter(port=port, date=scan_date).values('product').order_by('product')\
         .annotate(total=Sum('total')).order_by('-total')[:10]
 
     return render(request, 'graphs/http_server_asn.html',
@@ -84,13 +89,13 @@ def http_server_all_asn(request, number=None, scan_date=None):
         except ValueError:
             return HttpResponseRedirect(reverse('graphs/asn/server/all'))
 
-    http80 = AsnHTTPServer.objects.filter(asn=number, port=80, date=scan_date).values('product').order_by('product') \
+    http80 = filter_multiple_numbers(number, AsnHTTPServer.objects).filter(port=80, date=scan_date).values('product').order_by('product') \
                  .annotate(total=Sum('total')).order_by('-total')[:10]
-    http443 = filter_by_name(AsnHTTPServer.objects.filter(asn=number, port=443, date=scan_date).values('product').order_by('product') \
+    http443 = filter_by_name(filter_multiple_numbers(number, AsnHTTPServer.objects).filter(port=443, date=scan_date).values('product').order_by('product') \
                              .annotate(total=Sum('total')), [i['product'] for i in http80], 'product', 'total')
-    http8000 = filter_by_name(AsnHTTPServer.objects.filter(asn=number, port=8000, date=scan_date).values('product').order_by('product') \
+    http8000 = filter_by_name(filter_multiple_numbers(number, AsnHTTPServer.objects).filter(port=8000, date=scan_date).values('product').order_by('product') \
                               .annotate(total=Sum('total')), [i['product'] for i in http80], 'product', 'total')
-    http8080 = filter_by_name(AsnHTTPServer.objects.filter(asn=number, port=8080, date=scan_date).values('product').order_by('product') \
+    http8080 = filter_by_name(filter_multiple_numbers(number, AsnHTTPServer.objects).filter(port=8080, date=scan_date).values('product').order_by('product') \
                               .annotate(total=Sum('total')), [i['product'] for i in http80], 'product', 'total')
 
     return render(request, 'graphs/http_server_asn.html',
@@ -111,8 +116,10 @@ def http_server_all_asn(request, number=None, scan_date=None):
 
 def device_type_asn_search(request, port=80):
     if request.POST.get('number'):
-        try:
-            number = int(request.POST['number'])
+        try: # transforma el string 12345;13450 a [12345, 13450]
+            number = request.POST['number']
+            number = number.split(';')
+            number = map(int, number)
             return device_type_asn(request, port, number)
         except ValueError:
             pass
@@ -123,8 +130,7 @@ def device_type_asn(request, port, number=None, scan_date=None):
     scan_date_list = ZmapLog.objects.filter(port=port)
     if scan_date is None:
         scan_date = scan_date_list.last().date
-
-    device = AsnHTTPType.objects.filter(asn=number, port=port, date=scan_date).values('type').order_by('type') \
+    device = filter_multiple_numbers(number, AsnHTTPType.objects).filter(port=port, date=scan_date).values('type').order_by('type') \
         .annotate(total=Sum('total')).order_by('-total')[:10]
     return render(request, 'graphs/http_device_type_asn.html',
                   {'port': port,
@@ -140,13 +146,13 @@ def device_type_asn(request, port, number=None, scan_date=None):
 
 def device_type_asn_all(request, number, scan_date):
     scan_date_list = ZmapLog.objects.filter(port=80)
-    device80 = AsnHTTPType.objects.filter(asn=number, port=80, date=scan_date).values('type').order_by('type') \
+    device80 = filter_multiple_numbers(number, AsnHTTPType.objects).filter(port=80, date=scan_date).values('type').order_by('type') \
                             .annotate(total=Sum('total')).order_by('-total')[:10]
-    device443 = filter_by_name(AsnHTTPType.objects.filter(asn=number, port=443, date=scan_date).values('type').order_by('type') \
+    device443 = filter_by_name(filter_multiple_numbers(number, AsnHTTPType.objects).filter(port=443, date=scan_date).values('type').order_by('type') \
                            .annotate(total=Sum('total')).order_by('-total'), [i['type'] for i in device80], 'type', 'total')
-    device8000 = filter_by_name(AsnHTTPType.objects.filter(asn=number, port=8000, date=scan_date).values('type').order_by('type') \
+    device8000 = filter_by_name(filter_multiple_numbers(number, AsnHTTPType.objects).filter(port=8000, date=scan_date).values('type').order_by('type') \
                             .annotate(total=Sum('total')).order_by('-total'), [i['type'] for i in device80], 'type', 'total')
-    device8080 = filter_by_name(AsnHTTPType.objects.filter(asn=number, port=8080, date=scan_date).values('type').order_by('type') \
+    device8080 = filter_by_name(filter_multiple_numbers(number, AsnHTTPType.objects).filter(port=8080, date=scan_date).values('type').order_by('type') \
                             .annotate(total=Sum('total')).order_by('-total'), [i['type'] for i in device80], 'type', 'total')
 
     return render(request, 'graphs/http_device_type_asn.html',
@@ -406,3 +412,9 @@ def tls_version_asn(request, port, number=None, scan_date=None):
                        ]
                    }})
 
+
+def filter_multiple_numbers(numbers = None, model_objects = None):
+    if numbers[0] == '[':
+        numbers = ast.literal_eval(numbers)
+    list_of_Q = [Q(**{'asn': num}) for num in numbers]
+    return model_objects.filter(reduce(operator.or_, list_of_Q))
